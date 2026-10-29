@@ -20,8 +20,6 @@ import { FullWidthMap } from './components/FullWidthMap';
 import { EventsView } from './components/EventsView';
 import { AccommodationView } from './components/AccommodationView';
 import { ContactView } from './components/ContactView';
-import { StatusCheckView } from './components/StatusCheckView';
-import { AdminDashboard } from './components/AdminDashboard';
 import { FeedbackModal } from './components/FeedbackModal';
 import { Footer } from './components/Footer';
 
@@ -29,6 +27,13 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<PageTab>('home');
   const [aboutSubTab, setAboutSubTab] = useState<AboutSubTab>('overview');
   const [feedbackOpen, setFeedbackOpen] = useState<boolean>(false);
+
+  // Status check and admin live on their own tablet-minimum pages.
+  const navigateTab = (tab: PageTab) => {
+    if (tab === 'status-check') window.location.href = './status.html';
+    else if (tab === 'admin') window.location.href = './admin.html';
+    else setCurrentTab(tab);
+  };
 
   const scrollToRegistration = () => {
     if (currentTab !== 'home') {
@@ -55,7 +60,7 @@ export default function App() {
         {/* Top Navigation Bar with Language Switcher, Mobile Quick Bar & Hamburger */}
         <Navbar
           currentTab={currentTab}
-          onSelectTab={setCurrentTab}
+          onSelectTab={navigateTab}
           aboutSubTab={aboutSubTab}
           onSelectAboutSubTab={setAboutSubTab}
           onOpenRegister={scrollToRegistration}
@@ -86,7 +91,7 @@ export default function App() {
                 title="Dynamic Festival Gallery"
                 subtitle="Watch featured documentary footage and explore photo thumbnails from celebratory assemblies."
               />
-              <RegistrationForm onNavigateStatusCheck={() => setCurrentTab('status-check')} />
+              <RegistrationForm onNavigateStatusCheck={() => navigateTab('status-check')} />
 
               {/* 4. Several Cards for Thakurs showcasing profiles and specific contributions */}
               <ThakurCards />
@@ -136,11 +141,6 @@ export default function App() {
           {/* Dedicated Contact Page (Address, WhatsApp, Social Media, Detailed Map, Transit Guide: Airport, Railway, Landmarks) */}
           {currentTab === 'contact' && <ContactView />}
 
-          {/* Application Status & Pass Verification Portal */}
-          {currentTab === 'status-check' && <StatusCheckView />}
-
-          {/* Secretariat Admin Dashboard (Credentials: admin@dotma.org / PritiLagnik@2026) */}
-          {currentTab === 'admin' && <AdminDashboard />}
         </main>
 
         {/* Attendee Feedback Modal */}
@@ -151,7 +151,7 @@ export default function App() {
 
         {/* Footer with All Navigation Links, Social Media & Legal Pages */}
         <Footer
-          onSelectTab={setCurrentTab}
+          onSelectTab={navigateTab}
           onSelectAboutSubTab={setAboutSubTab}
         />
       </div>
