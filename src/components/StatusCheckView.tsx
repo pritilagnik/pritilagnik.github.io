@@ -250,10 +250,10 @@ export const StatusCheckView: React.FC = () => {
                 {/* Printable Target Container */}
                 <div
                   id="delegate-official-pass-card"
-                  className="printable-card-target bg-gradient-to-br from-amber-50/40 via-white to-amber-50/20 dark:from-stone-850 dark:to-stone-900 rounded-2xl p-6 sm:p-8 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-5"
+                  className="printable-card-target bg-gradient-to-br from-amber-50/50 via-white to-amber-50/30 rounded-2xl p-6 sm:p-8 border-2 border-amber-400 shadow-lg space-y-5 text-stone-900"
                 >
                   {/* Card Header with Logo */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b-2 border-amber-300 dark:border-stone-700">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b-2 border-amber-300">
                     <div className="flex items-center gap-3">
                       <img
                         src="/src/assets/images/priti_lagnik_logo.webp"
@@ -261,21 +261,21 @@ export const StatusCheckView: React.FC = () => {
                         className="w-14 h-14 object-contain rounded-full shadow-sm"
                       />
                       <div>
-                        <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 dark:text-amber-400 font-bold block">
+                        <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 font-bold block">
                           Priti-Lagnik Maha Mahotsav 2026
                         </span>
-                        <h3 className="text-xl sm:text-2xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-wide">
+                        <h3 className="text-xl sm:text-2xl font-serif-cinzel font-bold text-stone-900 tracking-wide">
                           OFFICIAL REGISTERED DELEGATE PASS
                         </h3>
-                        <p className="text-[11px] text-stone-600 dark:text-stone-400">
+                        <p className="text-[11px] text-stone-600">
                           Main Celebration: 20 December 2026 · West Dangarkuthi, Dotma, Kokrajhar, Assam
                         </p>
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <span className="text-[10px] uppercase font-mono text-stone-400 block">Pass ID</span>
-                      <span className="text-sm font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-3 py-1 rounded-lg border border-emerald-300">
+                    <div className="text-right shrink-0">
+                      <span className="text-[10px] uppercase font-mono text-stone-500 block">Pass ID</span>
+                      <span className="text-sm font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-300 whitespace-nowrap inline-block shrink-0 shadow-sm">
                         {delegateRecord.id}
                       </span>
                     </div>
@@ -286,60 +286,60 @@ export const StatusCheckView: React.FC = () => {
                     {/* Left: Delegate Info */}
                     <div className="md:col-span-6 space-y-3">
                       <div>
-                        <span className="text-[10px] uppercase font-bold text-stone-400 block">
+                        <span className="text-[10px] uppercase font-bold text-stone-500 block">
                           Delegate Full Name
                         </span>
-                        <h4 className="text-xl sm:text-2xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                        <h4 className="text-xl sm:text-2xl font-serif-cinzel font-bold text-stone-900">
                           {delegateRecord.fullName}
                         </h4>
-                        <p className="text-xs font-medium text-stone-600 dark:text-stone-300">
+                        <p className="text-xs font-semibold text-stone-700">
                           📍 {delegateRecord.city}, {delegateRecord.state}
                         </p>
                       </div>
 
                       {/* Demographic Breakdown: Male, Female, Children */}
-                      <div className="p-2.5 rounded-xl bg-amber-100/70 dark:bg-stone-800 border border-amber-300 dark:border-stone-700 text-xs">
-                        <span className="text-[10px] uppercase font-bold text-amber-900 dark:text-amber-300 block mb-1">
+                      <div className="p-2.5 rounded-xl bg-amber-100/70 border border-amber-300 text-xs">
+                        <span className="text-[10px] uppercase font-bold text-amber-900 block mb-1">
                           Delegation Breakdown ({delegateRecord.delegationSize || (Number(delegateRecord.maleCount || 0) + Number(delegateRecord.femaleCount || 0) + Number(delegateRecord.childrenCount || 0)) || 1} Total)
                         </span>
                         <div className="grid grid-cols-3 gap-2 text-center font-mono font-bold text-xs">
-                          <div className="bg-white/80 dark:bg-stone-900 py-1 rounded">
+                          <div className="bg-white py-1 rounded border border-stone-200">
                             <span className="text-stone-500 text-[10px] block font-sans">Male</span>
-                            <span className="text-stone-900 dark:text-stone-100">{delegateRecord.maleCount || 0}</span>
+                            <span className="text-stone-900">{delegateRecord.maleCount || 0}</span>
                           </div>
-                          <div className="bg-white/80 dark:bg-stone-900 py-1 rounded">
+                          <div className="bg-white py-1 rounded border border-stone-200">
                             <span className="text-stone-500 text-[10px] block font-sans">Female</span>
-                            <span className="text-stone-900 dark:text-stone-100">{delegateRecord.femaleCount || 0}</span>
+                            <span className="text-stone-900">{delegateRecord.femaleCount || 0}</span>
                           </div>
-                          <div className="bg-white/80 dark:bg-stone-900 py-1 rounded">
+                          <div className="bg-white py-1 rounded border border-stone-200">
                             <span className="text-stone-500 text-[10px] block font-sans">Children</span>
-                            <span className="text-stone-900 dark:text-stone-100">{delegateRecord.childrenCount || 0}</span>
+                            <span className="text-stone-900">{delegateRecord.childrenCount || 0}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-2 text-xs pt-1">
                         <div>
-                          <span className="text-stone-400 text-[10px] block">Contact Number</span>
-                          <span className="font-semibold text-stone-800 dark:text-stone-200">
+                          <span className="text-stone-500 text-[10px] block font-medium">Contact Number</span>
+                          <span className="font-bold text-stone-900">
                             {delegateRecord.phone}
                           </span>
                         </div>
                         <div>
-                          <span className="text-stone-400 text-[10px] block">Arrival Date</span>
-                          <span className="font-semibold text-stone-800 dark:text-stone-200">
+                          <span className="text-stone-500 text-[10px] block font-medium">Arrival Date</span>
+                          <span className="font-bold text-stone-900">
                             {delegateRecord.arrivalDate}
                           </span>
                         </div>
                         <div>
-                          <span className="text-stone-400 text-[10px] block">Accommodation</span>
-                          <span className="font-semibold text-stone-800 dark:text-stone-200">
+                          <span className="text-stone-500 text-[10px] block font-medium">Accommodation</span>
+                          <span className="font-bold text-stone-900">
                             {delegateRecord.needAccommodation ? (delegateRecord.accommodationType?.split(' ')[0] || 'Assigned') : 'Self'}
                           </span>
                         </div>
                         <div>
-                          <span className="text-stone-400 text-[10px] block">Prasadam / Seva</span>
-                          <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                          <span className="text-stone-500 text-[10px] block font-medium">Prasadam / Seva</span>
+                          <span className="font-bold text-emerald-800">
                             Anandabazar Access
                           </span>
                         </div>
@@ -357,12 +357,12 @@ export const StatusCheckView: React.FC = () => {
                           />
                         </div>
                       ) : (
-                        <div className="w-28 h-32 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 flex flex-col items-center justify-center text-stone-400 bg-stone-50/50 dark:bg-stone-800">
+                        <div className="w-28 h-32 rounded-xl border-2 border-dashed border-stone-300 flex flex-col items-center justify-center text-stone-400 bg-stone-50">
                           <span className="text-[10px] uppercase font-mono font-medium">Photo</span>
                           <span className="text-[9px] text-stone-400 mt-0.5">(Blank)</span>
                         </div>
                       )}
-                      <span className="text-[9px] text-stone-500 mt-1 uppercase font-semibold">
+                      <span className="text-[9px] text-stone-600 mt-1 uppercase font-bold">
                         Delegate Portrait
                       </span>
                     </div>
@@ -376,25 +376,25 @@ export const StatusCheckView: React.FC = () => {
                             alt="Verification QR Code"
                             className="w-28 h-28 object-contain"
                           />
-                          <span className="text-[9px] font-mono text-stone-700 font-bold mt-1">
+                          <span className="text-[9px] font-mono text-stone-800 font-bold mt-1 whitespace-nowrap">
                             {delegateRecord.id}
                           </span>
                         </div>
                       ) : (
-                        <div className="w-28 h-28 bg-stone-100 rounded-xl flex items-center justify-center text-stone-400">
+                        <div className="w-28 h-28 bg-stone-100 rounded-xl flex items-center justify-center text-stone-400 border border-stone-200">
                           <QrCode className="w-8 h-8" />
                         </div>
                       )}
-                      <span className="text-[9px] text-stone-500 mt-1 text-center font-medium">
+                      <span className="text-[9px] text-stone-600 mt-1 text-center font-medium">
                         Scan for Name, Address & Contact
                       </span>
                     </div>
                   </div>
 
                   {/* Card Security Footer */}
-                  <div className="mt-6 pt-4 border-t border-amber-200 dark:border-stone-800 flex items-center justify-between text-[10px] text-stone-500">
+                  <div className="mt-6 pt-4 border-t border-amber-200 flex items-center justify-between text-[10px] text-stone-600">
                     <span>Central Reception Secretariat Seal: <strong>VERIFIED & GRANTED</strong></span>
-                    <span className="font-mono">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
+                    <span className="font-mono font-semibold">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
                   </div>
                 </div>
               </div>
@@ -455,7 +455,7 @@ export const StatusCheckView: React.FC = () => {
                 {/* Printable Acknowledgement Card */}
                 <div
                   id="delegate-pending-ack-card"
-                  className="printable-card-target p-6 rounded-2xl bg-amber-50/50 dark:bg-stone-850 border border-amber-300 dark:border-stone-700 space-y-4"
+                  className="printable-card-target p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
                 >
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -465,14 +465,14 @@ export const StatusCheckView: React.FC = () => {
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
                       <div>
-                        <span className="text-[10px] font-mono text-amber-800 dark:text-amber-300 font-bold uppercase block">
+                        <span className="text-[10px] font-mono text-amber-800 font-bold uppercase block">
                           Priti-Lagnik Maha Mahotsav 2026
                         </span>
-                        <h4 className="text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">
+                        <h4 className="text-xl font-bold font-serif-cinzel text-stone-900">
                           APPLICATION ACKNOWLEDGEMENT
                         </h4>
-                        <p className="text-xs text-stone-500">
-                          Ack Ref: <strong className="font-mono text-stone-900 dark:text-stone-100">{delegateRecord.id}</strong>
+                        <p className="text-xs text-stone-600">
+                          Ack Ref: <strong className="font-mono text-stone-900 whitespace-nowrap inline-block shrink-0">{delegateRecord.id}</strong>
                         </p>
                       </div>
                     </div>
@@ -485,35 +485,35 @@ export const StatusCheckView: React.FC = () => {
                           className="w-20 h-24 object-cover rounded-xl border border-amber-300"
                         />
                       ) : (
-                        <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-400 text-[10px]">
+                        <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-400 text-[10px] bg-white">
                           (Blank)
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2 border-t border-amber-200 dark:border-stone-700">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2 border-t border-amber-200">
                     <div>
-                      <span className="text-stone-400 text-[10px] block">Contact</span>
-                      <span className="font-semibold text-stone-800 dark:text-stone-200">{delegateRecord.phone}</span>
+                      <span className="text-stone-500 text-[10px] block font-medium">Contact</span>
+                      <span className="font-bold text-stone-900">{delegateRecord.phone}</span>
                     </div>
                     <div>
-                      <span className="text-stone-400 text-[10px] block">Delegation Breakdown</span>
-                      <span className="font-semibold text-stone-800 dark:text-stone-200">
+                      <span className="text-stone-500 text-[10px] block font-medium">Delegation Breakdown</span>
+                      <span className="font-bold text-stone-900">
                         {delegateRecord.maleCount || 0}M / {delegateRecord.femaleCount || 0}F / {delegateRecord.childrenCount || 0}C
                       </span>
                     </div>
                     <div>
-                      <span className="text-stone-400 text-[10px] block">Arrival</span>
-                      <span className="font-semibold text-stone-800 dark:text-stone-200">{delegateRecord.arrivalDate}</span>
+                      <span className="text-stone-500 text-[10px] block font-medium">Arrival</span>
+                      <span className="font-bold text-stone-900">{delegateRecord.arrivalDate}</span>
                     </div>
                     <div>
-                      <span className="text-stone-400 text-[10px] block">Current Status</span>
-                      <span className="font-bold text-amber-700 dark:text-amber-400 uppercase">Under Review</span>
+                      <span className="text-stone-500 text-[10px] block font-medium">Current Status</span>
+                      <span className="font-bold text-amber-800 uppercase">Under Review</span>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-amber-100/70 dark:bg-stone-800 rounded-xl text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
+                  <div className="p-3 bg-amber-100/80 rounded-xl text-xs text-stone-800 leading-relaxed border border-amber-200">
                     <strong>Attendee Instruction:</strong> Please retain or save this Acknowledgement Slip. The official Registered Card can only be printed after acceptance from the Secretariat.
                   </div>
                 </div>
@@ -623,7 +623,7 @@ export const StatusCheckView: React.FC = () => {
                 {/* Printable Target Windshield Display Pass */}
                 <div
                   id="car-windshield-pass-card"
-                  className="printable-card-target bg-white dark:bg-stone-850 rounded-3xl p-6 sm:p-8 border-4 border-black dark:border-amber-400 shadow-2xl space-y-5"
+                  className="printable-card-target bg-white rounded-3xl p-6 sm:p-8 border-4 border-black shadow-2xl space-y-5 text-stone-900"
                 >
                   {/* VERY BIG VISIBLE CAR PASS BANNER */}
                   <div className="bg-amber-400 text-black py-4 px-4 sm:px-6 rounded-2xl border-4 border-black text-center shadow-lg">
@@ -638,7 +638,7 @@ export const StatusCheckView: React.FC = () => {
                   </div>
 
                   {/* Header info */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b-2 border-black dark:border-stone-700">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b-2 border-black">
                     <div className="flex items-center gap-3">
                       <img
                         src="/src/assets/images/priti_lagnik_logo.webp"
@@ -646,33 +646,35 @@ export const StatusCheckView: React.FC = () => {
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
                       <div>
-                        <h4 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                        <h4 className="text-lg font-serif-cinzel font-bold text-stone-900">
                           West Dangarkuthi, Dotma, Kokrajhar, Assam - 783347
                         </h4>
-                        <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">
+                        <span className="text-xs font-semibold text-amber-800">
                           Main Celebration: 20 December 2026
                         </span>
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <span className="text-[10px] uppercase font-mono text-stone-500 block">Pass Serial</span>
-                      <span className="text-sm font-mono font-bold text-stone-900 dark:text-stone-100">
+                      <span className="text-sm font-mono font-bold text-stone-900 bg-stone-100 px-3 py-1 rounded-lg border border-stone-300 whitespace-nowrap inline-block shrink-0 shadow-sm">
                         {carPassRecord.id}
                       </span>
                     </div>
                   </div>
 
                   {/* Gigantic Vehicle Registration Number Box */}
-                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-100 dark:bg-stone-800 border-3 border-black dark:border-amber-400 text-center shadow-sm">
-                    <span className="text-xs font-bold uppercase tracking-widest text-stone-700 dark:text-stone-300 block mb-1">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-100 border-3 border-black text-center shadow-sm">
+                    <span className="text-xs font-bold uppercase tracking-widest text-stone-800 block mb-1">
                       Authorized Vehicle Registration Plate
                     </span>
-                    <div className="text-3xl sm:text-5xl font-mono font-black tracking-widest text-stone-950 dark:text-amber-300 uppercase">
+                    <div className="text-3xl sm:text-5xl font-mono font-black tracking-widest text-black uppercase whitespace-nowrap inline-block">
                       {carPassRecord.carRegistrationNumber}
                     </div>
-                    <div className="mt-2 inline-block px-4 py-1.5 rounded-full bg-emerald-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide">
-                      📍 ALLOCATED PARKING: {carPassRecord.allocatedZone || 'GATE 1 MAIN CORRIDOR'}
+                    <div className="mt-2 block">
+                      <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-700 text-white text-xs sm:text-sm font-bold uppercase tracking-wide shadow-sm">
+                        📍 ALLOCATED PARKING: {carPassRecord.allocatedZone || 'GATE 1 MAIN CORRIDOR'}
+                      </span>
                     </div>
                   </div>
 
@@ -681,25 +683,25 @@ export const StatusCheckView: React.FC = () => {
                     {/* Left: Details */}
                     <div className="md:col-span-6 space-y-2 text-xs">
                       <div>
-                        <span className="text-stone-400 text-[10px] block uppercase font-bold">Owner / Delegation Name</span>
-                        <span className="font-bold text-stone-900 dark:text-stone-100 text-base font-serif-cinzel">
+                        <span className="text-stone-500 text-[10px] block uppercase font-bold">Owner / Delegation Name</span>
+                        <span className="font-bold text-stone-900 text-base font-serif-cinzel">
                           {carPassRecord.name}
                         </span>
                       </div>
                       <div>
-                        <span className="text-stone-400 text-[10px] block uppercase font-bold">Origin Address</span>
-                        <span className="font-medium text-stone-800 dark:text-stone-200">
+                        <span className="text-stone-500 text-[10px] block uppercase font-bold">Origin Address</span>
+                        <span className="font-semibold text-stone-800">
                           {carPassRecord.address}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 pt-1">
                         <div>
-                          <span className="text-stone-400 text-[10px] block uppercase font-bold">Driver Name</span>
-                          <span className="font-semibold text-stone-800 dark:text-stone-200">{carPassRecord.driverName}</span>
+                          <span className="text-stone-500 text-[10px] block uppercase font-bold">Driver Name</span>
+                          <span className="font-bold text-stone-900">{carPassRecord.driverName}</span>
                         </div>
                         <div>
-                          <span className="text-stone-400 text-[10px] block uppercase font-bold">Contact Number</span>
-                          <span className="font-semibold text-stone-800 dark:text-stone-200">{carPassRecord.contactNumber}</span>
+                          <span className="text-stone-500 text-[10px] block uppercase font-bold">Contact Number</span>
+                          <span className="font-bold text-stone-900">{carPassRecord.contactNumber}</span>
                         </div>
                       </div>
                     </div>
@@ -720,7 +722,7 @@ export const StatusCheckView: React.FC = () => {
                           <span className="text-[9px] text-stone-400 mt-0.5">(Blank)</span>
                         </div>
                       )}
-                      <span className="text-[9px] text-stone-500 mt-1 uppercase font-semibold">
+                      <span className="text-[9px] text-stone-600 mt-1 uppercase font-bold">
                         Driver / Vehicle
                       </span>
                     </div>
@@ -734,23 +736,23 @@ export const StatusCheckView: React.FC = () => {
                             alt="Vehicle Pass QR Code"
                             className="w-28 h-28 object-contain"
                           />
-                          <span className="text-[9px] font-mono font-bold text-black mt-1">
+                          <span className="text-[9px] font-mono font-bold text-black mt-1 whitespace-nowrap">
                             {carPassRecord.id}
                           </span>
                         </div>
                       ) : (
-                        <div className="w-28 h-28 bg-stone-100 rounded-xl flex items-center justify-center text-stone-400">
+                        <div className="w-28 h-28 bg-stone-100 rounded-xl flex items-center justify-center text-stone-400 border border-stone-300">
                           <QrCode className="w-8 h-8" />
                         </div>
                       )}
-                      <span className="text-[9px] text-stone-500 mt-1 text-center font-medium">
+                      <span className="text-[9px] text-stone-600 mt-1 text-center font-medium">
                         Scan for Name, Car Reg & Address
                       </span>
                     </div>
                   </div>
 
                   {/* Windshield Display Notice */}
-                  <div className="pt-3 border-t-2 border-black dark:border-stone-700 text-center text-xs font-black text-stone-900 dark:text-stone-100 uppercase tracking-wider bg-stone-100 dark:bg-stone-800 p-2 rounded-xl">
+                  <div className="pt-3 border-t-2 border-black text-center text-xs font-black text-stone-900 uppercase tracking-wider bg-stone-100 p-2.5 rounded-xl border border-stone-300">
                     ⚠️ PLEASE DISPLAY THIS CAR PASS CLEARLY ON THE FRONT WINDSHIELD / DASHBOARD FOR ENTRY AT GATES
                   </div>
                 </div>
@@ -811,7 +813,7 @@ export const StatusCheckView: React.FC = () => {
 
                 <div
                   id="vehicle-pending-ack-card"
-                  className="printable-card-target p-6 rounded-2xl bg-amber-50/50 dark:bg-stone-850 border border-amber-300 dark:border-stone-700 space-y-4 text-stone-900 dark:text-stone-100"
+                  className="printable-card-target p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
                 >
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -821,28 +823,28 @@ export const StatusCheckView: React.FC = () => {
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
                       <div>
-                        <h4 className="text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">
+                        <h4 className="text-xl font-bold font-serif-cinzel text-stone-900">
                           VEHICLE APPLICATION ACKNOWLEDGEMENT
                         </h4>
-                        <p className="text-xs text-stone-600 dark:text-stone-400">
-                          Pass Ref: <strong className="font-mono text-stone-900 dark:text-stone-100">{carPassRecord.id}</strong>
+                        <p className="text-xs text-stone-600">
+                          Pass Ref: <strong className="font-mono text-stone-900 whitespace-nowrap inline-block shrink-0">{carPassRecord.id}</strong>
                         </p>
-                        <p className="text-xs mt-1 text-stone-700 dark:text-stone-300">
-                          Vehicle Plate: <strong className="text-stone-900 dark:text-stone-100">{carPassRecord.carRegistrationNumber}</strong>
+                        <p className="text-xs mt-1 text-stone-700">
+                          Vehicle Plate: <strong className="text-stone-900 font-mono whitespace-nowrap inline-block shrink-0">{carPassRecord.carRegistrationNumber}</strong>
                         </p>
                       </div>
                     </div>
 
                     {carPassRecord.photoUrl ? (
-                      <img src={carPassRecord.photoUrl} alt="Vehicle" className="w-20 h-24 object-cover rounded-xl border border-amber-300 dark:border-stone-700" />
+                      <img src={carPassRecord.photoUrl} alt="Vehicle" className="w-20 h-24 object-cover rounded-xl border border-amber-300" />
                     ) : (
-                      <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 flex items-center justify-center text-stone-400 text-[10px] bg-stone-50/50 dark:bg-stone-800">
+                      <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-400 text-[10px] bg-white">
                         (Blank)
                       </div>
                     )}
                   </div>
 
-                  <div className="p-3 bg-amber-100/70 dark:bg-stone-800 rounded-xl text-xs text-stone-800 dark:text-stone-200 leading-relaxed border border-amber-200 dark:border-stone-700">
+                  <div className="p-3 bg-amber-100/80 rounded-xl text-xs text-stone-800 leading-relaxed border border-amber-200">
                     <strong>Vehicle Notice:</strong> Application is pending review. Your printable Windshield Car Pass card with QR Code and parking bay will unlock once accepted by the Secretariat.
                   </div>
                 </div>

@@ -1932,9 +1932,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             {/* Printable Pass Container */}
             <div
               id="admin-delegate-card-modal"
-              className="printable-card-target bg-gradient-to-br from-amber-50/60 via-white to-amber-50/40 dark:from-stone-900 dark:via-stone-850 dark:to-stone-900 text-stone-900 dark:text-stone-100 rounded-2xl p-6 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-4"
+              className="printable-card-target bg-gradient-to-br from-amber-50/60 via-white to-amber-50/40 text-stone-900 rounded-2xl p-6 border-2 border-amber-400 shadow-lg space-y-4"
             >
-              <div className="flex items-center justify-between border-b-2 border-amber-300 dark:border-stone-700 pb-3">
+              <div className="flex items-center justify-between border-b-2 border-amber-300 pb-3">
                 <div className="flex items-center gap-3">
                   <img
                     src="/src/assets/images/priti_lagnik_logo.webp"
@@ -1942,20 +1942,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     className="w-12 h-12 object-contain rounded-full shadow-sm"
                   />
                   <div>
-                    <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 dark:text-amber-400 font-bold block">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 font-bold block">
                       Priti-Lagnik Maha Mahotsav 2026
                     </span>
-                    <h3 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                    <h3 className="text-xl font-serif-cinzel font-bold text-stone-900">
                       OFFICIAL DELEGATE PASS
                     </h3>
-                    <p className="text-[10px] text-stone-600 dark:text-stone-400">
+                    <p className="text-[10px] text-stone-600">
                       20 December 2026 · West Dangarkuthi, Dotma, Kokrajhar
                     </p>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700">
+                <div className="text-right shrink-0">
+                  <span className="font-mono font-bold text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-300 whitespace-nowrap inline-block shrink-0 shadow-sm">
                     {selectedRecord.id}
                   </span>
                 </div>
@@ -1964,26 +1964,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div className="sm:col-span-6 space-y-2 text-xs">
                   <div>
-                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Delegate Name</span>
-                    <h4 className="text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">{selectedRecord.fullName}</h4>
-                    <p className="text-stone-700 dark:text-stone-300 font-medium">📍 {selectedRecord.city}, {selectedRecord.state}</p>
+                    <span className="text-stone-500 text-[10px] block font-bold uppercase">Delegate Name</span>
+                    <h4 className="text-xl font-bold font-serif-cinzel text-stone-900">{selectedRecord.fullName}</h4>
+                    <p className="text-stone-700 font-medium">📍 {selectedRecord.city}, {selectedRecord.state}</p>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-amber-100/70 dark:bg-stone-800 border border-amber-300 dark:border-stone-700 text-xs">
-                    <span className="text-[10px] font-bold block uppercase text-amber-900 dark:text-amber-300 mb-0.5">Demographic Breakdown:</span>
-                    <span className="font-mono font-bold text-stone-900 dark:text-stone-100">
+                  <div className="p-2.5 rounded-xl bg-amber-100/70 border border-amber-300 text-xs">
+                    <span className="text-[10px] font-bold block uppercase text-amber-900 mb-0.5">Demographic Breakdown:</span>
+                    <span className="font-mono font-bold text-stone-900">
                       {selectedRecord.maleCount || 0} Male / {selectedRecord.femaleCount || 0} Female / {selectedRecord.childrenCount || 0} Children
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2 text-xs pt-1">
                     <div>
-                      <span className="text-stone-500 dark:text-stone-400 block text-[10px]">Contact:</span>
-                      <strong className="text-stone-900 dark:text-stone-100">{selectedRecord.phone}</strong>
+                      <span className="text-stone-500 block text-[10px]">Contact:</span>
+                      <strong className="text-stone-900">{selectedRecord.phone}</strong>
                     </div>
                     <div>
-                      <span className="text-stone-500 dark:text-stone-400 block text-[10px]">Stay:</span>
-                      <strong className="text-stone-900 dark:text-stone-100">
+                      <span className="text-stone-500 block text-[10px]">Stay:</span>
+                      <strong className="text-stone-900">
                         {selectedRecord.needAccommodation ? (selectedRecord.accommodationType?.split(' ')[0] || 'Assigned') : 'Self'}
                       </strong>
                     </div>
@@ -1994,12 +1994,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                   {selectedRecord.photoUrl ? (
                     <img src={selectedRecord.photoUrl} alt="Delegate" className="w-24 h-28 object-cover rounded-xl border-2 border-amber-400 shadow-sm" />
                   ) : (
-                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 flex flex-col items-center justify-center text-[10px] text-stone-400 bg-stone-50/50 dark:bg-stone-800">
+                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-300 flex flex-col items-center justify-center text-[10px] text-stone-400 bg-stone-50">
                       <span>Photo</span>
                       <span className="text-[9px]">(Blank)</span>
                     </div>
                   )}
-                  <span className="text-[9px] uppercase font-bold text-stone-500 mt-1">Photo</span>
+                  <span className="text-[9px] uppercase font-bold text-stone-600 mt-1">Photo</span>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-col items-center">
@@ -2008,11 +2008,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       <img src={selectedDelegateQr} alt="QR Code" className="w-24 h-24 object-contain" />
                     </div>
                   ) : (
-                    <div className="w-24 h-24 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center text-[9px] text-stone-400">
+                    <div className="w-24 h-24 bg-stone-100 rounded-xl flex items-center justify-center text-[9px] text-stone-400 border border-stone-200">
                       QR on Accept
                     </div>
                   )}
-                  <span className="text-[8px] font-mono text-center text-stone-500 mt-1">Name/Address/Phone</span>
+                  <span className="text-[8px] font-mono text-center text-stone-600 mt-1">Name/Address/Phone</span>
                 </div>
               </div>
             </div>
@@ -2121,7 +2121,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             {/* Printable Target Windshield Display Pass */}
             <div
               id="admin-car-pass-modal"
-              className="printable-card-target bg-white dark:bg-stone-900 rounded-3xl p-6 border-4 border-black dark:border-amber-400 shadow-xl space-y-4 text-stone-900 dark:text-stone-100"
+              className="printable-card-target bg-white rounded-3xl p-6 border-4 border-black shadow-xl space-y-4 text-stone-900"
             >
               {/* VERY BIG VISIBLE CAR PASS BANNER */}
               <div className="bg-amber-400 text-black py-3 px-4 rounded-xl border-3 border-black text-center shadow-md">
@@ -2135,15 +2135,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
               </div>
 
+              {/* Header and Pass Serial */}
+              <div className="flex items-center justify-between border-b-2 border-black pb-2">
+                <span className="text-[11px] font-bold uppercase text-stone-600">Official Windshield Credential</span>
+                <div className="text-right shrink-0">
+                  <span className="font-mono font-bold text-xs text-stone-900 bg-stone-100 px-2.5 py-1 rounded-lg border border-stone-300 whitespace-nowrap inline-block shrink-0 shadow-sm">
+                    {selectedCarPass.id}
+                  </span>
+                </div>
+              </div>
+
               {/* Big Car Plate */}
-              <div className="p-3 bg-amber-100 dark:bg-stone-800 rounded-xl border-2 border-black dark:border-amber-400 text-center">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 block">
+              <div className="p-3 bg-amber-100 rounded-xl border-2 border-black text-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-700 block">
                   Authorized Vehicle Plate
                 </span>
-                <div className="text-3xl sm:text-4xl font-mono font-black tracking-widest text-black dark:text-amber-300 uppercase">
+                <div className="text-3xl sm:text-4xl font-mono font-black tracking-widest text-black uppercase whitespace-nowrap inline-block">
                   {selectedCarPass.carRegistrationNumber}
                 </div>
-                <div className="text-xs font-bold text-emerald-800 dark:text-emerald-400 mt-1 uppercase">
+                <div className="text-xs font-bold text-emerald-800 mt-1 uppercase">
                   📍 Parking Zone: {selectedCarPass.allocatedZone || parkingZoneInput}
                 </div>
               </div>
@@ -2151,29 +2161,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center text-xs">
                 <div className="sm:col-span-6 space-y-2">
                   <div>
-                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Owner / Delegation:</span>
-                    <strong className="text-base text-stone-900 dark:text-stone-100 font-serif-cinzel">{selectedCarPass.name}</strong>
+                    <span className="text-stone-500 text-[10px] block font-bold uppercase">Owner / Delegation:</span>
+                    <strong className="text-base text-stone-900 font-serif-cinzel">{selectedCarPass.name}</strong>
                   </div>
                   <div>
-                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Origin Address:</span>
-                    <span className="text-stone-800 dark:text-stone-200 font-medium">{selectedCarPass.address}</span>
+                    <span className="text-stone-500 text-[10px] block font-bold uppercase">Origin Address:</span>
+                    <span className="text-stone-800 font-medium">{selectedCarPass.address}</span>
                   </div>
                   <div>
-                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Driver Details:</span>
-                    <span className="text-stone-800 dark:text-stone-200 font-semibold">{selectedCarPass.driverName} ({selectedCarPass.driverPhone || selectedCarPass.contactNumber})</span>
+                    <span className="text-stone-500 text-[10px] block font-bold uppercase">Driver Details:</span>
+                    <span className="text-stone-800 font-semibold">{selectedCarPass.driverName} ({selectedCarPass.driverPhone || selectedCarPass.contactNumber})</span>
                   </div>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-col items-center">
                   {selectedCarPass.photoUrl ? (
-                    <img src={selectedCarPass.photoUrl} alt="Vehicle" className="w-24 h-28 object-cover rounded-xl border-2 border-black dark:border-amber-400 shadow-sm" />
+                    <img src={selectedCarPass.photoUrl} alt="Vehicle" className="w-24 h-28 object-cover rounded-xl border-2 border-black shadow-sm" />
                   ) : (
-                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-400 dark:border-stone-600 flex flex-col items-center justify-center text-stone-400 bg-stone-50/50 dark:bg-stone-800 text-[10px]">
+                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-400 flex flex-col items-center justify-center text-stone-400 bg-stone-50 text-[10px]">
                       <span>Photo</span>
                       <span className="text-[9px]">(Blank)</span>
                     </div>
                   )}
-                  <span className="text-[9px] uppercase font-bold text-stone-500 mt-1">Photo</span>
+                  <span className="text-[9px] uppercase font-bold text-stone-600 mt-1">Photo</span>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-col items-center">
@@ -2182,15 +2192,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       <img src={selectedCarQr} alt="QR Code" className="w-24 h-24 object-contain" />
                     </div>
                   ) : (
-                    <div className="w-24 h-24 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center text-[10px] text-stone-400">
+                    <div className="w-24 h-24 bg-stone-100 rounded-xl flex items-center justify-center text-[10px] text-stone-400 border border-stone-300">
                       QR on Grant
                     </div>
                   )}
-                  <span className="text-[8px] font-mono text-center text-stone-500 mt-1">Name/Plate/Address</span>
+                  <span className="text-[8px] font-mono text-center text-stone-600 mt-1">Name/Plate/Address</span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t-2 border-black dark:border-stone-700 text-center text-[10px] font-black uppercase tracking-wider text-black dark:text-amber-400 bg-stone-100 dark:bg-stone-800 p-2 rounded-xl">
+              <div className="pt-2 border-t-2 border-black text-center text-[10px] font-black uppercase tracking-wider text-black bg-stone-100 p-2 rounded-xl border border-stone-300">
                 DISPLAY CLEARLY ON WINDSHIELD / DASHBOARD FOR CHECKPOINT ENTRY
               </div>
             </div>

@@ -42,30 +42,79 @@ export async function saveRegistration(record: RegistrationRecord): Promise<void
 }
 
 export async function fetchAllRegistrations(): Promise<RegistrationRecord[]> {
+  const mergedMap = new Map<string, RegistrationRecord>();
+
+  // 1. Fetch from primary 'registrations' collection in Firestore
   try {
     const colRef = collection(db, REGISTRATIONS_COL);
     const snap = await getDocs(colRef);
-    if (!snap.empty) {
-      const records: RegistrationRecord[] = [];
-      snap.forEach(docSnap => {
-        records.push(docSnap.data() as RegistrationRecord);
-      });
-      // Merge with local storage
-      const local = getLocalRegistrations();
-      const mergedMap = new Map<string, RegistrationRecord>();
-      records.forEach(r => mergedMap.set(r.id, r));
-      local.forEach(r => {
-        if (!mergedMap.has(r.id)) mergedMap.set(r.id, r);
-      });
-      const mergedList = Array.from(mergedMap.values());
-      localStorage.setItem('pritilagnik_registrations', JSON.stringify(mergedList));
-      return mergedList;
-    }
+    snap.forEach(docSnap => {
+      const data = docSnap.data() as RegistrationRecord;
+      const id = data.id || docSnap.id;
+      mergedMap.set(id, { ...data, id });
+    });
   } catch (error) {
-    console.warn('Fetching registrations from Firestore failed, using local storage cache:', error);
+    console.warn('Fetching registrations from Firestore failed, checking local and fallbacks:', error);
   }
 
-  return getLocalRegistrations();
+  // 2. Also check alternative collections ('participants', 'delegates') if any records were stored there
+  const altCollections = ['participants', 'delegates'];
+  for (const altCol of altCollections) {
+    try {
+      const altSnap = await getDocs(collection(db, altCol));
+      altSnap.forEach(docSnap => {
+        const data = docSnap.data() as any;
+        const id = data.id || docSnap.id;
+        if (!mergedMap.has(id)) {
+          mergedMap.set(id, {
+            id,
+            fullName: data.fullName || data.name || 'Registered Delegate',
+            phone: data.phone || data.contactNumber || '',
+            email: data.email || '',
+            city: data.city || 'Dotma',
+            state: data.state || 'Assam',
+            delegationSize: Number(data.delegationSize) || 1,
+            maleCount: Number(data.maleCount) || 0,
+            femaleCount: Number(data.femaleCount) || 0,
+            childrenCount: Number(data.childrenCount) || 0,
+            arrivalDate: data.arrivalDate || '2026-12-20',
+            departureDate: data.departureDate || '2026-12-21',
+            needAccommodation: data.needAccommodation ?? true,
+            accommodationType: data.accommodationType || 'Ashram Dormitory',
+            foodPreference: data.foodPreference || 'Pure Satvik',
+            volunteerInterest: data.volunteerInterest ?? false,
+            photoUrl: data.photoUrl || undefined,
+            status: data.status || 'pending',
+            registeredAt: data.registeredAt || new Date().toISOString()
+          });
+        }
+      });
+    } catch (e) {
+      // Ignore if collection not present
+    }
+  }
+
+  // 3. Merge with local storage cache
+  const local = getLocalRegistrations();
+  local.forEach(r => {
+    if (!mergedMap.has(r.id)) {
+      mergedMap.set(r.id, r);
+    }
+  });
+
+  const mergedList = Array.from(mergedMap.values());
+  // Sort descending by registration timestamp
+  mergedList.sort((a, b) => {
+    const dateA = new Date(a.registeredAt || 0).getTime();
+    const dateB = new Date(b.registeredAt || 0).getTime();
+    return dateB - dateA;
+  });
+
+  try {
+    localStorage.setItem('pritilagnik_registrations', JSON.stringify(mergedList));
+  } catch (e) {}
+
+  return mergedList;
 }
 
 export async function getRegistrationById(id: string): Promise<RegistrationRecord | null> {
@@ -184,29 +233,77 @@ export async function saveCarPass(record: CarPassRecord): Promise<void> {
 }
 
 export async function fetchAllCarPasses(): Promise<CarPassRecord[]> {
+  const mergedMap = new Map<string, CarPassRecord>();
+
+  // 1. Fetch primary car_passes collection
   try {
     const colRef = collection(db, CAR_PASSES_COL);
     const snap = await getDocs(colRef);
-    if (!snap.empty) {
-      const records: CarPassRecord[] = [];
-      snap.forEach(docSnap => {
-        records.push(docSnap.data() as CarPassRecord);
+    snap.forEach(docSnap => {
+      const data = docSnap.data() as any;
+      const id = data.id || docSnap.id;
+      mergedMap.set(id, {
+        ...data,
+        id,
+        status: data.status || 'pending',
+        carRegistrationNumber: data.carRegistrationNumber || data.vehicleNumber || 'CAR-PASS',
+        registeredAt: data.registeredAt || new Date().toISOString()
       });
-      const local = getLocalCarPasses();
-      const mergedMap = new Map<string, CarPassRecord>();
-      records.forEach(r => mergedMap.set(r.id, r));
-      local.forEach(r => {
-        if (!mergedMap.has(r.id)) mergedMap.set(r.id, r);
-      });
-      const mergedList = Array.from(mergedMap.values());
-      localStorage.setItem('pritilagnik_car_passes', JSON.stringify(mergedList));
-      return mergedList;
-    }
+    });
   } catch (error) {
-    console.warn('Fetching car passes from Firestore failed, using local storage cache:', error);
+    console.warn('Fetching car_passes from Firestore warning:', error);
   }
 
-  return getLocalCarPasses();
+  // 2. Also check alternative collections ('carpasses', 'vehicles') for any past records
+  const altVehicleCollections = ['carpasses', 'vehicles'];
+  for (const altCol of altVehicleCollections) {
+    try {
+      const altSnap = await getDocs(collection(db, altCol));
+      altSnap.forEach(docSnap => {
+        const data = docSnap.data() as any;
+        const id = data.id || docSnap.id;
+        if (!mergedMap.has(id)) {
+          mergedMap.set(id, {
+            id,
+            name: data.name || data.ownerName || 'Vehicle Owner',
+            carRegistrationNumber: data.carRegistrationNumber || data.vehicleNumber || id,
+            vehicleType: data.vehicleType || 'Car / Sedan / SUV',
+            driverName: data.driverName || data.ownerName || data.name || 'Designated Driver',
+            driverPhone: data.driverPhone || data.contactNumber || data.phone || '',
+            contactNumber: data.contactNumber || data.phone || '',
+            address: data.address || 'Assam, India',
+            photoUrl: data.photoUrl || data.photoThumbnail || undefined,
+            status: data.status || 'pending',
+            allocatedZone: data.allocatedZone || 'Zone C - Standard Parking',
+            registeredAt: data.registeredAt || new Date().toISOString()
+          });
+        }
+      });
+    } catch (e) {
+      // Ignore if alt collection not present
+    }
+  }
+
+  // 3. Merge with local storage cache
+  const local = getLocalCarPasses();
+  local.forEach(r => {
+    if (!mergedMap.has(r.id)) {
+      mergedMap.set(r.id, r);
+    }
+  });
+
+  const mergedList = Array.from(mergedMap.values());
+  mergedList.sort((a, b) => {
+    const dateA = new Date(a.registeredAt || 0).getTime();
+    const dateB = new Date(b.registeredAt || 0).getTime();
+    return dateB - dateA;
+  });
+
+  try {
+    localStorage.setItem('pritilagnik_car_passes', JSON.stringify(mergedList));
+  } catch (e) {}
+
+  return mergedList;
 }
 
 export async function getCarPassById(idOrVehicle: string): Promise<CarPassRecord | null> {

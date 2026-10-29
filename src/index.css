@@ -37,24 +37,39 @@
 }
 
 @media print {
-  header, footer, nav, .no-print, button, input {
+  /* Hide non-printable UI */
+  header, footer, nav, .no-print, button, input, select, textarea, form {
     display: none !important;
   }
 
-  body {
-    background: white !important;
-    color: black !important;
+  /* Reset document for clean light print */
+  html, body {
+    background: #ffffff !important;
+    color: #1c1917 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
+  /* Printable target container card */
   .printable-card-target {
     display: block !important;
     position: relative !important;
     width: 100% !important;
-    max-width: 600px !important;
-    margin: 20px auto !important;
+    max-width: 680px !important;
+    margin: 15px auto !important;
     padding: 24px !important;
+    background: #ffffff !important;
+    color: #1c1917 !important;
     box-shadow: none !important;
-    border: 2px solid #000 !important;
+    border: 2px solid #1c1917 !important;
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .printable-card-target * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }
