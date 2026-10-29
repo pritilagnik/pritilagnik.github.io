@@ -62,7 +62,9 @@ import {
 } from '../services/registrationService';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
-import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
+import { exportElementAsPdf, exportElementAsImage, exportBulkDelegateCardsPdf, BulkExportProgress } from '../utils/exportCardUtils';
+import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
+import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
 interface AdminDashboardProps {
   onClose?: () => void;
@@ -133,6 +135,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [isExporting, setIsExporting] = useState(false);
+  const [isBulkExporting, setIsBulkExporting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<BulkExportProgress | null>(null);
+  const bulkCancelRef = React.useRef({ cancelled: false });
 
   // Load all data on mount or auth change
   useEffect(() => {
@@ -552,6 +557,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     document.body.removeChild(link);
   };
 
+  const handleBulkExportDelegatePdfs = async () => {
+    if (filteredRegistrations.length === 0) {
+      alert('No delegate records match the current filter.');
+      return;
+    }
+
+    setIsBulkExporting(true);
+    bulkCancelRef.current = { cancelled: false };
+    try {
+      await exportBulkDelegateCardsPdf(
+        filteredRegistrations,
+        (progress) => {
+          setBulkProgress(progress);
+        },
+        bulkCancelRef.current
+      );
+    } catch (err: any) {
+      if (bulkCancelRef.current.cancelled) {
+        console.log('Bulk export cancelled by administrator.');
+      } else {
+        console.error('Failed to export bulk delegate cards:', err);
+        alert('Could not complete bulk export: ' + (err?.message || 'Unknown error'));
+      }
+    } finally {
+      setIsBulkExporting(false);
+      setBulkProgress(null);
+    }
+  };
+
   const exportCarPassesCSV = () => {
     if (carPasses.length === 0) return;
     const headers = [
@@ -707,14 +741,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
           <div className="flex flex-wrap items-center gap-2">
             {activeTab === 'delegates' && (
-              <button
-                onClick={exportDelegatesCSV}
-                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm transition-colors"
-                title="Export all delegates to Excel/CSV"
-              >
-                <FileSpreadsheet className="w-4 h-4" />
-                <span>Export Delegates CSV</span>
-              </button>
+              <>
+                <button
+                  disabled={isBulkExporting || filteredRegistrations.length === 0}
+                  onClick={handleBulkExportDelegatePdfs}
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors disabled:opacity-50"
+                  title="Download a single combined PDF with all filtered registered delegate cards for bulk printing"
+                >
+                  <FileDown className="w-4 h-4 text-white" />
+                  <span>
+                    {isBulkExporting
+                      ? `Compiling Bulk PDF (${bulkProgress?.current || 0}/${bulkProgress?.total || 0})...`
+                      : `Bulk Print Filtered Cards PDF (${filteredRegistrations.length})`}
+                  </span>
+                </button>
+
+                <button
+                  onClick={exportDelegatesCSV}
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm transition-colors"
+                  title="Export all delegates to Excel/CSV"
+                >
+                  <FileSpreadsheet className="w-4 h-4" />
+                  <span>Export Delegates CSV</span>
+                </button>
+              </>
             )}
 
             {activeTab === 'cars' && (
@@ -889,15 +939,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 ))}
               </div>
 
-              <div className="w-full md:w-80 relative">
-                <input
-                  type="text"
-                  placeholder="Search name, phone, city, ID..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                />
-                <Search className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
+              <div className="flex items-center gap-2 w-full md:w-auto">
+                <div className="w-full md:w-72 relative">
+                  <input
+                    type="text"
+                    placeholder="Search name, phone, city, ID..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                  <Search className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
+                </div>
+                <button
+                  disabled={isBulkExporting || filteredRegistrations.length === 0}
+                  onClick={handleBulkExportDelegatePdfs}
+                  className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors disabled:opacity-50 whitespace-nowrap"
+                  title="Download single combined PDF with all filtered delegate cards for bulk printing"
+                >
+                  <FileDown className="w-4 h-4" />
+                  <span>Bulk PDF ({filteredRegistrations.length})</span>
+                </button>
               </div>
             </div>
 
@@ -1937,7 +1998,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="flex items-center justify-between border-b-2 border-amber-300 pb-3">
                 <div className="flex items-center gap-3">
                   <img
-                    src="/src/assets/images/priti_lagnik_logo.webp"
+                    src={pritiLogo}
                     alt="Logo"
                     className="w-12 h-12 object-contain rounded-full shadow-sm"
                   />
@@ -2015,6 +2076,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                   <span className="text-[8px] font-mono text-center text-stone-600 mt-1">Name/Address/Phone</span>
                 </div>
               </div>
+
+              {/* Card Security Footer with scanswift seal between Verified & Granted and Issued */}
+              <div className="mt-4 pt-3 border-t border-amber-200 flex items-center justify-between text-[10px] text-stone-600">
+                <span>Central Reception Secretariat Seal: <strong>VERIFIED & GRANTED</strong></span>
+                <div className="flex items-center justify-center px-2">
+                  <img
+                    src={scanswiftIcon}
+                    alt="Verification Seal"
+                    className="w-5 h-5 rounded object-contain opacity-85 shadow-xs border border-amber-300"
+                  />
+                </div>
+                <span className="font-mono font-semibold">Issued: {selectedRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
+              </div>
             </div>
 
             {/* Modal Actions */}
@@ -2053,13 +2127,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-delegate-card-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsPdf(el, `Delegate_Pass_${selectedRecord.id}.pdf`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsPdf(el, `Delegate_Pass_${selectedRecord.id}.pdf`);
+                    } catch (err) {
+                      console.error('Failed to export delegate PDF:', err);
+                      alert('Could not export PDF. Please try printing or saving as image.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-900 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <FileDown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as PDF</span>
+                  <FileDown className="w-4 h-4 text-amber-400" />
+                  <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                 </button>
 
                 <button
@@ -2068,13 +2148,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-delegate-card-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsImage(el, `Delegate_Pass_${selectedRecord.id}.png`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsImage(el, `Delegate_Pass_${selectedRecord.id}.png`);
+                    } catch (err) {
+                      console.error('Failed to export delegate image:', err);
+                      alert('Could not export image. Please try saving as PDF or printing.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-800 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as Image</span>
+                  <ImageIcon className="w-4 h-4 text-white" />
+                  <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                 </button>
               </div>
             </div>
@@ -2249,13 +2335,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-car-pass-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsPdf(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.pdf`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsPdf(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.pdf`);
+                    } catch (err) {
+                      console.error('Failed to export vehicle pass PDF:', err);
+                      alert('Could not export PDF. Please try printing or saving as image.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-900 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <FileDown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as PDF</span>
+                  <FileDown className="w-4 h-4 text-amber-400" />
+                  <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                 </button>
 
                 <button
@@ -2264,15 +2356,79 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-car-pass-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsImage(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.png`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsImage(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.png`);
+                    } catch (err) {
+                      console.error('Failed to export vehicle pass image:', err);
+                      alert('Could not export image. Please try saving as PDF or printing.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-800 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as Image</span>
+                  <ImageIcon className="w-4 h-4 text-white" />
+                  <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* BULK EXPORT PROGRESS MODAL */}
+      {isBulkExporting && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-stone-900 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl border border-amber-400 dark:border-amber-600">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+                <FileDown className="w-6 h-6 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  Compiling Bulk Delegate Cards PDF
+                </h3>
+                <p className="text-xs text-stone-500">
+                  Generating high-resolution official pass cards for all filtered delegates...
+                </p>
+              </div>
+            </div>
+
+            {bulkProgress && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-semibold">
+                  <span className="text-stone-700 dark:text-stone-300 truncate max-w-[200px]">
+                    Card: {bulkProgress.currentName}
+                  </span>
+                  <span className="font-mono text-amber-600">
+                    {bulkProgress.current} / {bulkProgress.total} ({Math.round((bulkProgress.current / bulkProgress.total) * 100)}%)
+                  </span>
+                </div>
+
+                <div className="w-full bg-stone-100 dark:bg-stone-800 rounded-full h-3 overflow-hidden border border-stone-200 dark:border-stone-700">
+                  <div
+                    className="bg-gradient-to-r from-amber-500 to-amber-600 h-full transition-all duration-150"
+                    style={{ width: `${Math.round((bulkProgress.current / bulkProgress.total) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-[11px] text-stone-400">
+                Please wait while cards &amp; QR codes are compiled
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  bulkCancelRef.current.cancelled = true;
+                  setIsBulkExporting(false);
+                  setBulkProgress(null);
+                }}
+                className="px-3.5 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 text-stone-600 dark:text-stone-400 text-xs hover:bg-stone-100 dark:hover:bg-stone-800 font-medium"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ import { RegistrationRecord } from '../types';
 import { saveRegistration } from '../services/registrationService';
 import { CarPassForm } from './CarPassForm';
 import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
+import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
@@ -293,7 +294,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b border-amber-200 dark:border-stone-700">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Priti Lagnik Logo"
                         className="w-12 h-12 rounded-full object-contain p-0.5 bg-amber-500/10 border border-amber-400"
                       />

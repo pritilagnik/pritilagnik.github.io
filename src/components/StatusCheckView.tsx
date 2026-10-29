@@ -20,6 +20,8 @@ import { RegistrationRecord, CarPassRecord } from '../types';
 import { getRegistrationById, getCarPassById } from '../services/registrationService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
 import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
+import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
+import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
 export const StatusCheckView: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -221,13 +223,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('delegate-official-pass-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsPdf(el, `Delegate_Pass_${delegateRecord.id}.pdf`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsPdf(el, `Delegate_Pass_${delegateRecord.id}.pdf`);
+                        } catch (err) {
+                          console.error('Delegate PDF export failed:', err);
+                          alert('Failed to export PDF. Please try saving as image or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
                     >
                       <FileDown className="w-4 h-4 text-amber-400" />
-                      <span>{isExporting ? 'Exporting...' : 'Save as PDF'}</span>
+                      <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                     </button>
 
                     <button
@@ -236,13 +244,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('delegate-official-pass-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsImage(el, `Delegate_Pass_${delegateRecord.id}.png`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsImage(el, `Delegate_Pass_${delegateRecord.id}.png`);
+                        } catch (err) {
+                          console.error('Delegate Image export failed:', err);
+                          alert('Failed to export image. Please try saving as PDF or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
                     >
-                      <ImageIcon className="w-4 h-4 text-amber-400" />
-                      <span>Save as Image</span>
+                      <ImageIcon className="w-4 h-4 text-white" />
+                      <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                     </button>
                   </div>
                 </div>
@@ -256,7 +270,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b-2 border-amber-300">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Priti Lagnik Logo"
                         className="w-14 h-14 object-contain rounded-full shadow-sm"
                       />
@@ -394,6 +408,13 @@ export const StatusCheckView: React.FC = () => {
                   {/* Card Security Footer */}
                   <div className="mt-6 pt-4 border-t border-amber-200 flex items-center justify-between text-[10px] text-stone-600">
                     <span>Central Reception Secretariat Seal: <strong>VERIFIED & GRANTED</strong></span>
+                    <div className="flex items-center justify-center px-2">
+                      <img
+                        src={scanswiftIcon}
+                        alt="Verification Seal"
+                        className="w-5 h-5 rounded object-contain opacity-85 shadow-xs border border-amber-300"
+                      />
+                    </div>
                     <span className="font-mono font-semibold">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
                   </div>
                 </div>
@@ -426,13 +447,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('delegate-pending-ack-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsPdf(el, `Delegate_Ack_${delegateRecord.id}.pdf`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsPdf(el, `Delegate_Ack_${delegateRecord.id}.pdf`);
+                        } catch (err) {
+                          console.error('Delegate Ack PDF export failed:', err);
+                          alert('Failed to export PDF. Please try saving as image or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white font-semibold text-xs transition-colors shadow-sm disabled:opacity-50"
                     >
                       <FileDown className="w-4 h-4 text-amber-400" />
-                      <span>Save as PDF</span>
+                      <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                     </button>
 
                     <button
@@ -441,13 +468,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('delegate-pending-ack-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsImage(el, `Delegate_Ack_${delegateRecord.id}.png`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsImage(el, `Delegate_Ack_${delegateRecord.id}.png`);
+                        } catch (err) {
+                          console.error('Delegate Ack Image export failed:', err);
+                          alert('Failed to export image. Please try saving as PDF or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-semibold text-xs transition-colors shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition-colors shadow-sm disabled:opacity-50"
                     >
-                      <ImageIcon className="w-4 h-4 text-amber-400" />
-                      <span>Save as Image</span>
+                      <ImageIcon className="w-4 h-4 text-white" />
+                      <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                     </button>
                   </div>
                 </div>
@@ -460,7 +493,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
@@ -594,13 +627,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('car-windshield-pass-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsPdf(el, `Car_Pass_${carPassRecord.carRegistrationNumber}.pdf`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsPdf(el, `Car_Pass_${carPassRecord.carRegistrationNumber}.pdf`);
+                        } catch (err) {
+                          console.error('Car Pass PDF export failed:', err);
+                          alert('Failed to export PDF. Please try saving as image or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
                     >
                       <FileDown className="w-4 h-4 text-amber-400" />
-                      <span>Save as PDF</span>
+                      <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                     </button>
 
                     <button
@@ -609,13 +648,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('car-windshield-pass-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsImage(el, `Car_Pass_${carPassRecord.carRegistrationNumber}.png`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsImage(el, `Car_Pass_${carPassRecord.carRegistrationNumber}.png`);
+                        } catch (err) {
+                          console.error('Car Pass Image export failed:', err);
+                          alert('Failed to export image. Please try saving as PDF or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm disabled:opacity-50"
                     >
-                      <ImageIcon className="w-4 h-4 text-amber-400" />
-                      <span>Save as Image</span>
+                      <ImageIcon className="w-4 h-4 text-white" />
+                      <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                     </button>
                   </div>
                 </div>
@@ -629,11 +674,11 @@ export const StatusCheckView: React.FC = () => {
                   <div className="bg-amber-400 text-black py-4 px-4 sm:px-6 rounded-2xl border-4 border-black text-center shadow-lg">
                     <div className="text-3xl sm:text-5xl md:text-6xl font-black font-mono tracking-widest uppercase flex items-center justify-center gap-3 sm:gap-6">
                       <Car className="w-8 h-8 sm:w-12 sm:h-12 stroke-[3]" />
-                      <span>*** CAR PASS ***</span>
+                      <span>CAR PASS</span>
                       <Car className="w-8 h-8 sm:w-12 sm:h-12 stroke-[3]" />
                     </div>
                     <div className="text-xs sm:text-sm font-black tracking-widest uppercase mt-1 text-black">
-                      OFFICIAL VEHICLE ENTRY & PARKING PASS · PRITI-LAGNIK MAHA MAHOTSAV 2026
+                      VEHICLE ENTRY & PARKING PASS · PRITI-LAGNIK MAHA MAHOTSAV 2026
                     </div>
                   </div>
 
@@ -641,7 +686,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b-2 border-black">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
@@ -785,13 +830,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('vehicle-pending-ack-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsPdf(el, `Vehicle_Ack_${carPassRecord.carRegistrationNumber}.pdf`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsPdf(el, `Vehicle_Ack_${carPassRecord.carRegistrationNumber}.pdf`);
+                        } catch (err) {
+                          console.error('Vehicle Ack PDF export failed:', err);
+                          alert('Failed to export PDF. Please try saving as image or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 text-white font-semibold text-xs"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 text-white font-semibold text-xs disabled:opacity-50 transition-colors"
                     >
                       <FileDown className="w-4 h-4 text-amber-400" />
-                      <span>Save as PDF</span>
+                      <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                     </button>
 
                     <button
@@ -800,13 +851,19 @@ export const StatusCheckView: React.FC = () => {
                         const el = document.getElementById('vehicle-pending-ack-card');
                         if (!el) return;
                         setIsExporting(true);
-                        await exportElementAsImage(el, `Vehicle_Ack_${carPassRecord.carRegistrationNumber}.png`);
-                        setIsExporting(false);
+                        try {
+                          await exportElementAsImage(el, `Vehicle_Ack_${carPassRecord.carRegistrationNumber}.png`);
+                        } catch (err) {
+                          console.error('Vehicle Ack Image export failed:', err);
+                          alert('Failed to export image. Please try saving as PDF or printing.');
+                        } finally {
+                          setIsExporting(false);
+                        }
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-800 text-white font-semibold text-xs"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs disabled:opacity-50 transition-colors"
                     >
-                      <ImageIcon className="w-4 h-4 text-amber-400" />
-                      <span>Save as Image</span>
+                      <ImageIcon className="w-4 h-4 text-white" />
+                      <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                     </button>
                   </div>
                 </div>
@@ -818,7 +875,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
