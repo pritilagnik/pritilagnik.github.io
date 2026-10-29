@@ -7,6 +7,15 @@ export default defineConfig(() => {
   return {
     base: process.env.VITE_BASE_PATH || './',
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          status: path.resolve(__dirname, 'status.html'),
+          admin: path.resolve(__dirname, 'admin.html'),
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
