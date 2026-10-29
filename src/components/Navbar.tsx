@@ -78,7 +78,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header className="sticky top-0 z-50 w-full bg-amber-50/90 dark:bg-stone-900/95 backdrop-blur-md border-b border-amber-200/50 dark:border-stone-800 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3 sm:gap-4 md:gap-8">
+        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4 md:gap-8">
           {/* Zone 1: Brand Wordmark with Real Priti Lagnik Logo */}
           <button
             onClick={() => handleNavClick('home')}
@@ -201,11 +201,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="relative shrink-0" ref={langDropdownRef}>
               <button
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="px-2.5 py-1 text-xs font-bold rounded-lg border border-amber-300 dark:border-stone-700 bg-amber-100/70 dark:bg-stone-800 text-stone-800 dark:text-stone-200 hover:bg-amber-200 dark:hover:bg-stone-700 transition-colors flex items-center gap-1.5 shrink-0"
+                className="px-2 sm:px-2.5 py-1 text-xs font-bold rounded-lg border border-amber-300 dark:border-stone-700 bg-amber-100/70 dark:bg-stone-800 text-stone-800 dark:text-stone-200 hover:bg-amber-200 dark:hover:bg-stone-700 transition-colors flex items-center gap-1.5 shrink-0"
                 title="Select Language / भाषा चुनें"
               >
                 <Globe className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                <span>{availableLanguages.find(l => l.code === lang)?.nativeName || 'हिन्दी'}</span>
+                <span className="hidden sm:inline">{availableLanguages.find(l => l.code === lang)?.nativeName || 'हिन्दी'}</span>
                 <ChevronDown className="w-3 h-3 opacity-60" />
               </button>
 
@@ -263,7 +263,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Check Status Button */}
             <button
               onClick={() => handleNavClick('status-check')}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
+              className={`hidden md:flex px-2.5 py-1.5 rounded-lg text-xs font-semibold items-center gap-1 transition-colors ${
                 currentTab === 'status-check'
                   ? 'bg-amber-600 text-white'
                   : 'text-amber-700 dark:text-amber-400 hover:bg-amber-100/60 dark:hover:bg-stone-800'
@@ -276,7 +276,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Admin Portal Button */}
             <button
               onClick={() => handleNavClick('admin')}
-              className={`px-2 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors ${
+              className={`hidden md:flex px-2 py-1.5 rounded-lg text-xs font-semibold items-center gap-1 transition-colors ${
                 currentTab === 'admin'
                   ? 'bg-stone-900 text-white dark:bg-amber-500 dark:text-stone-950'
                   : 'text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-white hover:bg-stone-100 dark:hover:bg-stone-800'
