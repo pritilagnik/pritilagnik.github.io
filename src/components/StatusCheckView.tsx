@@ -23,6 +23,42 @@ import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUti
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
+const CARD_DESKTOP_WIDTH = 760;
+
+// Renders the card at its fixed desktop width and scales it down to fit narrow screens.
+const CardFrame: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const outerRef = React.useRef<HTMLDivElement>(null);
+  const innerRef = React.useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  const [height, setHeight] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const update = () => {
+      const avail = outerRef.current?.clientWidth ?? CARD_DESKTOP_WIDTH;
+      const next = Math.min(1, avail / CARD_DESKTOP_WIDTH);
+      setScale(next);
+      setHeight((innerRef.current?.offsetHeight ?? 0) * next);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (outerRef.current) ro.observe(outerRef.current);
+    if (innerRef.current) ro.observe(innerRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  return (
+    <div ref={outerRef} className="card-scale-outer w-full" style={{ height }}>
+      <div
+        ref={innerRef}
+        className="card-scale-inner"
+        style={{ width: CARD_DESKTOP_WIDTH, transform: `scale(${scale})`, transformOrigin: 'top left' }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+};
+
 export const StatusCheckView: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,16 +129,7 @@ export const StatusCheckView: React.FC = () => {
   };
 
   const handlePrint = () => {
-    // Force a desktop layout viewport while printing so cards keep their desktop size on phones
-    const meta = document.querySelector('meta[name="viewport"]');
-    const original = meta?.getAttribute('content') ?? null;
-    if (meta) meta.setAttribute('content', 'width=1024');
-    const restore = () => {
-      if (meta && original !== null) meta.setAttribute('content', original);
-      window.removeEventListener('afterprint', restore);
-    };
-    window.addEventListener('afterprint', restore);
-    setTimeout(() => window.print(), 100);
+    window.print();
   };
 
   return (
@@ -271,9 +298,10 @@ export const StatusCheckView: React.FC = () => {
                 </div>
 
                 {/* Printable Target Container */}
+                <CardFrame>
                 <div
                   id="delegate-official-pass-card"
-                  className="printable-card-target bg-gradient-to-br from-amber-50/50 via-white to-amber-50/30 rounded-2xl p-6 sm:p-8 border-2 border-amber-400 shadow-lg space-y-5 text-stone-900"
+                  className="printable-card-target card-desktop bg-gradient-to-br from-amber-50/50 via-white to-amber-50/30 rounded-2xl p-8 border-2 border-amber-400 shadow-lg space-y-5 text-stone-900"
                 >
                   {/* Card Header with Logo */}
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b-2 border-amber-300">
@@ -423,6 +451,7 @@ export const StatusCheckView: React.FC = () => {
                     <span className="font-mono font-semibold">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
                   </div>
                 </div>
+                </CardFrame>
               </div>
             ) : (
               /* CARD 1B: IF PENDING -> ACKNOWLEDGEMENT CARD (Can print & export for reference) */
@@ -491,9 +520,10 @@ export const StatusCheckView: React.FC = () => {
                 </div>
 
                 {/* Printable Acknowledgement Card */}
+                <CardFrame>
                 <div
                   id="delegate-pending-ack-card"
-                  className="printable-card-target p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
+                  className="printable-card-target card-desktop p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
                 >
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -555,6 +585,7 @@ export const StatusCheckView: React.FC = () => {
                     <strong>Attendee Instruction:</strong> Please retain or save this Acknowledgement Slip. The official Registered Card can only be printed after acceptance from the Secretariat.
                   </div>
                 </div>
+                </CardFrame>
               </div>
             )}
           </div>
@@ -671,9 +702,10 @@ export const StatusCheckView: React.FC = () => {
                 </div>
 
                 {/* Printable Target Windshield Display Pass */}
+                <CardFrame>
                 <div
                   id="car-windshield-pass-card"
-                  className="printable-card-target bg-white rounded-3xl p-6 sm:p-8 border-4 border-black shadow-2xl space-y-5 text-stone-900"
+                  className="printable-card-target card-desktop bg-white rounded-3xl p-8 border-4 border-black shadow-2xl space-y-5 text-stone-900"
                 >
                   {/* VERY BIG VISIBLE CAR PASS BANNER */}
                   <div className="bg-amber-400 text-black py-4 px-4 sm:px-6 rounded-2xl border-4 border-black text-center shadow-lg">
@@ -806,6 +838,7 @@ export const StatusCheckView: React.FC = () => {
                     ⚠️ PLEASE DISPLAY THIS CAR PASS CLEARLY ON THE FRONT WINDSHIELD / DASHBOARD FOR ENTRY AT GATES
                   </div>
                 </div>
+                </CardFrame>
               </div>
             ) : (
               /* CARD 2B: IF PENDING CAR PASS -> VEHICLE ACKNOWLEDGEMENT CARD */
@@ -873,9 +906,10 @@ export const StatusCheckView: React.FC = () => {
                   </div>
                 </div>
 
+                <CardFrame>
                 <div
                   id="vehicle-pending-ack-card"
-                  className="printable-card-target p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
+                  className="printable-card-target card-desktop p-6 rounded-2xl bg-amber-50/60 border border-amber-300 space-y-4 text-stone-900 shadow-sm"
                 >
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -910,6 +944,7 @@ export const StatusCheckView: React.FC = () => {
                     <strong>Vehicle Notice:</strong> Application is pending review. Your printable Windshield Car Pass card with QR Code and parking bay will unlock once accepted by the Secretariat.
                   </div>
                 </div>
+                </CardFrame>
               </div>
             )}
           </div>
