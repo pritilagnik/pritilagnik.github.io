@@ -1,0 +1,112 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email != null && (
+          request.auth.token.email == 'admin@dotma.org' ||
+          request.auth.token.email == 'sanjibofcit@gmail.com'
+        ))
+      );
+    }
+
+    function isValidRegistration(data) {
+      return data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 128 &&
+             data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 32 &&
+             data.city is string && data.city.size() > 0 && data.city.size() <= 100 &&
+             data.state is string && data.state.size() > 0 && data.state.size() <= 100 &&
+             data.delegationSize is number && data.delegationSize >= 1 && data.delegationSize <= 200 &&
+             data.arrivalDate is string && data.arrivalDate.size() > 0 && data.arrivalDate.size() <= 32 &&
+             data.status in ['pending', 'accepted', 'declined'];
+    }
+
+    function isValidCarPass(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 128 &&
+             data.carRegistrationNumber is string && data.carRegistrationNumber.size() > 0 && data.carRegistrationNumber.size() <= 64 &&
+             data.driverName is string && data.driverName.size() > 0 && data.driverName.size() <= 128 &&
+             data.contactNumber is string && data.contactNumber.size() >= 10 && data.contactNumber.size() <= 32 &&
+             data.address is string && data.address.size() > 0 && data.address.size() <= 200 &&
+             data.status in ['pending', 'accepted', 'declined'];
+    }
+
+    // Registrations collection
+    match /registrations/{registrationId} {
+      allow create: if isValidId(registrationId) &&
+                       isValidRegistration(incoming()) &&
+                       incoming().status == 'pending';
+      
+      // Allow single document get (e.g., status check by attendee)
+      allow get: if isValidId(registrationId);
+
+      // Listing all attendees is restricted to Admin
+      allow list: if isAdmin();
+
+      // Only Admin can update status, mark confirmationSent, or delete
+      allow update, delete: if isAdmin();
+    }
+
+    // Car Passes collection
+    match /car_passes/{carPassId} {
+      allow create: if isValidId(carPassId) &&
+                       isValidCarPass(incoming()) &&
+                       incoming().status == 'pending';
+      
+      // Allow single document get (status check by acknowledgement number)
+      allow get: if isValidId(carPassId);
+
+      // Listing and managing car passes
+      allow list: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Admin profiles
+    match /admins/{adminId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Event Documents
+    match /event_documents/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Gallery Items
+    match /gallery_items/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Participant Feedback
+    match /feedback/{feedbackId} {
+      allow create: if isValidId(feedbackId);
+      allow read, list, delete: if isAdmin();
+    }
+  }
+}
+

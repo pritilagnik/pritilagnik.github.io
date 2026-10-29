@@ -1,0 +1,215 @@
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Participant and delegation registration for Priti-Lagnik Maha Mahotsav 2026",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique registration ID",
+          "maxLength": 64
+        },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the delegate or delegation head",
+          "maxLength": 128
+        },
+        "phone": {
+          "type": "string",
+          "description": "Mobile contact number",
+          "maxLength": 32
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address",
+          "maxLength": 128
+        },
+        "city": {
+          "type": "string",
+          "description": "City or district of the attendee",
+          "maxLength": 100
+        },
+        "state": {
+          "type": "string",
+          "description": "State or region",
+          "maxLength": 100
+        },
+        "delegationSize": {
+          "type": "number",
+          "description": "Number of people in delegation"
+        },
+        "arrivalDate": {
+          "type": "string",
+          "description": "Expected arrival date in YYYY-MM-DD",
+          "maxLength": 32
+        },
+        "departureDate": {
+          "type": "string",
+          "description": "Expected departure date",
+          "maxLength": 32
+        },
+        "needAccommodation": {
+          "type": "boolean",
+          "description": "Whether accommodation assistance is required"
+        },
+        "accommodationType": {
+          "type": "string",
+          "description": "Type of accommodation requested",
+          "maxLength": 128
+        },
+        "foodPreference": {
+          "type": "string",
+          "description": "Satvik meal requirement",
+          "maxLength": 64
+        },
+        "volunteerInterest": {
+          "type": "boolean",
+          "description": "Whether attendee wishes to volunteer for seva"
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional base64 image or avatar photo url for pass card printing",
+          "maxLength": 500000
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of the registration",
+          "enum": ["pending", "accepted", "declined"],
+          "maxLength": 32
+        },
+        "confirmationSent": {
+          "type": "boolean",
+          "description": "Whether WhatsApp or email confirmation message was sent"
+        },
+        "confirmedAt": {
+          "type": "string",
+          "description": "Timestamp when acceptance confirmation was sent",
+          "maxLength": 64
+        },
+        "registeredAt": {
+          "type": "string",
+          "description": "Timestamp when registration was submitted",
+          "maxLength": 64
+        },
+        "notes": {
+          "type": "string",
+          "description": "Admin notes or allocation details",
+          "maxLength": 500
+        }
+      },
+      "required": ["fullName", "phone", "city", "state", "delegationSize", "arrivalDate", "status"]
+    },
+    "CarPass": {
+      "title": "CarPass",
+      "description": "Official vehicle entry and parking pass for Priti-Lagnik Maha Mahotsav 2026",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique vehicle pass reference ID",
+          "maxLength": 64
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the vehicle owner or organization",
+          "maxLength": 128
+        },
+        "carRegistrationNumber": {
+          "type": "string",
+          "description": "Vehicle registration number plate",
+          "maxLength": 64
+        },
+        "driverName": {
+          "type": "string",
+          "description": "Name of driver",
+          "maxLength": 128
+        },
+        "driverPhone": {
+          "type": "string",
+          "description": "Driver mobile number",
+          "maxLength": 32
+        },
+        "contactNumber": {
+          "type": "string",
+          "description": "Owner / Primary contact phone number",
+          "maxLength": 32
+        },
+        "address": {
+          "type": "string",
+          "description": "Origin address / city / state",
+          "maxLength": 200
+        },
+        "vehicleType": {
+          "type": "string",
+          "description": "Type of vehicle (Car/SUV/Van/Bus)",
+          "maxLength": 64
+        },
+        "photoUrl": {
+          "type": "string",
+          "description": "Optional photo of driver or vehicle",
+          "maxLength": 500000
+        },
+        "status": {
+          "type": "string",
+          "description": "Status of car pass approval",
+          "enum": ["pending", "accepted", "declined"],
+          "maxLength": 32
+        },
+        "allocatedZone": {
+          "type": "string",
+          "description": "Allocated parking zone or bay at Dotma grounds",
+          "maxLength": 100
+        },
+        "registeredAt": {
+          "type": "string",
+          "description": "Timestamp of car pass registration",
+          "maxLength": 64
+        },
+        "confirmedAt": {
+          "type": "string",
+          "description": "Timestamp of acceptance",
+          "maxLength": 64
+        }
+      },
+      "required": ["name", "carRegistrationNumber", "driverName", "contactNumber", "address", "status"]
+    },
+    "AdminProfile": {
+      "title": "AdminProfile",
+      "description": "Administrator account authorized to manage registrations and festival operations",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Admin email",
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "description": "Role of the administrator",
+          "maxLength": 32
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp",
+          "maxLength": 64
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "Public submissions and admin-managed records of festival attendees"
+    },
+    "/car_passes/{carPassId}": {
+      "schema": "CarPass",
+      "description": "Vehicle entry and parking pass applications and grants"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminProfile",
+      "description": "Administrative records allowing dashboard management"
+    }
+  }
+}

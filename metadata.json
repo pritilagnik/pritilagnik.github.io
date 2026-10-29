@@ -1,0 +1,6 @@
+{
+  "name": "Priti-Lagnik Maha Mahotsav 2026",
+  "description": "Official portal for Priti-Lagnik Maha Mahotsav 2026 at Dotma, Kokrajhar, Assam, India. Features event schedules, registrations, galleries, committee details, accommodation, transit guides, and venue map.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
