@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
 /**
- * Pre-checks and ensures all images inside an element are fully loaded
+ * Pre-checks and ensures all images inside an element are fully loaded before capturing
  */
 async function waitForImagesToLoad(element: HTMLElement): Promise<void> {
   const images = Array.from(element.querySelectorAll('img'));
@@ -20,7 +20,6 @@ async function waitForImagesToLoad(element: HTMLElement): Promise<void> {
         };
         img.addEventListener('load', onDone);
         img.addEventListener('error', onDone);
-        // Timeout after 1.5s so we don't hang indefinitely
         setTimeout(onDone, 1500);
       });
     })
@@ -28,21 +27,116 @@ async function waitForImagesToLoad(element: HTMLElement): Promise<void> {
 }
 
 /**
+ * Converts any non-data URL images inside element into in-memory base64 Data URLs.
+ * This guarantees html2canvas and toPng will NEVER be tainted by CORS or relative asset paths.
+ */
+async function inlineImagesAsBase64(element: HTMLElement): Promise<() => void> {
+  const images = Array.from(element.querySelectorAll('img'));
+  const restored: { img: HTMLImageElement; originalSrc: string }[] = [];
+
+  for (const img of images) {
+    if (!img.src || img.src.startsWith('data:')) continue;
+
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width || 120;
+      canvas.height = img.naturalHeight || img.height || 120;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/png');
+        if (dataUrl && dataUrl.length > 100) {
+          restored.push({ img, originalSrc: img.src });
+          img.src = dataUrl;
+        }
+      }
+    } catch (e) {
+      // Continue even if an individual image cannot be inlined
+    }
+  }
+
+  return () => {
+    restored.forEach(({ img, originalSrc }) => {
+      img.src = originalSrc;
+    });
+  };
+}
+
+/**
+ * Converts a base64 Data URL string to a native binary Blob
+ */
+export function dataUrlToBlob(dataUrl: string): Blob {
+  const parts = dataUrl.split(',');
+  const mime = parts[0].match(/:(.*?);/)?.[1] || 'image/png';
+  const bstr = atob(parts[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
+}
+
+/**
+ * Robust cross-browser file downloader using Blob Object URL.
+ * Works inside iframes, desktop, and mobile browsers without truncation.
+ */
+export function triggerBlobDownload(blobOrDataUrl: Blob | string, filename: string): void {
+  const blob = typeof blobOrDataUrl === 'string' ? dataUrlToBlob(blobOrDataUrl) : blobOrDataUrl;
+  const blobUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  link.href = blobUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(blobUrl);
+    if (link.parentNode) {
+      link.parentNode.removeChild(link);
+    }
+  }, 1000);
+}
+
+/**
  * Captures an HTML element to a high-resolution PNG Data URL.
- * Uses html-to-image (SVG foreignObject) with an html2canvas fallback.
+ * Tries html2canvas (with allowTaint: false) then falls back to html-to-image (skipFonts: true).
  */
 export async function captureElementToPng(element: HTMLElement): Promise<string> {
   await waitForImagesToLoad(element);
+  const restoreImages = await inlineImagesAsBase64(element);
 
   try {
-    // Primary renderer: html-to-image preserves exact fonts, SVG, gradients, and dark mode colors
+    // Strategy 1: html2canvas with inlined images and clean white background
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        logging: false,
+        imageTimeout: 5000,
+        ignoreElements: (node) => {
+          return node instanceof HTMLElement && (node.classList.contains('no-export') || node.tagName === 'BUTTON');
+        }
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      if (dataUrl && dataUrl.length > 500) {
+        return dataUrl;
+      }
+    } catch (h2cError) {
+      console.warn('html2canvas capture failed, trying html-to-image fallback:', h2cError);
+    }
+
+    // Strategy 2: html-to-image with skipFonts: true to prevent cross-origin stylesheet errors
     const dataUrl = await toPng(element, {
       pixelRatio: 2,
-      cacheBust: true,
-      skipFonts: false,
+      cacheBust: false,
+      skipFonts: true,
+      backgroundColor: '#ffffff',
       filter: (node) => {
-        // Exclude interactive print / download action buttons inside card
-        if (node instanceof HTMLElement && node.classList.contains('no-export')) {
+        if (node instanceof HTMLElement && (node.classList.contains('no-export') || node.tagName === 'BUTTON')) {
           return false;
         }
         return true;
@@ -52,18 +146,27 @@ export async function captureElementToPng(element: HTMLElement): Promise<string>
     if (dataUrl && dataUrl.length > 500) {
       return dataUrl;
     }
-    throw new Error('toPng returned empty data URL');
-  } catch (err) {
-    console.warn('html-to-image failed, falling back to html2canvas:', err);
 
-    // Fallback: html2canvas
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true,
-      logging: false
-    });
-    return canvas.toDataURL('image/png');
+    throw new Error('Capture returned an empty image');
+  } finally {
+    restoreImages();
+  }
+}
+
+/**
+ * Exports an HTML element as a crisp, high-resolution PNG image file.
+ */
+export async function exportElementAsImage(
+  element: HTMLElement,
+  filename: string = 'Pass_Card.png'
+): Promise<void> {
+  try {
+    const dataUrl = await captureElementToPng(element);
+    const safeFilename = filename.toLowerCase().endsWith('.png') ? filename : `${filename}.png`;
+    triggerBlobDownload(dataUrl, safeFilename);
+  } catch (err) {
+    console.error('Failed to export element as Image:', err);
+    throw err;
   }
 }
 
@@ -94,8 +197,7 @@ export async function exportElementAsPdf(
 
     const orientation = mmWidth >= mmHeight ? 'landscape' : 'portrait';
 
-    // Page format with 6mm padding margins
-    const margin = 6;
+    const margin = 5;
     const pdf = new jsPDF({
       orientation,
       unit: 'mm',
@@ -104,35 +206,16 @@ export async function exportElementAsPdf(
 
     pdf.addImage(dataUrl, 'PNG', margin, margin, mmWidth, mmHeight, undefined, 'FAST');
     const safeFilename = filename.toLowerCase().endsWith('.pdf') ? filename : `${filename}.pdf`;
-    pdf.save(safeFilename);
+
+    try {
+      pdf.save(safeFilename);
+    } catch (saveErr) {
+      // Fallback via Blob download if pdf.save() is restricted
+      const pdfBlob = pdf.output('blob');
+      triggerBlobDownload(pdfBlob, safeFilename);
+    }
   } catch (err) {
     console.error('Failed to export element as PDF:', err);
-    // If saving PDF fails, invoke system print dialog as fallback
-    window.print();
-  }
-}
-
-/**
- * Exports an HTML element as a crisp PNG image file.
- */
-export async function exportElementAsImage(
-  element: HTMLElement,
-  filename: string = 'Pass_Card.png'
-): Promise<void> {
-  try {
-    const dataUrl = await captureElementToPng(element);
-
-    const safeFilename = filename.toLowerCase().endsWith('.png') ? filename : `${filename}.png`;
-    const link = document.createElement('a');
-    link.href = dataUrl;
-    link.download = safeFilename;
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-      document.body.removeChild(link);
-    }, 100);
-  } catch (err) {
-    console.error('Failed to export element as Image:', err);
-    window.print();
+    throw err;
   }
 }

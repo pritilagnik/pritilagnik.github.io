@@ -2053,13 +2053,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-delegate-card-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsPdf(el, `Delegate_Pass_${selectedRecord.id}.pdf`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsPdf(el, `Delegate_Pass_${selectedRecord.id}.pdf`);
+                    } catch (err) {
+                      console.error('Failed to export delegate PDF:', err);
+                      alert('Could not export PDF. Please try printing or saving as image.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-900 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <FileDown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as PDF</span>
+                  <FileDown className="w-4 h-4 text-amber-400" />
+                  <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                 </button>
 
                 <button
@@ -2068,13 +2074,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-delegate-card-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsImage(el, `Delegate_Pass_${selectedRecord.id}.png`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsImage(el, `Delegate_Pass_${selectedRecord.id}.png`);
+                    } catch (err) {
+                      console.error('Failed to export delegate image:', err);
+                      alert('Could not export image. Please try saving as PDF or printing.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-800 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as Image</span>
+                  <ImageIcon className="w-4 h-4 text-white" />
+                  <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                 </button>
               </div>
             </div>
@@ -2249,13 +2261,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-car-pass-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsPdf(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.pdf`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsPdf(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.pdf`);
+                    } catch (err) {
+                      console.error('Failed to export vehicle pass PDF:', err);
+                      alert('Could not export PDF. Please try printing or saving as image.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-900 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-stone-900 hover:bg-black text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <FileDown className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as PDF</span>
+                  <FileDown className="w-4 h-4 text-amber-400" />
+                  <span>{isExporting ? 'Exporting PDF...' : 'Save as PDF'}</span>
                 </button>
 
                 <button
@@ -2264,13 +2282,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     const el = document.getElementById('admin-car-pass-modal');
                     if (!el) return;
                     setIsExporting(true);
-                    await exportElementAsImage(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.png`);
-                    setIsExporting(false);
+                    try {
+                      await exportElementAsImage(el, `Car_Pass_${selectedCarPass.carRegistrationNumber}.png`);
+                    } catch (err) {
+                      console.error('Failed to export vehicle pass image:', err);
+                      alert('Could not export image. Please try saving as PDF or printing.');
+                    } finally {
+                      setIsExporting(false);
+                    }
                   }}
-                  className="flex items-center gap-1 px-3.5 py-2 rounded-xl bg-stone-800 text-white text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors"
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Save as Image</span>
+                  <ImageIcon className="w-4 h-4 text-white" />
+                  <span>{isExporting ? 'Exporting Image...' : 'Save as Image'}</span>
                 </button>
               </div>
             </div>
