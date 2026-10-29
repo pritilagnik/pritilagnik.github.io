@@ -93,7 +93,16 @@ export const StatusCheckView: React.FC = () => {
   };
 
   const handlePrint = () => {
-    window.print();
+    // Force a desktop layout viewport while printing so cards keep their desktop size on phones
+    const meta = document.querySelector('meta[name="viewport"]');
+    const original = meta?.getAttribute('content') ?? null;
+    if (meta) meta.setAttribute('content', 'width=1024');
+    const restore = () => {
+      if (meta && original !== null) meta.setAttribute('content', original);
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+    setTimeout(() => window.print(), 100);
   };
 
   return (

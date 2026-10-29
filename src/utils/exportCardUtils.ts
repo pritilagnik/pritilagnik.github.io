@@ -4,6 +4,9 @@ import html2canvas from 'html2canvas';
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
+const EXPORT_VIEWPORT_WIDTH = 1280;
+const EXPORT_CARD_WIDTH = 760;
+
 let cachedLogoBase64: string = '';
 let cachedSealBase64: string = '';
 
@@ -219,6 +222,29 @@ export async function captureElementToPng(element: HTMLElement): Promise<string>
         backgroundColor: '#ffffff',
         logging: false,
         imageTimeout: 5000,
+        // Lay the card out at desktop width regardless of the device viewport
+        windowWidth: EXPORT_VIEWPORT_WIDTH,
+        width: EXPORT_CARD_WIDTH,
+        onclone: (clonedDoc, clonedEl) => {
+          clonedDoc.body.querySelectorAll(':scope > *').forEach((n) => {
+            if (n !== clonedEl && !n.contains(clonedEl)) (n as HTMLElement).style.display = 'none';
+          });
+          let node: HTMLElement | null = clonedEl.parentElement;
+          while (node && node !== clonedDoc.body) {
+            node.style.display = 'block';
+            node.style.padding = '0';
+            node.style.margin = '0';
+            node.style.border = '0';
+            node.style.width = `${EXPORT_CARD_WIDTH}px`;
+            node.style.maxWidth = 'none';
+            node.style.overflow = 'visible';
+            node = node.parentElement;
+          }
+          clonedEl.style.width = `${EXPORT_CARD_WIDTH}px`;
+          clonedEl.style.maxWidth = 'none';
+          clonedEl.style.margin = '0';
+          clonedDoc.documentElement.style.minWidth = `${EXPORT_VIEWPORT_WIDTH}px`;
+        },
         ignoreElements: (node) => {
           return node instanceof HTMLElement && (node.classList.contains('no-export') || node.tagName === 'BUTTON');
         }
