@@ -811,7 +811,7 @@ export const StatusCheckView: React.FC = () => {
 
                 <div
                   id="vehicle-pending-ack-card"
-                  className="printable-card-target p-6 rounded-2xl bg-amber-50/50 dark:bg-stone-850 border border-amber-300 dark:border-stone-700 space-y-4"
+                  className="printable-card-target p-6 rounded-2xl bg-amber-50/50 dark:bg-stone-850 border border-amber-300 dark:border-stone-700 space-y-4 text-stone-900 dark:text-stone-100"
                 >
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -821,24 +821,28 @@ export const StatusCheckView: React.FC = () => {
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
                       <div>
-                        <h4 className="text-xl font-bold font-serif-cinzel">VEHICLE APPLICATION ACKNOWLEDGEMENT</h4>
-                        <p className="text-xs text-stone-500">
+                        <h4 className="text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">
+                          VEHICLE APPLICATION ACKNOWLEDGEMENT
+                        </h4>
+                        <p className="text-xs text-stone-600 dark:text-stone-400">
                           Pass Ref: <strong className="font-mono text-stone-900 dark:text-stone-100">{carPassRecord.id}</strong>
                         </p>
-                        <p className="text-xs mt-1">Vehicle Plate: <strong>{carPassRecord.carRegistrationNumber}</strong></p>
+                        <p className="text-xs mt-1 text-stone-700 dark:text-stone-300">
+                          Vehicle Plate: <strong className="text-stone-900 dark:text-stone-100">{carPassRecord.carRegistrationNumber}</strong>
+                        </p>
                       </div>
                     </div>
 
                     {carPassRecord.photoUrl ? (
-                      <img src={carPassRecord.photoUrl} alt="Vehicle" className="w-20 h-24 object-cover rounded-xl border border-amber-300" />
+                      <img src={carPassRecord.photoUrl} alt="Vehicle" className="w-20 h-24 object-cover rounded-xl border border-amber-300 dark:border-stone-700" />
                     ) : (
-                      <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-400 text-[10px]">
+                      <div className="w-20 h-24 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 flex items-center justify-center text-stone-400 text-[10px] bg-stone-50/50 dark:bg-stone-800">
                         (Blank)
                       </div>
                     )}
                   </div>
 
-                  <div className="p-3 bg-amber-100/70 dark:bg-stone-800 rounded-xl text-xs leading-relaxed">
+                  <div className="p-3 bg-amber-100/70 dark:bg-stone-800 rounded-xl text-xs text-stone-800 dark:text-stone-200 leading-relaxed border border-amber-200 dark:border-stone-700">
                     <strong>Vehicle Notice:</strong> Application is pending review. Your printable Windshield Car Pass card with QR Code and parking bay will unlock once accepted by the Secretariat.
                   </div>
                 </div>

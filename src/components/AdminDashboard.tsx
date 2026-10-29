@@ -113,6 +113,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [newDocFileType, setNewDocFileType] = useState<'pdf' | 'docx'>('pdf');
   const [newDocUrl, setNewDocUrl] = useState('');
   const [newDocDesc, setNewDocDesc] = useState('');
+  const [docFile, setDocFile] = useState<{ name: string; size: string; dataUrl: string } | null>(null);
   const [docSaveSuccess, setDocSaveSuccess] = useState('');
 
   // Gallery Media data
@@ -122,6 +123,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [newGalCategory, setNewGalCategory] = useState<'Rituals' | 'Past Gatherings' | 'Prasadam' | 'Cultural' | 'Venue'>('Past Gatherings');
   const [newGalUrl, setNewGalUrl] = useState('');
   const [newGalDesc, setNewGalDesc] = useState('');
+  const [galImageFile, setGalImageFile] = useState<{ name: string; dataUrl: string } | null>(null);
   const [galSaveSuccess, setGalSaveSuccess] = useState('');
 
   // Feedback data
@@ -335,16 +337,57 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   // ================= DOCUMENT ACTIONS =================
+  const handleDocFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isPdf = file.name.toLowerCase().endsWith('.pdf') || file.type.includes('pdf');
+    const isDocx = file.name.toLowerCase().endsWith('.docx') || file.name.toLowerCase().endsWith('.doc') || file.type.includes('word');
+
+    if (!isPdf && !isDocx) {
+      alert('Please select a valid PDF (.pdf) or Word document (.docx).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+      setDocFile({
+        name: file.name,
+        size: `${sizeMb} MB`,
+        dataUrl
+      });
+      if (!newDocTitle) {
+        setNewDocTitle(file.name.replace(/\.[^/.]+$/, ''));
+      }
+      setNewDocFileType(isPdf ? 'pdf' : 'docx');
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleAddDocument = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDocTitle) return;
+    if (!newDocTitle.trim()) {
+      alert('Please enter a document title.');
+      return;
+    }
+
+    const finalUrl = docFile ? docFile.dataUrl : (newDocUrl.trim() || '#');
+    if (!docFile && !newDocUrl.trim()) {
+      alert('Please choose a document file to upload OR provide a direct URL.');
+      return;
+    }
 
     const docItem: EventDocument = {
       id: `DOC-${Date.now().toString().slice(-6)}`,
       title: newDocTitle.trim(),
       category: newDocCategory,
       fileType: newDocFileType,
-      url: newDocUrl.trim() || '#',
+      fileName: docFile?.name || (newDocUrl ? newDocUrl.split('/').pop()?.split('?')[0] : 'document'),
+      fileSize: docFile?.size,
+      fileData: docFile?.dataUrl,
+      url: finalUrl,
       uploadedAt: new Date().toISOString(),
       description: newDocDesc.trim() || undefined
     };
@@ -354,7 +397,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     setNewDocTitle('');
     setNewDocUrl('');
     setNewDocDesc('');
-    setDocSaveSuccess('Document added successfully to Events section!');
+    setDocFile(null);
+    setDocSaveSuccess('Document uploaded and published successfully to Events section!');
     setTimeout(() => setDocSaveSuccess(''), 4000);
   };
 
@@ -366,17 +410,76 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   };
 
   // ================= GALLERY ACTIONS =================
+  const handleGalImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (JPG, PNG, WebP).');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height && width > maxDim) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else if (height > maxDim) {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          setGalImageFile({ name: file.name, dataUrl });
+          if (!newGalTitle) {
+            setNewGalTitle(file.name.replace(/\.[^/.]+$/, ''));
+          }
+        }
+      };
+      img.src = ev.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleAddGalleryItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newGalTitle || !newGalUrl) return;
+    if (!newGalTitle.trim()) {
+      alert('Please enter a title for the media item.');
+      return;
+    }
 
-    let processedUrl = newGalUrl.trim();
-    if (newGalType === 'video' && processedUrl.includes('youtube.com/watch?v=')) {
-      const vidId = processedUrl.split('v=')[1]?.split('&')[0];
-      if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
-    } else if (newGalType === 'video' && processedUrl.includes('youtu.be/')) {
-      const vidId = processedUrl.split('youtu.be/')[1]?.split('?')[0];
-      if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
+    let processedUrl = '';
+    if (newGalType === 'image') {
+      if (!galImageFile && !newGalUrl.trim()) {
+        alert('Please choose an image file to upload OR provide a direct image URL.');
+        return;
+      }
+      processedUrl = galImageFile ? galImageFile.dataUrl : newGalUrl.trim();
+    } else {
+      if (!newGalUrl.trim()) {
+        alert('Please provide a YouTube video link.');
+        return;
+      }
+      processedUrl = newGalUrl.trim();
+      if (processedUrl.includes('youtube.com/watch?v=')) {
+        const vidId = processedUrl.split('v=')[1]?.split('&')[0];
+        if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
+      } else if (processedUrl.includes('youtu.be/')) {
+        const vidId = processedUrl.split('youtu.be/')[1]?.split('?')[0];
+        if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
+      }
     }
 
     const item: GalleryItem = {
@@ -395,7 +498,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     setNewGalTitle('');
     setNewGalUrl('');
     setNewGalDesc('');
-    setGalSaveSuccess('Gallery media added successfully!');
+    setGalImageFile(null);
+    setGalSaveSuccess('Gallery media published successfully!');
     setTimeout(() => setGalSaveSuccess(''), 4000);
   };
 
@@ -1293,66 +1397,126 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
               )}
 
-              <form onSubmit={handleAddDocument} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Document Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newDocTitle}
-                    onChange={(e) => setNewDocTitle(e.target.value)}
-                    placeholder="e.g. Daily Kirtan & Discourse Schedule"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
+              <form onSubmit={handleAddDocument} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Document Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newDocTitle}
+                      onChange={(e) => setNewDocTitle(e.target.value)}
+                      placeholder="e.g. Daily Kirtan & Discourse Schedule"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Category
+                    </label>
+                    <select
+                      value={newDocCategory}
+                      onChange={(e) => setNewDocCategory(e.target.value as any)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="Schedule">Schedule</option>
+                      <option value="Brochure">Brochure</option>
+                      <option value="Guidelines">Guidelines</option>
+                      <option value="Map">Map & Routes</option>
+                      <option value="Notice">Notice</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      File Type Format
+                    </label>
+                    <select
+                      value={newDocFileType}
+                      onChange={(e) => setNewDocFileType(e.target.value as any)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="pdf">PDF Document (.pdf)</option>
+                      <option value="docx">Word Document (.docx)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* File Upload OR Direct URL Dual Mode */}
+                <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                      <Upload className="w-4 h-4 text-amber-600" />
+                      <span>Document Source (Choose File OR Enter Direct URL)</span>
+                    </span>
+                    <span className="text-[10px] text-stone-500">PDF or DOCX supported up to 10MB</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Method 1: File Upload */}
+                    <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 space-y-2">
+                      <span className="text-[11px] font-semibold text-stone-700 dark:text-stone-300 block">
+                        Option 1: Upload File from Computer
+                      </span>
+                      {docFile ? (
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <FileText className="w-4 h-4 text-amber-600 shrink-0" />
+                            <div className="truncate">
+                              <span className="text-xs font-bold text-stone-900 dark:text-stone-100 block truncate">
+                                {docFile.name}
+                              </span>
+                              <span className="text-[10px] text-stone-500 font-mono">
+                                {docFile.size}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setDocFile(null)}
+                            className="p-1 rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50 text-xs"
+                            title="Remove File"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="cursor-pointer flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-amber-500 bg-stone-50 dark:bg-stone-900/50 text-stone-700 dark:text-stone-300 text-xs font-semibold transition-colors">
+                          <Upload className="w-4 h-4 text-amber-600" />
+                          <span>Select PDF or DOCX File</span>
+                          <input
+                            type="file"
+                            accept=".pdf,.docx,.doc,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                            onChange={handleDocFileUpload}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* Method 2: Direct URL */}
+                    <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 space-y-2">
+                      <span className="text-[11px] font-semibold text-stone-700 dark:text-stone-300 block">
+                        Option 2: Direct URL / Cloud Link (Optional)
+                      </span>
+                      <input
+                        type="text"
+                        value={newDocUrl}
+                        onChange={(e) => setNewDocUrl(e.target.value)}
+                        placeholder="https://example.com/document.pdf or /assets/..."
+                        className="w-full px-3 py-2 text-xs rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      />
+                      <span className="text-[10px] text-stone-400 block">
+                        Used if no file is uploaded or to link to external drives/hosted PDFs.
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Category
-                  </label>
-                  <select
-                    value={newDocCategory}
-                    onChange={(e) => setNewDocCategory(e.target.value as any)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="Schedule">Schedule</option>
-                    <option value="Brochure">Brochure</option>
-                    <option value="Guidelines">Guidelines</option>
-                    <option value="Map">Map & Routes</option>
-                    <option value="Notice">Notice</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    File Type
-                  </label>
-                  <select
-                    value={newDocFileType}
-                    onChange={(e) => setNewDocFileType(e.target.value as any)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="pdf">PDF Document (.pdf)</option>
-                    <option value="docx">Word Document (.docx)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Document URL or Direct Link
-                  </label>
-                  <input
-                    type="text"
-                    value={newDocUrl}
-                    onChange={(e) => setNewDocUrl(e.target.value)}
-                    placeholder="https://... or /assets/..."
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-
-                <div className="sm:col-span-2 lg:col-span-4">
                   <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
                     Brief Summary / Description
                   </label>
@@ -1360,12 +1524,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     type="text"
                     value={newDocDesc}
                     onChange={(e) => setNewDocDesc(e.target.value)}
-                    placeholder="Official schedule details for Dec 20, 2026..."
+                    placeholder="Official schedule and guidelines for attendees on Dec 20, 2026..."
                     className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
-                <div className="sm:col-span-2 lg:col-span-4 flex justify-end">
+                <div className="flex justify-end pt-1">
                   <button
                     type="submit"
                     className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition-colors"
@@ -1456,67 +1620,152 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
               )}
 
-              <form onSubmit={handleAddGalleryItem} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Title *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newGalTitle}
-                    onChange={(e) => setNewGalTitle(e.target.value)}
-                    placeholder="e.g. Maha Annadan Preparation"
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
+              <form onSubmit={handleAddGalleryItem} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Media Title *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newGalTitle}
+                      onChange={(e) => setNewGalTitle(e.target.value)}
+                      placeholder="e.g. Maha Annadan Preparation"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Media Type
+                    </label>
+                    <select
+                      value={newGalType}
+                      onChange={(e) => {
+                        setNewGalType(e.target.value as any);
+                        setGalImageFile(null);
+                      }}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="image">Image Photo</option>
+                      <option value="video">YouTube Video</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Category
+                    </label>
+                    <select
+                      value={newGalCategory}
+                      onChange={(e) => setNewGalCategory(e.target.value as any)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="Past Gatherings">Past Gatherings</option>
+                      <option value="Rituals">Rituals & Seva</option>
+                      <option value="Prasadam">Prasadam (Anandabazar)</option>
+                      <option value="Cultural">Cultural Programme</option>
+                      <option value="Venue">Venue & Grounds</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Type
-                  </label>
-                  <select
-                    value={newGalType}
-                    onChange={(e) => setNewGalType(e.target.value as any)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="image">Image Photo</option>
-                    <option value="video">YouTube Video</option>
-                  </select>
-                </div>
+                {/* Media Input Area based on Type */}
+                {newGalType === 'image' ? (
+                  <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
+                        <ImageIcon className="w-4 h-4 text-amber-600" />
+                        <span>Gallery Photo Source (Upload File OR Direct Image URL)</span>
+                      </span>
+                      <span className="text-[10px] text-stone-500">Supports JPG, PNG, WebP</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Option 1: Upload Photo */}
+                      <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 space-y-2">
+                        <span className="text-[11px] font-semibold text-stone-700 dark:text-stone-300 block">
+                          Option 1: Upload Image File
+                        </span>
+                        {galImageFile ? (
+                          <div className="flex items-center justify-between p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/60">
+                            <div className="flex items-center gap-3 overflow-hidden">
+                              <img
+                                src={galImageFile.dataUrl}
+                                alt="Preview"
+                                className="w-12 h-12 object-cover rounded-lg border border-amber-400 shrink-0"
+                              />
+                              <div className="truncate">
+                                <span className="text-xs font-bold text-stone-900 dark:text-stone-100 block truncate">
+                                  {galImageFile.name}
+                                </span>
+                                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                  ✓ Ready for Gallery
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setGalImageFile(null)}
+                              className="p-1 rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-950/50 text-xs"
+                              title="Remove Image"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        ) : (
+                          <label className="cursor-pointer flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-amber-500 bg-stone-50 dark:bg-stone-900/50 text-stone-700 dark:text-stone-300 text-xs font-semibold transition-colors">
+                            <Upload className="w-4 h-4 text-amber-600" />
+                            <span>Choose Photo from Device</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleGalImageUpload}
+                              className="hidden"
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      {/* Option 2: Direct Image URL */}
+                      <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 space-y-2">
+                        <span className="text-[11px] font-semibold text-stone-700 dark:text-stone-300 block">
+                          Option 2: Direct Image URL (Optional)
+                        </span>
+                        <input
+                          type="text"
+                          value={newGalUrl}
+                          onChange={(e) => setNewGalUrl(e.target.value)}
+                          placeholder="https://example.com/photo.jpg or /src/assets/..."
+                          className="w-full px-3 py-2 text-xs rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        />
+                        <span className="text-[10px] text-stone-400 block">
+                          Used if no image file is uploaded from device.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      YouTube Video Link *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={newGalUrl}
+                      onChange={(e) => setNewGalUrl(e.target.value)}
+                      placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    <span className="text-[10px] text-stone-400 mt-1 block">
+                      Auto-converts watch URLs to standard responsive embeds for the public Gallery.
+                    </span>
+                  </div>
+                )}
 
                 <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    Category
-                  </label>
-                  <select
-                    value={newGalCategory}
-                    onChange={(e) => setNewGalCategory(e.target.value as any)}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  >
-                    <option value="Past Gatherings">Past Gatherings</option>
-                    <option value="Rituals">Rituals & Seva</option>
-                    <option value="Prasadam">Prasadam (Anandabazar)</option>
-                    <option value="Cultural">Cultural Programme</option>
-                    <option value="Venue">Venue & Grounds</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                    {newGalType === 'video' ? 'YouTube Link *' : 'Image URL *'}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newGalUrl}
-                    onChange={(e) => setNewGalUrl(e.target.value)}
-                    placeholder={newGalType === 'video' ? 'https://www.youtube.com/watch?v=...' : 'https://... or /src/assets/...'}
-                    className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-
-                <div className="sm:col-span-2 lg:col-span-4">
                   <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
                     Description
                   </label>
@@ -1524,18 +1773,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     type="text"
                     value={newGalDesc}
                     onChange={(e) => setNewGalDesc(e.target.value)}
-                    placeholder="Brief description of this celebration..."
+                    placeholder="Brief description of this celebration moment..."
                     className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
-                <div className="sm:col-span-2 lg:col-span-4 flex justify-end">
+                <div className="flex justify-end pt-1">
                   <button
                     type="submit"
                     className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition-colors"
                   >
                     <Plus className="w-4 h-4" />
-                    <span>Add to Gallery</span>
+                    <span>Add Media to Gallery</span>
                   </button>
                 </div>
               </form>
@@ -1683,9 +1932,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             {/* Printable Pass Container */}
             <div
               id="admin-delegate-card-modal"
-              className="printable-card-target bg-gradient-to-br from-amber-50/40 via-white to-amber-50/20 dark:from-stone-850 dark:to-stone-900 rounded-2xl p-6 border-2 border-amber-400 shadow-lg space-y-4"
+              className="printable-card-target bg-gradient-to-br from-amber-50/60 via-white to-amber-50/40 dark:from-stone-900 dark:via-stone-850 dark:to-stone-900 text-stone-900 dark:text-stone-100 rounded-2xl p-6 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-4"
             >
-              <div className="flex items-center justify-between border-b-2 border-amber-300 pb-3">
+              <div className="flex items-center justify-between border-b-2 border-amber-300 dark:border-stone-700 pb-3">
                 <div className="flex items-center gap-3">
                   <img
                     src="/src/assets/images/priti_lagnik_logo.webp"
@@ -1693,20 +1942,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     className="w-12 h-12 object-contain rounded-full shadow-sm"
                   />
                   <div>
-                    <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 font-bold block">
+                    <span className="text-[10px] font-mono tracking-widest uppercase text-amber-800 dark:text-amber-400 font-bold block">
                       Priti-Lagnik Maha Mahotsav 2026
                     </span>
-                    <h3 className="text-xl font-serif-cinzel font-bold text-stone-900">
+                    <h3 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
                       OFFICIAL DELEGATE PASS
                     </h3>
-                    <p className="text-[10px] text-stone-500">
+                    <p className="text-[10px] text-stone-600 dark:text-stone-400">
                       20 December 2026 · West Dangarkuthi, Dotma, Kokrajhar
                     </p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="font-mono font-bold text-xs text-emerald-700 bg-emerald-50 px-2 py-1 rounded border border-emerald-300">
+                  <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-300 dark:border-emerald-700">
                     {selectedRecord.id}
                   </span>
                 </div>
@@ -1715,30 +1964,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div className="sm:col-span-6 space-y-2 text-xs">
                   <div>
-                    <span className="text-stone-400 text-[10px] block font-bold uppercase">Delegate Name</span>
-                    <h4 className="text-lg font-bold font-serif-cinzel">{selectedRecord.fullName}</h4>
-                    <p className="text-stone-500">📍 {selectedRecord.city}, {selectedRecord.state}</p>
+                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Delegate Name</span>
+                    <h4 className="text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">{selectedRecord.fullName}</h4>
+                    <p className="text-stone-700 dark:text-stone-300 font-medium">📍 {selectedRecord.city}, {selectedRecord.state}</p>
                   </div>
 
-                  <div className="p-2 rounded bg-amber-100/70 border border-amber-300 text-xs">
-                    <span className="text-[10px] font-bold block uppercase text-amber-900">Demographic Breakdown:</span>
-                    <span className="font-mono font-bold">
+                  <div className="p-2.5 rounded-xl bg-amber-100/70 dark:bg-stone-800 border border-amber-300 dark:border-stone-700 text-xs">
+                    <span className="text-[10px] font-bold block uppercase text-amber-900 dark:text-amber-300 mb-0.5">Demographic Breakdown:</span>
+                    <span className="font-mono font-bold text-stone-900 dark:text-stone-100">
                       {selectedRecord.maleCount || 0} Male / {selectedRecord.femaleCount || 0} Female / {selectedRecord.childrenCount || 0} Children
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-1 text-[11px]">
-                    <div><span className="text-stone-400 block text-[9px]">Contact:</span><strong>{selectedRecord.phone}</strong></div>
-                    <div><span className="text-stone-400 block text-[9px]">Stay:</span><strong>{selectedRecord.needAccommodation ? (selectedRecord.accommodationType?.split(' ')[0] || 'Assigned') : 'Self'}</strong></div>
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1">
+                    <div>
+                      <span className="text-stone-500 dark:text-stone-400 block text-[10px]">Contact:</span>
+                      <strong className="text-stone-900 dark:text-stone-100">{selectedRecord.phone}</strong>
+                    </div>
+                    <div>
+                      <span className="text-stone-500 dark:text-stone-400 block text-[10px]">Stay:</span>
+                      <strong className="text-stone-900 dark:text-stone-100">
+                        {selectedRecord.needAccommodation ? (selectedRecord.accommodationType?.split(' ')[0] || 'Assigned') : 'Self'}
+                      </strong>
+                    </div>
                   </div>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-col items-center">
                   {selectedRecord.photoUrl ? (
-                    <img src={selectedRecord.photoUrl} alt="Delegate" className="w-24 h-28 object-cover rounded-xl border border-amber-400" />
+                    <img src={selectedRecord.photoUrl} alt="Delegate" className="w-24 h-28 object-cover rounded-xl border-2 border-amber-400 shadow-sm" />
                   ) : (
-                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-[10px] text-stone-400">
-                      (Blank)
+                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-700 flex flex-col items-center justify-center text-[10px] text-stone-400 bg-stone-50/50 dark:bg-stone-800">
+                      <span>Photo</span>
+                      <span className="text-[9px]">(Blank)</span>
                     </div>
                   )}
                   <span className="text-[9px] uppercase font-bold text-stone-500 mt-1">Photo</span>
@@ -1746,10 +2004,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
                 <div className="sm:col-span-3 flex flex-col items-center">
                   {selectedDelegateQr ? (
-                    <img src={selectedDelegateQr} alt="QR Code" className="w-24 h-24 object-contain bg-white p-1 rounded-lg border" />
+                    <div className="p-1.5 bg-white rounded-xl border border-stone-300 shadow-sm">
+                      <img src={selectedDelegateQr} alt="QR Code" className="w-24 h-24 object-contain" />
+                    </div>
                   ) : (
-                    <div className="w-24 h-24 bg-stone-100 rounded-lg flex items-center justify-center text-[9px] text-stone-400">
-                      QR Generated on Accept
+                    <div className="w-24 h-24 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center text-[9px] text-stone-400">
+                      QR on Accept
                     </div>
                   )}
                   <span className="text-[8px] font-mono text-center text-stone-500 mt-1">Name/Address/Phone</span>
@@ -1842,14 +2102,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             </div>
 
             {/* Parking Allocation selector */}
-            <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between gap-4">
-              <label className="text-xs font-bold text-amber-900 shrink-0">
+            <div className="p-3 bg-amber-50 dark:bg-stone-800 rounded-xl border border-amber-200 dark:border-stone-700 flex items-center justify-between gap-4">
+              <label className="text-xs font-bold text-amber-900 dark:text-amber-300 shrink-0">
                 Designated Parking Zone:
               </label>
               <select
                 value={parkingZoneInput}
                 onChange={(e) => setParkingZoneInput(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-amber-300 bg-white text-xs w-full font-semibold"
+                className="px-3 py-1.5 rounded-lg border border-amber-300 dark:border-stone-600 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 text-xs w-full font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 <option value="Gate 1 Main Pavilion Parking Bay">Gate 1 Main Pavilion Parking Bay</option>
                 <option value="Gate 2 East VIP & Delegation Ground">Gate 2 East VIP & Delegation Ground</option>
@@ -1861,11 +2121,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             {/* Printable Target Windshield Display Pass */}
             <div
               id="admin-car-pass-modal"
-              className="printable-card-target bg-white rounded-3xl p-6 border-4 border-black shadow-xl space-y-4"
+              className="printable-card-target bg-white dark:bg-stone-900 rounded-3xl p-6 border-4 border-black dark:border-amber-400 shadow-xl space-y-4 text-stone-900 dark:text-stone-100"
             >
               {/* VERY BIG VISIBLE CAR PASS BANNER */}
               <div className="bg-amber-400 text-black py-3 px-4 rounded-xl border-3 border-black text-center shadow-md">
-                <div className="text-3xl sm:text-4xl font-black font-mono tracking-widest uppercase flex items-center justify-center gap-3">
+                <div className="text-3xl sm:text-4xl font-black font-mono tracking-widest uppercase flex items-center justify-center gap-3 text-black">
                   <Car className="w-8 h-8 stroke-[3]" />
                   <span>*** CAR PASS ***</span>
                   <Car className="w-8 h-8 stroke-[3]" />
@@ -1876,31 +2136,41 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               </div>
 
               {/* Big Car Plate */}
-              <div className="p-3 bg-amber-100 rounded-xl border-2 border-black text-center">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-600 block">
+              <div className="p-3 bg-amber-100 dark:bg-stone-800 rounded-xl border-2 border-black dark:border-amber-400 text-center">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-stone-600 dark:text-stone-400 block">
                   Authorized Vehicle Plate
                 </span>
-                <div className="text-3xl sm:text-4xl font-mono font-black tracking-widest text-black uppercase">
+                <div className="text-3xl sm:text-4xl font-mono font-black tracking-widest text-black dark:text-amber-300 uppercase">
                   {selectedCarPass.carRegistrationNumber}
                 </div>
-                <div className="text-xs font-bold text-emerald-800 mt-1 uppercase">
+                <div className="text-xs font-bold text-emerald-800 dark:text-emerald-400 mt-1 uppercase">
                   📍 Parking Zone: {selectedCarPass.allocatedZone || parkingZoneInput}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center text-xs">
-                <div className="sm:col-span-6 space-y-1">
-                  <div><span className="text-stone-400 text-[10px] block font-bold uppercase">Owner / Delegation:</span><strong className="text-sm">{selectedCarPass.name}</strong></div>
-                  <div><span className="text-stone-400 text-[10px] block font-bold uppercase">Origin Address:</span><span>{selectedCarPass.address}</span></div>
-                  <div><span className="text-stone-400 text-[10px] block font-bold uppercase">Driver:</span><span>{selectedCarPass.driverName} ({selectedCarPass.driverPhone || selectedCarPass.contactNumber})</span></div>
+                <div className="sm:col-span-6 space-y-2">
+                  <div>
+                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Owner / Delegation:</span>
+                    <strong className="text-base text-stone-900 dark:text-stone-100 font-serif-cinzel">{selectedCarPass.name}</strong>
+                  </div>
+                  <div>
+                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Origin Address:</span>
+                    <span className="text-stone-800 dark:text-stone-200 font-medium">{selectedCarPass.address}</span>
+                  </div>
+                  <div>
+                    <span className="text-stone-500 dark:text-stone-400 text-[10px] block font-bold uppercase">Driver Details:</span>
+                    <span className="text-stone-800 dark:text-stone-200 font-semibold">{selectedCarPass.driverName} ({selectedCarPass.driverPhone || selectedCarPass.contactNumber})</span>
+                  </div>
                 </div>
 
                 <div className="sm:col-span-3 flex flex-col items-center">
                   {selectedCarPass.photoUrl ? (
-                    <img src={selectedCarPass.photoUrl} alt="Vehicle" className="w-24 h-28 object-cover rounded-xl border-2 border-black" />
+                    <img src={selectedCarPass.photoUrl} alt="Vehicle" className="w-24 h-28 object-cover rounded-xl border-2 border-black dark:border-amber-400 shadow-sm" />
                   ) : (
-                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-400 flex flex-col items-center justify-center text-stone-400 text-[10px]">
-                      Photo (Blank)
+                    <div className="w-24 h-28 rounded-xl border-2 border-dashed border-stone-400 dark:border-stone-600 flex flex-col items-center justify-center text-stone-400 bg-stone-50/50 dark:bg-stone-800 text-[10px]">
+                      <span>Photo</span>
+                      <span className="text-[9px]">(Blank)</span>
                     </div>
                   )}
                   <span className="text-[9px] uppercase font-bold text-stone-500 mt-1">Photo</span>
@@ -1908,19 +2178,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
                 <div className="sm:col-span-3 flex flex-col items-center">
                   {selectedCarQr ? (
-                    <div className="p-1 bg-white border border-black rounded-lg">
+                    <div className="p-1.5 bg-white border border-black rounded-xl shadow-sm">
                       <img src={selectedCarQr} alt="QR Code" className="w-24 h-24 object-contain" />
                     </div>
                   ) : (
-                    <div className="w-24 h-24 bg-stone-100 rounded-lg flex items-center justify-center text-[10px] text-stone-400">
-                      QR Generated on Grant
+                    <div className="w-24 h-24 bg-stone-100 dark:bg-stone-800 rounded-xl flex items-center justify-center text-[10px] text-stone-400">
+                      QR on Grant
                     </div>
                   )}
                   <span className="text-[8px] font-mono text-center text-stone-500 mt-1">Name/Plate/Address</span>
                 </div>
               </div>
 
-              <div className="pt-2 border-t-2 border-black text-center text-[10px] font-black uppercase tracking-wider text-black">
+              <div className="pt-2 border-t-2 border-black dark:border-stone-700 text-center text-[10px] font-black uppercase tracking-wider text-black dark:text-amber-400 bg-stone-100 dark:bg-stone-800 p-2 rounded-xl">
                 DISPLAY CLEARLY ON WINDSHIELD / DASHBOARD FOR CHECKPOINT ENTRY
               </div>
             </div>

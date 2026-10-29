@@ -255,9 +255,10 @@ export const EventsView: React.FC = () => {
 
   // Download document handler
   const handleDownloadDoc = (doc: EventDocument) => {
-    if (doc.fileData) {
+    const downloadData = doc.fileData || (doc.url && doc.url.startsWith('data:') ? doc.url : null);
+    if (downloadData) {
       const a = document.createElement('a');
-      a.href = doc.fileData;
+      a.href = downloadData;
       a.download = doc.fileName || `${doc.title.replace(/\s+/g, '_')}.${doc.fileType}`;
       document.body.appendChild(a);
       a.click();
@@ -265,7 +266,7 @@ export const EventsView: React.FC = () => {
       return;
     }
 
-    if (doc.url && doc.url.startsWith('http')) {
+    if (doc.url && doc.url !== '#' && doc.url.length > 5) {
       window.open(doc.url, '_blank');
       return;
     }

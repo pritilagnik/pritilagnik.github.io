@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { PageTab, AboutSubTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
   currentTab: PageTab;
@@ -37,31 +38,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenFeedback
 }) => {
   const { lang, setLang, availableLanguages, t } = useLanguage();
+  const { isDark, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('dark');
-    }
-    return false;
-  });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const langDropdownRef = useRef<HTMLDivElement>(null);
-
-  // Toggle Theme
-  const toggleTheme = () => {
-    const newDark = !isDark;
-    setIsDark(newDark);
-    if (newDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -530,6 +513,29 @@ export const Navbar: React.FC<NavbarProps> = ({
                 );
               })}
             </div>
+          </div>
+
+          {/* Theme switcher for mobile */}
+          <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between px-1">
+            <span className="text-xs font-semibold text-stone-600 dark:text-stone-300">
+              Appearance Theme
+            </span>
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-stone-300 dark:border-stone-700 bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 text-xs font-bold"
+            >
+              {isDark ? (
+                <>
+                  <Sun className="w-4 h-4 text-amber-400" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4 text-stone-700" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
           </div>
 
           <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-800 flex gap-2">

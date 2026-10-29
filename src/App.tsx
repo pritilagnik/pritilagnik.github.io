@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { PageTab, AboutSubTab } from './types';
 import { LanguageProvider } from './context/LanguageContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { AboutSection } from './components/AboutSection';
@@ -48,8 +49,9 @@ export default function App() {
   };
 
   return (
-    <LanguageProvider>
-      <div className="min-h-screen flex flex-col bg-amber-50/20 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
+    <ThemeProvider>
+      <LanguageProvider>
+        <div className="min-h-screen flex flex-col bg-amber-50/20 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors">
         {/* Top Navigation Bar with Language Switcher, Mobile Quick Bar & Hamburger */}
         <Navbar
           currentTab={currentTab}
@@ -154,5 +156,6 @@ export default function App() {
         />
       </div>
     </LanguageProvider>
+    </ThemeProvider>
   );
 }
