@@ -73,3 +73,22 @@
     print-color-adjust: exact !important;
   }
 }
+
+/* Inside fixed-width cards, responsive variants apply regardless of the device viewport */
+@custom-variant sm {
+  @media (min-width: 40rem) { @slot; }
+  &:where(.card-desktop, .card-desktop *) { @slot; }
+}
+@custom-variant md {
+  @media (min-width: 48rem) { @slot; }
+  &:where(.card-desktop, .card-desktop *) { @slot; }
+}
+@custom-variant lg {
+  @media (min-width: 64rem) { @slot; }
+  &:where(.card-desktop, .card-desktop *) { @slot; }
+}
+
+@media print {
+  .card-scale-outer { height: auto !important; }
+  .card-scale-inner { transform: none !important; width: 100% !important; }
+}

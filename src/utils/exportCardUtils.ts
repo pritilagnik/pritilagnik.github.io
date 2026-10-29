@@ -240,6 +240,12 @@ export async function captureElementToPng(element: HTMLElement): Promise<string>
             node.style.overflow = 'visible';
             node = node.parentElement;
           }
+          let anc: HTMLElement | null = clonedEl.parentElement;
+          while (anc && anc !== clonedDoc.body) {
+            anc.style.transform = 'none';
+            anc.style.height = 'auto';
+            anc = anc.parentElement;
+          }
           clonedEl.style.width = `${EXPORT_CARD_WIDTH}px`;
           clonedEl.style.maxWidth = 'none';
           clonedEl.style.margin = '0';
