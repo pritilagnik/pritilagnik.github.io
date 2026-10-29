@@ -409,11 +409,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="mt-6 pt-4 border-t border-amber-200 flex items-center justify-between text-[10px] text-stone-600">
                     <span>Central Reception Secretariat Seal: <strong>VERIFIED & GRANTED</strong></span>
                     <div className="flex items-center justify-center px-2">
-                      <img
-                        src={scanswiftIcon}
-                        alt="Verification Seal"
-                        className="w-5 h-5 rounded object-contain opacity-85 shadow-xs border border-amber-300"
-                      />
+                      Made by www.narzary.com
                     </div>
                     <span className="font-mono font-semibold">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
                   </div>
