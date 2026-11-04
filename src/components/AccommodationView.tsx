@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Building2,
   MapPin,
@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   X
 } from 'lucide-react';
-import { ACCOMMODATIONS, EVENT_DETAILS } from '../data/mahotsavData';
+import { fetchAccommodations } from '../services/registrationService';
+import { EVENT_DETAILS } from '../data/mahotsavData';
 import { AccommodationOption } from '../types';
 
 interface AccommodationViewProps {
@@ -20,6 +21,8 @@ interface AccommodationViewProps {
 }
 
 export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigateRegister }) => {
+  const [accommodations, setAccommodations] = useState<AccommodationOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>('All');
   const [selectedAcc, setSelectedAcc] = useState<AccommodationOption | null>(null);
   const [inquirySent, setInquirySent] = useState(false);
@@ -31,11 +34,30 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
     notes: '',
   });
 
+  useEffect(() => {
+    let isMounted = true;
+    fetchAccommodations()
+      .then((data) => {
+        if (isMounted) {
+          setAccommodations(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.warn('Error fetching accommodations:', err);
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const types = ['All', 'Ashram Niwas', 'Guest House', 'Hotel', 'Tent Village'];
 
   const filteredAccommodations = filterType === 'All'
-    ? ACCOMMODATIONS
-    : ACCOMMODATIONS.filter(a => a.type === filterType);
+    ? accommodations
+    : accommodations.filter(a => a.type === filterType);
 
   const handleOpenInquiry = (acc: AccommodationOption) => {
     setSelectedAcc(acc);
@@ -117,12 +139,22 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
         </div>
 
         {/* Accommodation Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredAccommodations.map((acc) => (
-            <div
-              key={acc.id}
-              className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
-            >
+        {loading ? (
+          <div className="text-center py-16 text-sm text-stone-500">
+            <Sparkles className="w-6 h-6 text-amber-500 animate-spin mx-auto mb-2" />
+            Loading accommodation options...
+          </div>
+        ) : filteredAccommodations.length === 0 ? (
+          <div className="text-center py-16 text-sm text-stone-500">
+            No accommodation options listed in this category yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {filteredAccommodations.map((acc) => (
+              <div
+                key={acc.id}
+                className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+              >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
@@ -212,6 +244,7 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Reservation Assistance Modal */}
