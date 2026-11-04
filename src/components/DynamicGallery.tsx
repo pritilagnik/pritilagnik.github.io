@@ -138,47 +138,58 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
                     </video>
                   )
                 ) : (
-                  <div className="relative w-full h-full group">
+                  <div className="relative w-full h-full flex items-center justify-center overflow-hidden group bg-stone-950">
+                    {/* Ambient blurred backdrop so the container feels full and rich */}
+                    <img
+                      src={selectedItem.type === 'video' ? selectedItem.thumbnail : selectedItem.url}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-30 scale-110 pointer-events-none select-none"
+                    />
+
+                    {/* Foreground image displayed completely as it is without cropping */}
                     <img
                       src={selectedItem.type === 'video' ? selectedItem.thumbnail : selectedItem.url}
                       alt={selectedItem.title}
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover"
+                      className="relative z-10 w-full h-full max-h-[580px] object-contain mx-auto"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-between p-6 sm:p-8">
-                      <div className="flex items-center justify-between">
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-black/60 text-amber-300 border border-amber-400/30 backdrop-blur-sm">
-                          {selectedItem.category} · {selectedItem.year || "2026"}
-                        </span>
 
+                    {/* Top Controls Overlay */}
+                    <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-black/75 text-amber-300 border border-amber-400/30 backdrop-blur-md shadow-md pointer-events-auto">
+                        {selectedItem.category} · {selectedItem.year || "2026"}
+                      </span>
+
+                      <button
+                        onClick={() => setLightboxOpen(true)}
+                        className="p-2 rounded-xl bg-black/75 hover:bg-black text-white border border-white/20 backdrop-blur-md transition-all shadow-md pointer-events-auto hover:scale-105 active:scale-95"
+                        title="Open full-screen view"
+                      >
+                        <Maximize2 className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Center Play Button if Video */}
+                    {selectedItem.type === 'video' && (
+                      <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
                         <button
-                          onClick={() => setLightboxOpen(true)}
-                          className="p-2 rounded-lg bg-black/60 hover:bg-black text-white backdrop-blur-sm transition-colors"
-                          title="Open full-screen view"
+                          onClick={() => setIsPlayingVideo(true)}
+                          className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-95 ring-4 ring-white/40 pointer-events-auto"
+                          aria-label="Play video"
                         >
-                          <Maximize2 className="w-5 h-5" />
+                          <Play className="w-8 h-8 fill-stone-950 ml-1" />
                         </button>
                       </div>
+                    )}
 
-                      {/* Center Play Button if Video */}
-                      {selectedItem.type === 'video' && (
-                        <div className="self-center">
-                          <button
-                            onClick={() => setIsPlayingVideo(true)}
-                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 flex items-center justify-center shadow-2xl transition-transform hover:scale-110 active:scale-95 ring-4 ring-white/40"
-                            aria-label="Play video"
-                          >
-                            <Play className="w-8 h-8 fill-stone-950 ml-1" />
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Bottom Captions */}
-                      <div>
-                        <h3 className="text-xl sm:text-2xl md:text-3xl font-serif-cinzel font-bold text-white leading-tight">
+                    {/* Bottom Captions Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 z-20 bg-gradient-to-t from-black/95 via-black/70 to-transparent p-5 sm:p-8 pt-16 text-white pointer-events-none">
+                      <div className="max-w-4xl">
+                        <h3 className="text-lg sm:text-2xl md:text-3xl font-serif-cinzel font-bold text-white drop-shadow-md leading-tight">
                           {selectedItem.title}
                         </h3>
-                        <p className="mt-1 text-xs sm:text-sm text-stone-200 max-w-3xl line-clamp-2">
+                        <p className="mt-1 text-xs sm:text-sm text-stone-200 line-clamp-2 drop-shadow-sm leading-relaxed">
                           {selectedItem.description}
                         </p>
                       </div>
@@ -189,14 +200,14 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
                 {/* Previous & Next overlay buttons */}
                 <button
                   onClick={handlePrev}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-sm transition-colors"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md transition-all border border-white/10 hover:scale-105 active:scale-95 shadow-lg"
                   aria-label="Previous item"
                 >
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-sm transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-30 p-2.5 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md transition-all border border-white/10 hover:scale-105 active:scale-95 shadow-lg"
                   aria-label="Next item"
                 >
                   <ChevronRight className="w-6 h-6" />

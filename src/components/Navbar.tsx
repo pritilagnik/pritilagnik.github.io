@@ -571,7 +571,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-500 text-white shadow-sm"
             >
               <UserCheck className="w-4 h-4" />
-              <span>Register as attendee</span>
+              <span>Register</span>
             </button>
           </div>
         </div>
