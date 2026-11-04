@@ -114,6 +114,14 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
               </li>
               <li>
                 <button
+                  onClick={() => handleNav('nearby')}
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  Nearby Places to Visit
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleNav('contact')}
                   className="hover:text-amber-400 transition-colors"
                 >
@@ -147,10 +155,18 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
             <ul className="space-y-2 text-xs">
               <li>
                 <button
+                  onClick={() => handleAboutSub('overview')}
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  Priti-Lagnik 2026
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleAboutSub('committee')}
                   className="hover:text-amber-400 transition-colors"
                 >
-                  Central Reception Committee
+                  Organising Committee
                 </button>
               </li>
               <li>
@@ -158,7 +174,7 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
                   onClick={() => handleAboutSub('teams')}
                   className="hover:text-amber-400 transition-colors"
                 >
-                  Organising Teams & Leads
+                  Volunteers & Seva Units
                 </button>
               </li>
               <li>

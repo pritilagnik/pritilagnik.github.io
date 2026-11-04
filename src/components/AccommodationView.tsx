@@ -15,7 +15,11 @@ import {
 import { ACCOMMODATIONS, EVENT_DETAILS } from '../data/mahotsavData';
 import { AccommodationOption } from '../types';
 
-export const AccommodationView: React.FC = () => {
+interface AccommodationViewProps {
+  onNavigateRegister?: () => void;
+}
+
+export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigateRegister }) => {
   const [filterType, setFilterType] = useState<string>('All');
   const [selectedAcc, setSelectedAcc] = useState<AccommodationOption | null>(null);
   const [inquirySent, setInquirySent] = useState(false);
@@ -23,7 +27,7 @@ export const AccommodationView: React.FC = () => {
     name: '',
     phone: '',
     guests: 2,
-    checkIn: '2026-11-18',
+    checkIn: '2026-12-19',
     notes: '',
   });
 
@@ -52,28 +56,46 @@ export const AccommodationView: React.FC = () => {
     }, 500);
   };
 
+  const handleGoToRegistration = () => {
+    if (onNavigateRegister) {
+      onNavigateRegister();
+    } else {
+      const el = document.getElementById('register');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="py-12 sm:py-20 bg-stone-50/50 dark:bg-stone-900/30 min-h-screen transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            <Building2 className="w-4 h-4 text-amber-600" />
-            <span>Pilgrim Lodging & Stay Facilities</span>
+          {/* Section: Pilgrim Lodging & Stay Facilities updated text */}
+          <div className="p-4 rounded-2xl bg-amber-100/70 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/70 text-xs sm:text-sm text-amber-900 dark:text-amber-200 text-center max-w-2xl mx-auto mb-6 shadow-xs leading-relaxed">
+            <Sparkles className="w-4 h-4 text-amber-600 inline mr-1.5 -mt-0.5" />
+            <span>
+              Free Accomodation will be arranged for Guest/Participants from outside BTR (Bodoland Territorial Region) on request. However, the free accomodation facility is limited and early registration is requested.
+            </span>
           </div>
+
           <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
             Accommodation & Hotel Guidance
           </h1>
-          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
-            From free on-site Yatri Ashram dormitories with pure satvik prasad to private executive hotels in Kokrajhar town with round-the-clock festival shuttles.
+
+          {/* Section: From free on-site Yatri Ashram dormitories... updated text */}
+          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed font-medium">
+            Hotel/Guest House Guidance for self-arranged accomodation
           </p>
 
-          {/* Accommodation Advisory Banner */}
-          <div className="mt-6 p-4 rounded-2xl bg-amber-100/60 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-700/60 text-xs text-amber-900 dark:text-amber-200 text-left max-w-2xl mx-auto flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <p>
-              <strong>Pilgrim Notice:</strong> Due to heavy anticipated attendance (over 100,000 devotees), early booking of private hotels and advance registration for Ashram dormitories is strongly advised. Free shuttle e-rickshaws and buses connect all verified accommodations to the Dotma pandal.
-            </p>
+          {/* Destination Link to: Registration link for free accomodation */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={handleGoToRegistration}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+            >
+              <Users className="w-4 h-4" />
+              <span>Registration link for free accomodation</span>
+            </button>
           </div>
         </div>
 

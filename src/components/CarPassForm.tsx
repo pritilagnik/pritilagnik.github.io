@@ -18,6 +18,7 @@ import {
 import { CarPassRecord } from '../types';
 import { saveCarPass } from '../services/registrationService';
 import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
+import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 
 interface CarPassFormProps {
   onSuccess?: (record: CarPassRecord) => void;
@@ -212,7 +213,7 @@ export const CarPassForm: React.FC<CarPassFormProps> = ({ onSuccess, onCheckStat
               <div className="space-y-1.5 text-center sm:text-left flex-1">
                 <div className="flex items-center gap-3 justify-center sm:justify-start">
                   <img
-                    src="/src/assets/images/priti_lagnik_logo.webp"
+                    src={pritiLogo}
                     alt="Priti Lagnik Logo"
                     className="w-10 h-10 object-contain rounded-full shadow-sm"
                   />

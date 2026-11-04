@@ -1,4 +1,4 @@
-export type PageTab = 'home' | 'about' | 'events' | 'gallery' | 'accommodation' | 'contact' | 'admin' | 'status-check';
+export type PageTab = 'home' | 'about' | 'events' | 'gallery' | 'accommodation' | 'contact' | 'admin' | 'status-check' | 'nearby';
 export type AboutSubTab = 'overview' | 'committee' | 'teams' | 'organising-teams';
 
 export interface ThakurProfile {

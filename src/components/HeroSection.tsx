@@ -66,14 +66,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <MapPin className="w-4 h-4 text-amber-400" />
             <span>West Dangarkuthi, Dotma, Kokrajhar, Assam - 783347</span>
           </div>
-          <span className="text-amber-500/60 hidden sm:inline">·</span>
-          <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-amber-400" />
-            <span>100,000+ Expected Attendees</span>
-          </div>
         </div>
 
-        {/* Action Buttons: Discover More & Register */}
+        {/* Action Buttons: Discover More & Register for Accomodation */}
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <button
             onClick={onDiscoverMore}
@@ -88,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="flex items-center gap-2 px-7 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-xl ring-2 ring-amber-400/50"
           >
             <HeartHandshake className="w-4 h-4 text-stone-950" />
-            <span>Register as Attendee</span>
+            <span>Register for Accomodation</span>
           </button>
         </div>
       </div>

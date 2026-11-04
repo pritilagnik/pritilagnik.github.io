@@ -20,6 +20,8 @@ import { RegistrationRecord, CarPassRecord } from '../types';
 import { getRegistrationById, getCarPassById } from '../services/registrationService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
 import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
+import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
+import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
 export const StatusCheckView: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -268,7 +270,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b-2 border-amber-300">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Priti Lagnik Logo"
                         className="w-14 h-14 object-contain rounded-full shadow-sm"
                       />
@@ -406,6 +408,9 @@ export const StatusCheckView: React.FC = () => {
                   {/* Card Security Footer */}
                   <div className="mt-6 pt-4 border-t border-amber-200 flex items-center justify-between text-[10px] text-stone-600">
                     <span>Central Reception Secretariat Seal: <strong>VERIFIED & GRANTED</strong></span>
+                    <div className="flex items-center justify-center px-2">
+                      Made by www.narzary.com
+                    </div>
                     <span className="font-mono font-semibold">Issued: {delegateRecord.confirmedAt?.slice(0, 10) || '2026-12'}</span>
                   </div>
                 </div>
@@ -484,7 +489,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
@@ -677,7 +682,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-3 border-b-2 border-black">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
@@ -866,7 +871,7 @@ export const StatusCheckView: React.FC = () => {
                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <img
-                        src="/src/assets/images/priti_lagnik_logo.webp"
+                        src={pritiLogo}
                         alt="Logo"
                         className="w-12 h-12 object-contain rounded-full shadow-sm"
                       />
