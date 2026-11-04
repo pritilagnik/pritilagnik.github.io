@@ -196,6 +196,55 @@
         }
       },
       "required": ["email", "role"]
+    },
+    "CommitteeMember": {
+      "title": "CommitteeMember",
+      "description": "Executive and organising committee member details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "category": { "type": "string" },
+        "location": { "type": "string" },
+        "phone": { "type": "string" }
+      },
+      "required": ["name", "role", "category", "location"]
+    },
+    "OrganisingTeam": {
+      "title": "OrganisingTeam",
+      "description": "Volunteer team and operational cell",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "lead": { "type": "string" },
+        "volunteersCount": { "type": "number" },
+        "responsibilities": { "type": "array" },
+        "contactPerson": { "type": "string" },
+        "contactNumber": { "type": "string" }
+      },
+      "required": ["name", "lead", "volunteersCount", "contactNumber"]
+    },
+    "Accommodation": {
+      "title": "Accommodation",
+      "description": "Lodging and hotel information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "distance": { "type": "string" },
+        "location": { "type": "string" },
+        "capacity": { "type": "string" },
+        "tariff": { "type": "string" },
+        "amenities": { "type": "array" },
+        "contactName": { "type": "string" },
+        "phone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "bookingStatus": { "type": "string" }
+      },
+      "required": ["name", "type", "location", "tariff", "phone"]
     }
   },
   "firestore": {
@@ -210,6 +259,18 @@
     "/admins/{adminId}": {
       "schema": "AdminProfile",
       "description": "Administrative records allowing dashboard management"
+    },
+    "/committee_members/{memberId}": {
+      "schema": "CommitteeMember",
+      "description": "Committee members managed via admin panel"
+    },
+    "/organising_teams/{teamId}": {
+      "schema": "OrganisingTeam",
+      "description": "Organising volunteer teams managed via admin panel"
+    },
+    "/accommodations/{accId}": {
+      "schema": "Accommodation",
+      "description": "Hotels and stay options managed via admin panel"
     }
   }
 }

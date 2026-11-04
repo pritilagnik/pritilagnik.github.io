@@ -42,6 +42,21 @@ service cloud.firestore {
       allow read, list, write: if true;
     }
 
+    // Committee Members: public read, write for admin/secretariat
+    match /committee_members/{memberId} {
+      allow read, list, write: if true;
+    }
+
+    // Organising Teams: public read, write for admin/secretariat
+    match /organising_teams/{teamId} {
+      allow read, list, write: if true;
+    }
+
+    // Accommodations & Hotels: public read, write for admin/secretariat
+    match /accommodations/{accId} {
+      allow read, list, write: if true;
+    }
+
     // Catch-all
     match /{document=**} {
       allow read, write: if false;
