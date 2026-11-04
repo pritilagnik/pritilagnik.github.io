@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import {
   MapPin,
   Phone,
-  Mail,
   MessageSquare,
-  Plane,
   Train,
   Car,
-  Bus,
-  Sparkles,
   ExternalLink,
   Send,
   CheckCircle2,
-  Navigation
+  Users,
+  Compass,
+  HeartHandshake,
+  Calendar,
+  Building2,
+  DollarSign
 } from 'lucide-react';
-import { EVENT_DETAILS, TRANSIT_GUIDE } from '../data/mahotsavData';
+import { EVENT_DETAILS, COMMITTEE_MEMBERS } from '../data/mahotsavData';
 import { FullWidthMap } from './FullWidthMap';
 
 export const ContactView: React.FC = () => {
@@ -33,249 +34,294 @@ export const ContactView: React.FC = () => {
     setSubmitted(true);
   };
 
+  // Specific desk contacts requested
+  const deskContacts = [
+    {
+      title: "For details of programme",
+      role: "Programme & Satsang Coordination",
+      contactPerson: "Programme Convenor",
+      number: "+91 94350 78334",
+      icon: Calendar,
+      color: "amber"
+    },
+    {
+      title: "For Free Accomodation",
+      role: "Lodging & Yatri Niwas Desk",
+      contactPerson: "Accommodation In-Charge",
+      number: "+91 94351 89201",
+      icon: Building2,
+      color: "emerald"
+    },
+    {
+      title: "For travel guidance",
+      role: "Transit, Railway & Road Escort",
+      contactPerson: "Travel & Logistics Desk",
+      number: "+91 94352 45678",
+      icon: Compass,
+      color: "blue"
+    },
+    {
+      title: "For offerings/donation",
+      role: "Finance & Devotional Offerings",
+      contactPerson: "Offerings & Accounts Desk",
+      number: "+91 94355 67890",
+      icon: HeartHandshake,
+      color: "purple"
+    }
+  ];
+
+  // Key reception committee members
+  const receptionMembers = [
+    { name: "Dr. Hitesh Chandra Roy", role: "President, Reception Committee", phone: "+91 94350 44556" },
+    { name: "Sjt. Biseswar Ramchiary", role: "Chief Patron & Elder", phone: "+91 94350 11223" },
+    { name: "Sjt. Manoranjan Brahma", role: "General Secretary, Reception Committee", phone: "+91 94351 22334" },
+    { name: "Sjt. Dipak Narzary", role: "Joint Convenor, Reception Desk", phone: "+91 94353 33445" },
+    { name: "Sjt. Rabindra Nath Roy", role: "Secretariat Coordinator", phone: "+91 94354 55667" },
+    { name: "Sjt. Sanjib Kumar Brahma", role: "Public Relations & Volunteers Lead", phone: "+91 94357 88990" }
+  ];
+
   return (
     <div className="py-12 sm:py-20 bg-stone-50/50 dark:bg-stone-900/30 min-h-screen transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            <Phone className="w-4 h-4 text-amber-600" />
-            <span>Connect & Transit Guidance</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
-            Contact Organizers & How to Reach
-          </h1>
-          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
-            Reach out directly to the Central Reception Desk, connect on WhatsApp, or consult our comprehensive transit guide for arriving in Dotma, Kokrajhar.
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 sm:space-y-20">
 
-        {/* 3 Contact Channels Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {/* Card 1: Official Secretariat Address */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-4">
-                <MapPin className="w-6 h-6" />
-              </div>
-              <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider block mb-1">
-                Central Secretariat Venue
-              </span>
-              <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
-                Dotma Mahotsav Complex
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed">
-                West Dangarkuthi, Dotma Circle, District Kokrajhar, Bodoland Territorial Region (BTR), Assam, India - 783347
-              </p>
+        {/* ========================================================================= */}
+        {/* SECTION 1: RECEPTION COMMITTEE */}
+        {/* ========================================================================= */}
+        <section id="reception-committee" className="space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
+              <Users className="w-4 h-4 text-amber-600" />
+              <span>Official Organizing Secretariat</span>
             </div>
-            <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-500">
-              Coordinates: 26.4633° N, 90.1583° E
-            </div>
-          </div>
-
-          {/* Card 2: Instant WhatsApp & Helpline */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
-                <MessageSquare className="w-6 h-6" />
-              </div>
-              <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block mb-1">
-                Direct WhatsApp & Call
-              </span>
-              <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
-                Organizing Desk Helpline
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed">
-                24/7 dedicated helpline for attendee registration, pilgrim reception, and logistics.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 space-y-2">
-              <a
-                href={`https://wa.me/${EVENT_DETAILS.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                  "Hello, I would like to inquire about Priti-Lagnik Maha Mahotsav 2026, Dotma, Kokrajhar."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-sm"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>Chat on WhatsApp Directly</span>
-              </a>
-
-              <a
-                href={`tel:${EVENT_DETAILS.helplinePhone}`}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-semibold transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span>Call {EVENT_DETAILS.helplinePhone}</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Card 3: Social Media Channels */}
-          <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 uppercase tracking-wider block mb-1">
-                Official Media Channels
-              </span>
-              <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
-                Follow Updates & Broadcasts
-              </h3>
-              <p className="text-xs text-stone-600 dark:text-stone-300 mt-2 leading-relaxed">
-                Connect directly on our social media handles for daily schedules, live streams, and seva announcements.
-              </p>
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 grid grid-cols-2 gap-2 text-xs">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg bg-blue-50 dark:bg-stone-800 text-blue-700 dark:text-blue-400 font-semibold hover:bg-blue-100 transition-colors"
-              >
-                <span>Facebook</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg bg-pink-50 dark:bg-stone-800 text-pink-700 dark:text-pink-400 font-semibold hover:bg-pink-100 transition-colors"
-              >
-                <span>Instagram</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-semibold hover:bg-stone-200 transition-colors"
-              >
-                <span>Twitter / X</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-lg bg-red-50 dark:bg-stone-800 text-red-700 dark:text-red-400 font-semibold hover:bg-red-100 transition-colors"
-              >
-                <span>YouTube Live</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Detailed Transit Guide Grid */}
-        <div className="mb-16">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl sm:text-3xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
-              How to Reach Dotma, Kokrajhar
-            </h2>
-            <p className="mt-1 text-xs sm:text-sm text-stone-600 dark:text-stone-400">
-              Comprehensive travel pathways by flight, train, private vehicle, and interstate bus services.
+            <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
+              Reception Committee
+            </h1>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
+              Connect directly with the Central Reception Committee members and designated desk coordinators for event guidance, accommodation, transit assistance, and devotional offerings.
             </p>
           </div>
 
+          {/* Dedicated Desks Required by User */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* By Air */}
-            <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 flex items-center justify-center mb-4">
-                  <Plane className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 mb-1">
-                  {TRANSIT_GUIDE.byAir.title}
-                </h3>
-                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 block mb-2">
-                  {TRANSIT_GUIDE.byAir.nearest}
-                </span>
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                  {TRANSIT_GUIDE.byAir.details}
-                </p>
-              </div>
-            </div>
+            {deskContacts.map((desk, idx) => {
+              const Icon = desk.icon;
+              return (
+                <div
+                  key={idx}
+                  className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-3">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 block mb-1">
+                      {desk.title}
+                    </span>
+                    <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
+                      {desk.role}
+                    </h3>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                      In-Charge: <span className="font-semibold text-stone-800 dark:text-stone-200">{desk.contactPerson}</span>
+                    </p>
+                  </div>
 
-            {/* By Train */}
-            <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 flex items-center justify-center mb-4">
-                  <Train className="w-5 h-5" />
+                  <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800">
+                    <a
+                      href={`tel:${desk.number}`}
+                      className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>Contact: {desk.number}</span>
+                    </a>
+                  </div>
                 </div>
-                <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 mb-1">
-                  {TRANSIT_GUIDE.byTrain.title}
-                </h3>
-                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 block mb-2">
-                  {TRANSIT_GUIDE.byTrain.nearest}
-                </span>
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                  {TRANSIT_GUIDE.byTrain.details}
-                </p>
-              </div>
-            </div>
-
-            {/* By Road */}
-            <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 flex items-center justify-center mb-4">
-                  <Car className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 mb-1">
-                  By Private Car & Taxi
-                </h3>
-                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 block mb-2">
-                  NH-27 & East-West Corridor
-                </span>
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                  {TRANSIT_GUIDE.byRoad.details} Dedicated parking bays with round-the-clock volunteer security are located beside Dotma High School field.
-                </p>
-              </div>
-            </div>
-
-            {/* By Bus */}
-            <div className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 flex items-center justify-center mb-4">
-                  <Bus className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 mb-1">
-                  By State & Deluxe Bus
-                </h3>
-                <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 block mb-2">
-                  ASTC & Private Express
-                </span>
-                <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
-                  Regular day and sleeper buses run from ISBT Guwahati, Siliguri, Jalpaiguri, and Cooch Behar directly to Kokrajhar and Dotma bus stops.
-                </p>
-              </div>
-            </div>
+              );
+            })}
           </div>
 
-          {/* Landmarks Box */}
-          <div className="mt-8 p-6 rounded-2xl bg-amber-100/40 dark:bg-stone-850 border border-amber-300/60 dark:border-stone-800">
-            <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-600" />
-              <span>Prominent Local Landmarks in Dotma</span>
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-stone-700 dark:text-stone-300">
-              {TRANSIT_GUIDE.landmarks.map((landmark, idx) => (
-                <div key={idx} className="p-2.5 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
-                  {landmark}
+          {/* Reception Committee Member Names and Contact Numbers */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200 dark:border-stone-800 pb-4">
+              <div>
+                <h2 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                  Reception Committee Members
+                </h2>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  Direct contacts for the executive and central secretariat leaders
+                </p>
+              </div>
+
+              <a
+                href={`https://wa.me/${EVENT_DETAILS.whatsappNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                  "Joyguru! I would like to connect with the Reception Committee of Priti-Lagnik Maha Mahotsav 2026."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-xs w-fit"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Secretariat WhatsApp</span>
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {receptionMembers.map((member, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-xl bg-amber-50/40 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 flex items-center justify-between gap-3"
+                >
+                  <div>
+                    <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
+                      {member.name}
+                    </h4>
+                    <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium block mt-0.5">
+                      {member.role}
+                    </span>
+                  </div>
+                  <a
+                    href={`tel:${member.phone}`}
+                    className="p-2 rounded-lg bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-300 hover:bg-amber-600 hover:text-white transition-colors shadow-2xs shrink-0"
+                    title={`Call ${member.name}`}
+                  >
+                    <Phone className="w-4 h-4" />
+                  </a>
                 </div>
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Interactive Direct Inquiry Message Form */}
-        <div className="max-w-3xl mx-auto mb-16">
+        {/* ========================================================================= */}
+        {/* SECTION 2: HOW TO REACH */}
+        {/* ========================================================================= */}
+        <section id="how-to-reach" className="space-y-10 scroll-mt-24">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
+              <Compass className="w-4 h-4 text-amber-600" />
+              <span>Transit & Geographic Guide</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
+              How to Reach
+            </h2>
+          </div>
+
+          {/* Core Geographical Description Required by User */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+            <div className="p-5 sm:p-6 rounded-2xl bg-amber-50 dark:bg-stone-900 border border-amber-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 text-sm sm:text-base leading-relaxed">
+              <p className="font-sans leading-relaxed">
+                The Maha-Mahotsav can be located at serene landscape surrounded the villages inhabitated by communities such as Bodos, Koch-Rajbongshi and Begali. It is accessible through Railway via Kokrajhar( 16KMS approx.), Fakiragram (15 KM Approx.) and Gossaigaon (25KMS approx.) Railway Stations. It is accessible from NH27 via Karigaon (30KMS), Patgaon (21 KMS), Ramfalbil (13KMS), Serfanguri (11KMS), Gossaigaon(21 KMS).
+              </p>
+            </div>
+
+            {/* Structured Transit Breakdown Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Railway Access Card */}
+              <div className="p-6 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                    <Train className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                      Railway Connectivity
+                    </h3>
+                    <span className="text-xs text-stone-500 dark:text-stone-400">Major Northeast Frontier Railway Stations</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-xs text-stone-700 dark:text-stone-300">
+                  <div className="p-2.5 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-between">
+                    <span>🚉 <strong>Kokrajhar Railway Station:</strong></span>
+                    <span className="font-semibold text-amber-700 dark:text-amber-400">~16 Kms</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-between">
+                    <span>🚉 <strong>Fakiragram Railway Station:</strong></span>
+                    <span className="font-semibold text-amber-700 dark:text-amber-400">~15 Kms</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex items-center justify-between">
+                    <span>🚉 <strong>Gossaigaon Railway Station:</strong></span>
+                    <span className="font-semibold text-amber-700 dark:text-amber-400">~25 Kms</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Road Access via NH27 */}
+              <div className="p-6 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+                    <Car className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                      Road Access via NH-27
+                    </h3>
+                    <span className="text-xs text-stone-500 dark:text-stone-400">East-West Corridor Connectors</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs text-stone-700 dark:text-stone-300">
+                  <div className="p-2 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+                    <span className="block text-stone-500 text-[11px]">Via Serfanguri:</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">~11 Kms</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+                    <span className="block text-stone-500 text-[11px]">Via Ramfalbil:</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">~13 Kms</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+                    <span className="block text-stone-500 text-[11px]">Via Patgaon:</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">~21 Kms</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+                    <span className="block text-stone-500 text-[11px]">Via Gossaigaon:</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">~21 Kms</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 col-span-2">
+                    <span className="block text-stone-500 text-[11px]">Via Karigaon:</span>
+                    <span className="font-bold text-stone-900 dark:text-stone-100">~30 Kms</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Google Map Pin Embed & Link */}
+            <div className="space-y-4 pt-4 border-t border-stone-200 dark:border-stone-800">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-stone-900 dark:text-stone-100 font-semibold text-sm">
+                  <MapPin className="w-4 h-4 text-amber-600" />
+                  <span>Google Map Location Pin · West Dangarkuthi, Dotma (26.4633° N, 90.1583° E)</span>
+                </div>
+                <a
+                  href="https://maps.google.com/?q=26.4633,90.1583"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors w-fit"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Interactive Google Map Pin</span>
+                </a>
+              </div>
+
+              {/* Embedded Google Map iFrame */}
+              <div className="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden border border-stone-300 dark:border-stone-700 shadow-md">
+                <iframe
+                  title="Priti-Lagnik Maha Mahotsav Venue Map Pin"
+                  src="https://maps.google.com/maps?q=26.4633,90.1583&hl=en&z=14&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={true}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Inquiry Form */}
+        <div className="max-w-3xl mx-auto">
           <div className="bg-white dark:bg-stone-850 rounded-3xl p-6 sm:p-10 border border-stone-200 dark:border-stone-800 shadow-lg">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
@@ -361,10 +407,10 @@ export const ContactView: React.FC = () => {
                       className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
                       <option value="General Inquiry">General Event Inquiry</option>
-                      <option value="Delegation Travel Assistance">Delegation Travel Assistance</option>
-                      <option value="Volunteer Seva">Volunteer Seva Enrollment</option>
-                      <option value="Cultural Performance Entry">Cultural Performance Entry</option>
-                      <option value="Media & Press Accreditation">Media & Press Accreditation</option>
+                      <option value="Accommodation Inquiry">Free Accommodation Inquiry</option>
+                      <option value="Programme Information">Programme Schedule Details</option>
+                      <option value="Travel Guidance">Travel & Transit Guidance</option>
+                      <option value="Offerings / Donation">Devotional Offerings / Donation</option>
                     </select>
                   </div>
                 </div>
@@ -394,9 +440,6 @@ export const ContactView: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Embedded Full Width Map */}
-      <FullWidthMap />
     </div>
   );
 };

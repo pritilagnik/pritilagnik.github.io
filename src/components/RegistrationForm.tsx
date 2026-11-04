@@ -227,7 +227,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
               }`}
             >
               <UserCheck className="w-4 h-4" />
-              <span>Delegate Registration</span>
+              <span>Register as attendee</span>
             </button>
 
             <button
@@ -686,7 +686,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 </div>
 
                 {formData.needAccommodation && (
-                  <div className="p-4 rounded-xl bg-amber-50/70 dark:bg-stone-800/80 border border-amber-200 dark:border-stone-700 space-y-2">
+                  <div className="p-4 rounded-xl bg-amber-50/70 dark:bg-stone-850 border border-amber-200 dark:border-stone-700 space-y-2.5">
+                    <div className="text-[11px] text-amber-900 dark:text-amber-200 bg-amber-100/70 dark:bg-amber-950/60 p-2.5 rounded-lg border border-amber-300/70 dark:border-amber-800 leading-relaxed font-medium">
+                      ℹ️ <strong>Pilgrim Accomodation Policy:</strong> Free Accomodation will be arranged for Guest/Participants from outside BTR (Bodoland Territorial Region) on request. However, the free accomodation facility is limited and early registration is requested.
+                    </div>
                     <label className="block text-xs font-semibold text-stone-800 dark:text-stone-200">
                       Select Preferred Accommodation Category:
                     </label>
@@ -696,7 +699,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       className="w-full px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-xs"
                     >
                       <option value="Ashram Dormitory (Dotma Niwas)">
-                        Ashram Dormitory (Dotma Niwas) - Complimentary with Satvik Prasad
+                        Ashram Dormitory (Dotma Niwas) - Free for Out-of-BTR Participants with Satvik Prasad
                       </option>
                       <option value="Eco-Friendly Tent Village (Campus)">
                         Eco-Friendly Tent Village (Campus) - Complimentary for Youth Delegations

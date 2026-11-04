@@ -42,18 +42,14 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <span>Spiritual Roots & Community Heritage</span>
-          </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
             About Priti-Lagnik Maha Mahotsav
           </h2>
-          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
-            Uniting hearts through the eternal tenets of universal love, self-culture, moral fortitude, and selfless community seva in Dotma, Kokrajhar.
+          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed italic font-serif">
+            "The ceremonial function which extols the being and begets prosperity is Utsav."
           </p>
 
-          {/* Sub-navigation Tabs (Overview / Committee / Organising Teams) */}
+          {/* Sub-navigation Tabs (Priti-Lagnik 2026 / Organising Committee / Volunteers) */}
           <div className="mt-8 inline-flex p-1.5 rounded-xl bg-stone-200/80 dark:bg-stone-800 border border-stone-300 dark:border-stone-700">
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('overview')}
@@ -63,7 +59,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                   : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
-              Mission & History
+              Priti-Lagnik 2026
             </button>
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('committee')}
@@ -73,7 +69,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                   : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
-              Central Committee
+              Organising Committee
             </button>
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('teams')}
@@ -83,12 +79,12 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                   : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
-              Organising Teams
+              Volunteers
             </button>
           </div>
         </div>
 
-        {/* Tab 1: Overview & History */}
+        {/* Tab 1: Priti-Lagnik 2026 Overview */}
         {activeSubTab === 'overview' && (
           <div className="space-y-16 animate-in fade-in duration-300">
             {/* Story & Interactive Video Showcase Grid */}
@@ -96,14 +92,20 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
               {/* Left Column: Mission Prose */}
               <div className="lg:col-span-7 space-y-5 text-stone-700 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
                 <div className="space-y-4">
-                  <h3 className="text-2xl sm:text-3xl font-serif-cinzel font-semibold text-stone-900 dark:text-stone-100">
-                    A Confluence of Faith, Humanity & Seva
-                  </h3>
-                  <p>
-                    The <strong>Priti-Lagnik Maha Mahotsav 2026</strong> marks a momentous milestone in the spiritual and cultural landscape of Bodoland Territorial Region (BTR) and Assam. <em>Priti</em> signifies unconditional, expansive love that embraces every creature without boundary; <em>Lagnik</em> embodies unwavering attachment and devotion to the living Ideal.
-                  </p>
-                  <p>
-                    Rooted in the humanitarian ethos of Sree Sree Thakur Anukulchandra, this commemorative gathering brings together people across diverse ethnic, linguistic, and spiritual backgrounds. For over eight decades, the Satsang movement in Assam has fostered inter-tribal solidarity, rural education, non-violent lifestyle, and moral rejuvenation.
+                  <p className="text-base sm:text-lg leading-relaxed text-stone-800 dark:text-stone-200">
+                    Priti-Lagnik Maha-Mahotsav 2026 is the District-Level Utsav of Kokrajhar District, going to be organised on 20th December, 2026 (Sunday) to commemorate the 139th Birth Anniversary of Sree Sree Thakur Anukulchandra. The celebration is conceptualised under the divine blessings and guidance of our supremely beloved Sree Sree Acharyadev and the divine inspiration of revered Sree Sree Abindada.
+                    <a
+                      href="#past-gatherings"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const el = document.getElementById('past-gatherings');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="inline-flex items-center gap-1 ml-2 font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-4 decoration-amber-400"
+                    >
+                      <span>Priti-Lagnik 2025</span>
+                      <span aria-hidden="true">&rarr;</span>
+                    </a>
                   </p>
                 </div>
 

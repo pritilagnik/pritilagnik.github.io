@@ -23,6 +23,7 @@ import { ContactView } from './components/ContactView';
 import { StatusCheckView } from './components/StatusCheckView';
 import { AdminDashboard } from './components/AdminDashboard';
 import { FeedbackModal } from './components/FeedbackModal';
+import { NearbyPlacesView } from './components/NearbyPlacesView';
 import { Footer } from './components/Footer';
 
 export default function App() {
@@ -131,7 +132,12 @@ export default function App() {
           )}
 
           {/* Dedicated Accommodation Page (Hotel & Ashram Niwas Contacts, Tariffs, Amenities, WhatsApp Booking) */}
-          {currentTab === 'accommodation' && <AccommodationView />}
+          {currentTab === 'accommodation' && (
+            <AccommodationView onNavigateRegister={scrollToRegistration} />
+          )}
+
+          {/* Dedicated Nearby Places to Visit Page */}
+          {currentTab === 'nearby' && <NearbyPlacesView />}
 
           {/* Dedicated Contact Page (Address, WhatsApp, Social Media, Detailed Map, Transit Guide: Airport, Railway, Landmarks) */}
           {currentTab === 'contact' && <ContactView />}
