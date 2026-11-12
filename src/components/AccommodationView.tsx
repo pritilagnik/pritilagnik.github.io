@@ -130,7 +130,7 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
               className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all ${
                 filterType === t
                   ? 'bg-amber-600 text-white shadow-md'
-                  : 'bg-white dark:bg-stone-850 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-amber-400'
+                  : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-amber-400'
               }`}
             >
               {t}
@@ -153,7 +153,7 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
             {filteredAccommodations.map((acc) => (
               <div
                 key={acc.id}
-                className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+                className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
               >
               <div>
                 <div className="flex items-center justify-between mb-3">
