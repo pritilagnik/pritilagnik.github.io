@@ -124,68 +124,1557 @@ export const BIRTH_ANNIVERSARY_INFO = {
 
 export const COMMITTEE_MEMBERS: CommitteeMember[] = [
   {
-    id: "c1",
-    name: "Sjt. Biseswar Ramchiary",
-    role: "Chief Patron & Community Elder",
-    category: "Patron",
-    location: "Kokrajhar, Assam",
-    phone: "+91 94350 11223"
+    "id": "cm-1",
+    "name": "Sjt. Hagrama Mohilary",
+    "role": "Patron",
+    "category": "Main Committee",
+    "location": "Hon'ble CEM, BTC"
   },
   {
-    id: "c2",
-    name: "Dr. Hitesh Chandra Roy",
-    role: "President, Central Reception Committee",
-    category: "Executive",
-    location: "Dotma, Kokrajhar",
-    phone: "+91 94350 44556"
+    "id": "cm-2",
+    "name": "Sjt. Pramod Boro",
+    "role": "Patron",
+    "category": "Main Committee",
+    "location": "Hon'ble MP, Rajya Sabha"
   },
   {
-    id: "c3",
-    name: "Sjt. Manoj Kumar Das",
-    role: "Working President",
-    category: "Executive",
-    location: "Bongaigaon / Dotma",
-    phone: "+91 94351 77889"
+    "id": "cm-3",
+    "name": "Sjt. Prakash Basumatary",
+    "role": "President",
+    "category": "Main Committee",
+    "location": "EM, BTC",
+    "phone": "8135825909"
   },
   {
-    id: "c4",
-    name: "Sjt. Pranab Jyoti Sarkar",
-    role: "General Secretary",
-    category: "Secretariat",
-    location: "Dotma, Kokrajhar",
-    phone: "+91 94350 99001"
+    "id": "cm-4",
+    "name": "Dr. Hemendra Nath Brahma",
+    "role": "Working President",
+    "category": "Main Committee",
+    "location": "Ex MLA"
   },
   {
-    id: "c5",
-    name: "Sjt. Dwijen Barman",
-    role: "Chief Finance Secretary & Treasurer",
-    category: "Finance",
-    location: "Fakiragram, Kokrajhar",
-    phone: "+91 94352 33445"
+    "id": "cm-5",
+    "name": "Shri Nitya Ranjan Brahma (S.P.R.)",
+    "role": "Working President",
+    "category": "Main Committee",
+    "location": ""
   },
   {
-    id: "c6",
-    name: "Smt. Anamika Basumatary",
-    role: "Joint Secretary (Matri Seva & Reception)",
-    category: "Secretariat",
-    location: "Dotma, Kokrajhar",
-    phone: "+91 94353 55667"
+    "id": "cm-6",
+    "name": "Shri Dharmeswar Roy (S.P.R.)",
+    "role": "Working President",
+    "category": "Main Committee",
+    "location": ""
   },
   {
-    id: "c7",
-    name: "Sjt. Niren Boro",
-    role: "Secretary, Cultural & Stage Affairs",
-    category: "Cultural",
-    location: "Kokrajhar Town",
-    phone: "+91 94354 77880"
+    "id": "cm-7",
+    "name": "Shri Raghunath Boro (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
   },
   {
-    id: "c8",
-    name: "Sjt. Tapas K. Bhattacharya",
-    role: "Convenor, Maha Annadan & Kitchen Logistics",
-    category: "Executive",
-    location: "Dhubri / Dotma",
-    phone: "+91 94355 99112"
+    "id": "cm-8",
+    "name": "Shri Nalendra Nath Narzary (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-9",
+    "name": "Shri Subrata Hore (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-10",
+    "name": "Shri Nimesh Chandra Baruah (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-11",
+    "name": "Shri Munindra Roy (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-12",
+    "name": "Shri Bhim Bahadur Gurung (S.P.R.)",
+    "role": "Vice President",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-13",
+    "name": "Shri Bakul Chandra Brahma",
+    "role": "General Secretary",
+    "category": "Main Committee",
+    "location": "Chairman, Dotma Town Committee",
+    "phone": "9435027290"
+  },
+  {
+    "id": "cm-14",
+    "name": "Shri Sibendra Brahma",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": "Erakdaw"
+  },
+  {
+    "id": "cm-15",
+    "name": "Shri Bibek Ananda Dey",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-16",
+    "name": "Shri Kumud Chandra Brahma",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-17",
+    "name": "Shri Bibeka Roy",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-18",
+    "name": "Shri Sudem Chandra Brahma",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-19",
+    "name": "Shri Samar Ray",
+    "role": "Joint Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-20",
+    "name": "Shri Gautam Basumatary",
+    "role": "Secretary",
+    "category": "Main Committee",
+    "location": "JK"
+  },
+  {
+    "id": "cm-21",
+    "name": "Shri Jogeswar Das",
+    "role": "Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-22",
+    "name": "Shri Sharanidindu Brahma",
+    "role": "Secretary",
+    "category": "Main Committee",
+    "location": "Bidung"
+  },
+  {
+    "id": "cm-23",
+    "name": "Shri Dimbeswar Upadhyay",
+    "role": "Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-24",
+    "name": "Shri Dipayan Narzary",
+    "role": "Secretary",
+    "category": "Main Committee",
+    "location": "Nuthai, JK"
+  },
+  {
+    "id": "cm-25",
+    "name": "Shri Ramath Kumar Narzary",
+    "role": "Cashier",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-26",
+    "name": "Shri Rajkumar Roy",
+    "role": "Asst. Cashier",
+    "category": "Main Committee",
+    "location": "JK"
+  },
+  {
+    "id": "cm-27",
+    "name": "Shri Jwngsar Narzary",
+    "role": "Asst. Cashier",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-28",
+    "name": "Shri Pradip Saha",
+    "role": "Asst. Cashier",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-29",
+    "name": "Dr. Surath Narzary (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-30",
+    "name": "Shri Nagendra Brahma (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-31",
+    "name": "Shri Gaur Kishore Dey Joardar (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-32",
+    "name": "Shri Prashanta Kumar Saha Roy (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-33",
+    "name": "Shri Abani Kumar Brahma (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-34",
+    "name": "Shri Manaranjan Roy (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-35",
+    "name": "Shri Rampal Singh (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-36",
+    "name": "Shri Rajendra Nath Narzary (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-37",
+    "name": "Shri Indra Mahan Basumatary (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-38",
+    "name": "Shri Abani Kumar Brahma (S.P.R.)",
+    "role": "Adviser to Main Committee",
+    "category": "Main Committee",
+    "location": "Listed twice in source"
+  },
+  {
+    "id": "cm-39",
+    "name": "Shri Gautam Dey Joardar",
+    "role": "Adviser to Sub-Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-40",
+    "name": "Shri Pritisundar Chakrabarty",
+    "role": "Adviser to Sub-Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-41",
+    "name": "Dr. Sudev Chandra Basumatary",
+    "role": "Adviser to Sub-Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-42",
+    "name": "Shri Sushanta Narzary",
+    "role": "Adviser to Sub-Committee",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-43",
+    "name": "Rhibhu Brahma",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-44",
+    "name": "Satyananda Brahma",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-45",
+    "name": "Suraj Saha",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-46",
+    "name": "Sotta Sundar Roy",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-47",
+    "name": "Raj Thapa",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-48",
+    "name": "Shri Sambit Basumatary",
+    "role": "Office Secretary",
+    "category": "Main Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-49",
+    "name": "Dr. Sushanta Narzary (SPR)",
+    "role": "Chairman",
+    "category": "Finance Sub-Committee",
+    "location": "Kokrajhar",
+    "phone": "9954276091"
+  },
+  {
+    "id": "cm-50",
+    "name": "Nathuram Islary (SPR)",
+    "role": "Vice Chairman",
+    "category": "Finance Sub-Committee",
+    "location": "Gossaigaon",
+    "phone": "7002201331"
+  },
+  {
+    "id": "cm-51",
+    "name": "Dhritabrata Narzary (SPR)",
+    "role": "Vice Chairman",
+    "category": "Finance Sub-Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-52",
+    "name": "Jama Daimary",
+    "role": "Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Amlaiguri",
+    "phone": "9859985739"
+  },
+  {
+    "id": "cm-53",
+    "name": "Birkhang Boro",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Intibil"
+  },
+  {
+    "id": "cm-54",
+    "name": "Jwngsar Narzary",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Kokrajhar",
+    "phone": "7002131960"
+  },
+  {
+    "id": "cm-55",
+    "name": "Nandalal Gurung",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Saralpara",
+    "phone": "7896660774"
+  },
+  {
+    "id": "cm-56",
+    "name": "Bimal Boro",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Kachugaon",
+    "phone": "9435127054"
+  },
+  {
+    "id": "cm-57",
+    "name": "Chakramani Basumatary",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Kokrajhar",
+    "phone": "9678778311"
+  },
+  {
+    "id": "cm-58",
+    "name": "Ansuman Islary",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Gossaigaon",
+    "phone": "7002622584"
+  },
+  {
+    "id": "cm-59",
+    "name": "Jogeswar Das",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Kokrajhar",
+    "phone": "8638004677"
+  },
+  {
+    "id": "cm-60",
+    "name": "Subal Narzary",
+    "role": "Joint Convenor",
+    "category": "Finance Sub-Committee",
+    "location": "Gossaigaon",
+    "phone": "9957804486"
+  },
+  {
+    "id": "cm-61",
+    "name": "Ramat Narzary",
+    "role": "Treasurer",
+    "category": "Finance Sub-Committee",
+    "location": "Intibil",
+    "phone": "8135810244"
+  },
+  {
+    "id": "cm-62",
+    "name": "Pradip Saha",
+    "role": "Asstt. Treasurer",
+    "category": "Finance Sub-Committee",
+    "location": "Dotma",
+    "phone": "6000311713"
+  },
+  {
+    "id": "cm-63",
+    "name": "Shri Chandan Majumdar (SPR)",
+    "role": "Chairman",
+    "category": "Bhandara Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-64",
+    "name": "Shri Manik Roy",
+    "role": "Vice Chairman",
+    "category": "Bhandara Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-65",
+    "name": "Shri Pabitra Upadhyay",
+    "role": "Vice Chairman",
+    "category": "Bhandara Sub-Committee",
+    "location": "Patagaon"
+  },
+  {
+    "id": "cm-66",
+    "name": "Shri Shana Gopal Saha",
+    "role": "Convenor",
+    "category": "Bhandara Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-67",
+    "name": "Shri Samarendra Sarkar",
+    "role": "Joint Convenor",
+    "category": "Bhandara Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-68",
+    "name": "Shri Ranjay Mushahary",
+    "role": "Joint Convenor",
+    "category": "Bhandara Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-69",
+    "name": "Sudem Narzary",
+    "role": "Responsible Person (Amlaiguri Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Amlaiguri Satsang Vihar",
+    "phone": "6000849767"
+  },
+  {
+    "id": "cm-70",
+    "name": "Samar Roy",
+    "role": "Responsible Person (Gossaigaon Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Gossaigaon Satsang Vihar",
+    "phone": "9365900719"
+  },
+  {
+    "id": "cm-71",
+    "name": "Drithi Ranjan Roy",
+    "role": "Responsible Person (Srinagar Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Srinagar Satsang Vihar",
+    "phone": "7002581523"
+  },
+  {
+    "id": "cm-72",
+    "name": "Biraj Ghosh",
+    "role": "Responsible Person (Srirampur Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Srirampur Satsang Kendra",
+    "phone": "8638182723"
+  },
+  {
+    "id": "cm-73",
+    "name": "Bidhyasagar Basumatary",
+    "role": "Responsible Person (Saraibil Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Saraibil Satsang Vihar",
+    "phone": "8135872642"
+  },
+  {
+    "id": "cm-74",
+    "name": "Miniswrang Mushahary",
+    "role": "Responsible Person (Anchalik Satsang Vihar, Thuribari)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Anchalik Satsang Vihar, Thuribari",
+    "phone": "8135097485"
+  },
+  {
+    "id": "cm-75",
+    "name": "Sudem Brahma",
+    "role": "Responsible Person (Dotma Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Dotma Satsang Kendra",
+    "phone": "9957090439"
+  },
+  {
+    "id": "cm-76",
+    "name": "Jogeswar Das",
+    "role": "Responsible Person (Kokrajhar Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Kokrajhar Satsang Vihar",
+    "phone": "8638004677"
+  },
+  {
+    "id": "cm-77",
+    "name": "Jitendra Nath Medhi",
+    "role": "Responsible Person (Putkibari Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Putkibari Satsang Kendra",
+    "phone": "6901914127"
+  },
+  {
+    "id": "cm-78",
+    "name": "Sanswrang Basumatary",
+    "role": "Responsible Person (Kachugaon Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Kachugaon Satsang Kendra",
+    "phone": "8135076204"
+  },
+  {
+    "id": "cm-79",
+    "name": "Tapan Paul",
+    "role": "Responsible Person (Tipkai Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Tipkai Satsang Kendra",
+    "phone": "9613570594"
+  },
+  {
+    "id": "cm-80",
+    "name": "Bablu Saw",
+    "role": "Responsible Person (Damrapara Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Damrapara Satsang Kendra",
+    "phone": "9707373511"
+  },
+  {
+    "id": "cm-81",
+    "name": "Ajit Kr. Barman",
+    "role": "Responsible Person (Gokulkhata Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Gokulkhata Satsang Kendra",
+    "phone": "9101852712"
+  },
+  {
+    "id": "cm-82",
+    "name": "Nathuram Islary",
+    "role": "Responsible Person (Bhadugiri Satsang Center)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Bhadugiri Satsang Center",
+    "phone": "7002201331"
+  },
+  {
+    "id": "cm-83",
+    "name": "Nripendra Narzary",
+    "role": "Responsible Person (Thandabajar Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Thandabajar Satsang Kendra",
+    "phone": "8134856094"
+  },
+  {
+    "id": "cm-84",
+    "name": "Shilpi Ghosh",
+    "role": "Responsible Person (Bhowraguri Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Bhowraguri Satsang Kendra",
+    "phone": "7896869806"
+  },
+  {
+    "id": "cm-85",
+    "name": "Jagadish Rai Singha",
+    "role": "Responsible Person (Chithila Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Chithila Satsang Kendra",
+    "phone": "8136022811"
+  },
+  {
+    "id": "cm-86",
+    "name": "Gautam Debnath",
+    "role": "Responsible Person (Shakti Ashram Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Shakti Ashram Satsang Kendra",
+    "phone": "6001871127"
+  },
+  {
+    "id": "cm-87",
+    "name": "Udit Ch. Deka",
+    "role": "Responsible Person (Fakiragram Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Fakiragram Satsang Kendra",
+    "phone": "9957983203"
+  },
+  {
+    "id": "cm-88",
+    "name": "Sudharshan Rout",
+    "role": "Responsible Person (Serfanguri Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Serfanguri Satsang Vihar",
+    "phone": "9954141925"
+  },
+  {
+    "id": "cm-89",
+    "name": "Sriraj Gurung",
+    "role": "Responsible Person (Saralpara Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Saralpara Satsang Kendra",
+    "phone": "8133854154"
+  },
+  {
+    "id": "cm-90",
+    "name": "Nirmalya Barua",
+    "role": "Responsible Person (Salakati Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Salakati Satsang Kendra",
+    "phone": "8638285427"
+  },
+  {
+    "id": "cm-91",
+    "name": "Bibeka Roy",
+    "role": "Responsible Person (Intibil Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Intibil Satsang Kendra",
+    "phone": "9954574809"
+  },
+  {
+    "id": "cm-92",
+    "name": "Saneswar Brahma",
+    "role": "Responsible Person (Patgaon Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Patgaon Satsang Kendra",
+    "phone": "9954986590"
+  },
+  {
+    "id": "cm-93",
+    "name": "Alokesh Barman",
+    "role": "Responsible Person (Joraigaon Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Joraigaon Satsang Kendra",
+    "phone": "8471945252"
+  },
+  {
+    "id": "cm-94",
+    "name": "Ashok Basumatary",
+    "role": "Responsible Person (Haltugaon Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Haltugaon Satsang Kendra",
+    "phone": "9435512186"
+  },
+  {
+    "id": "cm-95",
+    "name": "Jiban Basumatary",
+    "role": "Responsible Person (Magurmari Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Magurmari Satsang Kendra",
+    "phone": "6002824027"
+  },
+  {
+    "id": "cm-96",
+    "name": "Parag Ranjan Roy Sarkar",
+    "role": "Responsible Person (Hatidhura Satsang Vihar)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Hatidhura Satsang Vihar",
+    "phone": "8812872980"
+  },
+  {
+    "id": "cm-97",
+    "name": "Biju Sarkar",
+    "role": "Responsible Person (Kortimari Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Kortimari Satsang Kendra",
+    "phone": "9957896634"
+  },
+  {
+    "id": "cm-98",
+    "name": "Shibaram Brahma",
+    "role": "Responsible Person (Malalaguri Satsang Kendra)",
+    "category": "Information and Communication Sub-Committee",
+    "location": "Malalaguri Satsang Kendra",
+    "phone": "8753987939"
+  },
+  {
+    "id": "cm-99",
+    "name": "Shri Sanjay Kr. Brahma (JK)",
+    "role": "Chairman",
+    "category": "Publicity Sub-Committee",
+    "location": "Futkibari"
+  },
+  {
+    "id": "cm-100",
+    "name": "Dipayan Narzary (JK)",
+    "role": "Vice Chairman",
+    "category": "Publicity Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-101",
+    "name": "Shri Sanjay Basumatary",
+    "role": "Convenor",
+    "category": "Publicity Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-102",
+    "name": "Bablu Shaw",
+    "role": "Joint Convenor",
+    "category": "Publicity Sub-Committee",
+    "location": "Damrapara"
+  },
+  {
+    "id": "cm-103",
+    "name": "Rajkumar Roy (JK)",
+    "role": "Chairman",
+    "category": "Local Sub-Committee",
+    "location": "Dotma",
+    "phone": "7896401821"
+  },
+  {
+    "id": "cm-104",
+    "name": "Jiban Basumatary",
+    "role": "Vice Chairman",
+    "category": "Local Sub-Committee",
+    "location": "Dotma",
+    "phone": "9365323928"
+  },
+  {
+    "id": "cm-105",
+    "name": "Erakdaw Brahma",
+    "role": "Chief Convenor",
+    "category": "Local Sub-Committee",
+    "location": "Thuribari",
+    "phone": "9101175816"
+  },
+  {
+    "id": "cm-106",
+    "name": "Bidung Brahma",
+    "role": "Convenor",
+    "category": "Local Sub-Committee",
+    "location": "Dotma",
+    "phone": "7002275624"
+  },
+  {
+    "id": "cm-107",
+    "name": "Alongbar Brahma",
+    "role": "Convenor",
+    "category": "Local Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-108",
+    "name": "Deboraj Brahma",
+    "role": "Convenor",
+    "category": "Local Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-109",
+    "name": "Ranendra Narzary",
+    "role": "Convenor",
+    "category": "Local Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-110",
+    "name": "Smt. Saroti Daimary",
+    "role": "Chairperson",
+    "category": "Matri Shakti Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-111",
+    "name": "Mrs. Jakhina Narzary",
+    "role": "Vice Chair",
+    "category": "Matri Shakti Sub-Committee",
+    "location": "Saraibil"
+  },
+  {
+    "id": "cm-112",
+    "name": "Smt. Maya Thapa",
+    "role": "Convenor",
+    "category": "Matri Shakti Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-113",
+    "name": "Smt. Anamika Hore",
+    "role": "Joint Convenor",
+    "category": "Matri Shakti Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-114",
+    "name": "Smt. Haripriya Narzary",
+    "role": "Joint Convenor",
+    "category": "Matri Shakti Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-115",
+    "name": "Dr. Nawadeep Basumatary",
+    "role": "Chairman",
+    "category": "Medical Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-116",
+    "name": "Dr. Swarnadip mandal",
+    "role": "Vice Chairman",
+    "category": "Medical Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-117",
+    "name": "Shri Bhaskar Brahma",
+    "role": "Convenor",
+    "category": "Medical Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-118",
+    "name": "Shri Alok Ghosh",
+    "role": "Joint Convenor",
+    "category": "Medical Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-119",
+    "name": "Dr. Jipen Narzary",
+    "role": "Joint Convenor",
+    "category": "Medical Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-120",
+    "name": "Shri Vinod Yadav",
+    "role": "Chairman",
+    "category": "Transportation, Parking and Traffic Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-121",
+    "name": "Shri Ranen Basumatary",
+    "role": "Vice Chairman",
+    "category": "Transportation, Parking and Traffic Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-122",
+    "name": "Alongbar Brahma",
+    "role": "Convenor",
+    "category": "Transportation, Parking and Traffic Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-123",
+    "name": "Bablu Shaw",
+    "role": "Joint Convenor",
+    "category": "Transportation, Parking and Traffic Sub-Committee",
+    "location": "Damrapara"
+  },
+  {
+    "id": "cm-124",
+    "name": "Surjya Kanta Daimary",
+    "role": "Joint Convenor",
+    "category": "Transportation, Parking and Traffic Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-125",
+    "name": "Shri Bigrai Brahma",
+    "role": "Chairman",
+    "category": "Cultural Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-126",
+    "name": "Shri Debaraj Brahma",
+    "role": "Vice Chairman",
+    "category": "Cultural Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-127",
+    "name": "Smt. Chikiri Mahilary",
+    "role": "Vice Chairman",
+    "category": "Cultural Sub-Committee",
+    "location": "Serfanguri"
+  },
+  {
+    "id": "cm-128",
+    "name": "Shri Chakradhar Narzary",
+    "role": "Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-129",
+    "name": "Sameswar Mohilary",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-130",
+    "name": "Narayan Saha",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-131",
+    "name": "Sukriti Sutradhar",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-132",
+    "name": "Aniruddha Basumatary",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Ghoskata"
+  },
+  {
+    "id": "cm-133",
+    "name": "Biplab Bhattacharjee",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-134",
+    "name": "Bhudev Basumatary",
+    "role": "Joint Convenor",
+    "category": "Cultural Sub-Committee",
+    "location": "Patgaon"
+  },
+  {
+    "id": "cm-135",
+    "name": "Jeevan Kr. Brahma",
+    "role": "Chairman",
+    "category": "Refreshment Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-136",
+    "name": "Bijay Basumatary",
+    "role": "Vice Chairman",
+    "category": "Refreshment Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-137",
+    "name": "Haribhushan Mushahary",
+    "role": "Convenor",
+    "category": "Refreshment Sub-Committee",
+    "location": ""
+  },
+  {
+    "id": "cm-138",
+    "name": "Ratanlal Thapa",
+    "role": "Joint Convenor",
+    "category": "Refreshment Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-139",
+    "name": "Bikash Ray",
+    "role": "Joint Convenor",
+    "category": "Refreshment Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-140",
+    "name": "Shri Dhritabrata Narzary (SPR)",
+    "role": "Chairman",
+    "category": "DP Works Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-141",
+    "name": "Shri Ashish Kr. Roy",
+    "role": "Vice Chairman",
+    "category": "DP Works Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-142",
+    "name": "Jiten Talukdar",
+    "role": "Convenor",
+    "category": "DP Works Sub-Committee",
+    "location": "Chithila"
+  },
+  {
+    "id": "cm-143",
+    "name": "Raju Borgoyary",
+    "role": "Joint Convenor",
+    "category": "DP Works Sub-Committee",
+    "location": "Saraibil"
+  },
+  {
+    "id": "cm-144",
+    "name": "Badhuram Mushahary",
+    "role": "Joint Convenor",
+    "category": "DP Works Sub-Committee",
+    "location": "Kachugaon"
+  },
+  {
+    "id": "cm-145",
+    "name": "Sanjit Saha",
+    "role": "Chairman",
+    "category": "Market Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-146",
+    "name": "Gautam Saha",
+    "role": "Vice Chairman",
+    "category": "Market Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-147",
+    "name": "Jaleswar Mushahary",
+    "role": "Vice Chairman",
+    "category": "Market Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-148",
+    "name": "Naresh Sarkar",
+    "role": "Convenor",
+    "category": "Market Sub-Committee",
+    "location": "Intibil"
+  },
+  {
+    "id": "cm-149",
+    "name": "Mukundo Basumatary",
+    "role": "Joint Convenor",
+    "category": "Market Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-150",
+    "name": "Arup Kanti Dutta",
+    "role": "Chairman",
+    "category": "Water Supply Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-151",
+    "name": "Shiba Nanda Mushahary",
+    "role": "Vice-Chairman",
+    "category": "Water Supply Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-152",
+    "name": "Ashen Brahma",
+    "role": "Convenor",
+    "category": "Water Supply Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-153",
+    "name": "Aditya Narzary",
+    "role": "Joint Convenor",
+    "category": "Water Supply Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-154",
+    "name": "Pradip Shil",
+    "role": "Chairman",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-155",
+    "name": "Atul Kundu",
+    "role": "Vice Chairman",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Bhaoraguri"
+  },
+  {
+    "id": "cm-156",
+    "name": "Gaurab Bagsi",
+    "role": "Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-157",
+    "name": "Bijay Rakit",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Bhaoraguri"
+  },
+  {
+    "id": "cm-158",
+    "name": "Indra Mahilary",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-159",
+    "name": "Dwimalu Basumatary",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Salakati"
+  },
+  {
+    "id": "cm-160",
+    "name": "Deep Saha",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-161",
+    "name": "Gobinda Dutta",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-162",
+    "name": "Madhu Pandit",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-163",
+    "name": "Sayan Chaki",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-164",
+    "name": "Ajay Choudhury",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-165",
+    "name": "Noni Gopal Roy",
+    "role": "Joint Convenor",
+    "category": "Electricity and Sound Sub-Committee",
+    "location": "Intibil"
+  },
+  {
+    "id": "cm-166",
+    "name": "Shri Rana Brahma",
+    "role": "Chairman",
+    "category": "Accommodation Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-167",
+    "name": "Shri Vidya Sagar Basumatary",
+    "role": "Vice Chairman",
+    "category": "Accommodation Sub-Committee",
+    "location": "Saraibil"
+  },
+  {
+    "id": "cm-168",
+    "name": "Nipon Ray",
+    "role": "Convenor",
+    "category": "Accommodation Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-169",
+    "name": "Birash Ghosh",
+    "role": "Joint Convenor",
+    "category": "Accommodation Sub-Committee",
+    "location": "Srirampur"
+  },
+  {
+    "id": "cm-170",
+    "name": "Gutal Brahma",
+    "role": "Joint Convenor",
+    "category": "Accommodation Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-171",
+    "name": "Shri Kanteswar Mohilary (SPR)",
+    "role": "Chairman",
+    "category": "Diksha Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-172",
+    "name": "Shri Gaur Kishore Dey Juardar (SPR)",
+    "role": "Vice Chairman",
+    "category": "Diksha Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-173",
+    "name": "Shri Dharmeswar Roy (SPR)",
+    "role": "Convenor",
+    "category": "Diksha Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-174",
+    "name": "Jibon Basumatary (JK)",
+    "role": "Joint Convenor",
+    "category": "Diksha Sub-Committee",
+    "location": "Ghoskata"
+  },
+  {
+    "id": "cm-175",
+    "name": "Shri Prafulla Brahma (SPR)",
+    "role": "Chairman",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-176",
+    "name": "Shri Gaur Kishore Dey Juardar (SPR)",
+    "role": "Vice Chairman",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Gossaigaon"
+  },
+  {
+    "id": "cm-177",
+    "name": "Shri Baladev Mushahary",
+    "role": "Convenor",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-178",
+    "name": "Dr. Sudev Ch. Basumatary",
+    "role": "Joint Convenor",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Patgaon"
+  },
+  {
+    "id": "cm-179",
+    "name": "Shri Shyam Kumar Brahma",
+    "role": "Joint Convenor",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-180",
+    "name": "Lalit Mahan Basumatary",
+    "role": "Joint Convenor",
+    "category": "VIP Reception Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-181",
+    "name": "Shri Nripendra Narzary (SPR)",
+    "role": "Chairman",
+    "category": "Volunteer Sub-Committee",
+    "location": "Panbari"
+  },
+  {
+    "id": "cm-182",
+    "name": "Shri Sibaram Brahma",
+    "role": "Vice Chairman",
+    "category": "Volunteer Sub-Committee",
+    "location": "Malaguri"
+  },
+  {
+    "id": "cm-183",
+    "name": "Shri Iragdao Basumatary",
+    "role": "Convenor",
+    "category": "Volunteer Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-184",
+    "name": "Shri Bireswar Basumatary",
+    "role": "Joint Convenor",
+    "category": "Volunteer Sub-Committee",
+    "location": "Saraibil"
+  },
+  {
+    "id": "cm-185",
+    "name": "Shri Biswasing Mushahary",
+    "role": "Joint Convenor",
+    "category": "Volunteer Sub-Committee",
+    "location": "Kachugaon"
+  },
+  {
+    "id": "cm-186",
+    "name": "Shri Nripendra Narzary (SPR)",
+    "role": "Chairman",
+    "category": "Programme Arranger Sub-Committee",
+    "location": "Panbari"
+  },
+  {
+    "id": "cm-187",
+    "name": "Shri Sibaram Brahma",
+    "role": "Vice Chairman",
+    "category": "Programme Arranger Sub-Committee",
+    "location": "Malaguri"
+  },
+  {
+    "id": "cm-188",
+    "name": "Shri Iragdao Basumatary",
+    "role": "Convenor",
+    "category": "Programme Arranger Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-189",
+    "name": "Shri Bireswar Basumatary",
+    "role": "Joint Convenor",
+    "category": "Programme Arranger Sub-Committee",
+    "location": "Saraibil"
+  },
+  {
+    "id": "cm-190",
+    "name": "Shri Biswasing Mushahary",
+    "role": "Joint Convenor",
+    "category": "Programme Arranger Sub-Committee",
+    "location": "Kachugaon"
+  },
+  {
+    "id": "cm-191",
+    "name": "Baladev Muchahary",
+    "role": "Chairman",
+    "category": "Gate Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-192",
+    "name": "Erakdao Brahma",
+    "role": "Vice Chairman",
+    "category": "Gate Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-193",
+    "name": "Bidung Brahma",
+    "role": "Convenor",
+    "category": "Gate Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-194",
+    "name": "Mukundo Brahma",
+    "role": "Joint Convenor",
+    "category": "Gate Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-195",
+    "name": "Birdao Narzary",
+    "role": "Joint Convenor",
+    "category": "Gate Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-196",
+    "name": "Pabitra Mushahary",
+    "role": "Joint Convenor",
+    "category": "Gate Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-197",
+    "name": "Dr. Phungkha Mohilary",
+    "role": "Chairman",
+    "category": "Official Permission Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-198",
+    "name": "Bihung Brahma",
+    "role": "Convenor",
+    "category": "Official Permission Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-199",
+    "name": "Irakdao Basumatary",
+    "role": "Joint Convenor",
+    "category": "Official Permission Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-200",
+    "name": "Dhritabrata Narzary",
+    "role": "Joint Convenor",
+    "category": "Official Permission Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-201",
+    "name": "Haribhushan Mushahary",
+    "role": "Joint Convenor",
+    "category": "Official Permission Sub-Committee",
+    "location": "Magurmari"
+  },
+  {
+    "id": "cm-202",
+    "name": "Tridibesh Narzary (SPR)",
+    "role": "Chairman",
+    "category": "Pandal and Bargaining Sub-Committee",
+    "location": "Amlaiguri"
+  },
+  {
+    "id": "cm-203",
+    "name": "Sudem Ch. Brahma",
+    "role": "Convenor",
+    "category": "Pandal and Bargaining Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-204",
+    "name": "Shri Nitya Binode Wary (SPR)",
+    "role": "Chairman",
+    "category": "VIP Invitation Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-205",
+    "name": "Shri Jwngsar Narzary",
+    "role": "Convenor",
+    "category": "VIP Invitation Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-206",
+    "name": "Dr. Surath Narzary (SPR)",
+    "role": "Chairman",
+    "category": "Souvenir Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-207",
+    "name": "Kanteswar Mahilary (SPR)",
+    "role": "Vice-Chairman",
+    "category": "Souvenir Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-208",
+    "name": "Jwngsar Narzary",
+    "role": "Chief Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Kokrajhar"
+  },
+  {
+    "id": "cm-209",
+    "name": "Jaynal Mahilary",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Thuribari"
+  },
+  {
+    "id": "cm-210",
+    "name": "Dr. Bihung Brahma",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-211",
+    "name": "Dr. Sudev Basumatary",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Dotma"
+  },
+  {
+    "id": "cm-212",
+    "name": "Dr. Mahananda Brahma",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Intibil"
+  },
+  {
+    "id": "cm-213",
+    "name": "Dimbeswar Upadhya",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Patgaon"
+  },
+  {
+    "id": "cm-214",
+    "name": "Bibeka Roy",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Intibil"
+  },
+  {
+    "id": "cm-215",
+    "name": "Priti Prasun Debnath",
+    "role": "Editor",
+    "category": "Souvenir Sub-Committee",
+    "location": "Kokrajhar"
   }
 ];
 

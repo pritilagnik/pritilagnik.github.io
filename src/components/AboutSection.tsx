@@ -8,7 +8,8 @@ import {
   Utensils,
   Sparkles,
   MapPin,
-  Calendar
+  Calendar,
+  Search
 } from 'lucide-react';
 import { AboutSubTab, CommitteeMember, OrganisingTeam } from '../types';
 import {
@@ -32,6 +33,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
   const [organisingTeams, setOrganisingTeams] = useState<OrganisingTeam[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedCommitteeCategory, setSelectedCommitteeCategory] = useState<string>('All');
+  const [committeeSearch, setCommitteeSearch] = useState<string>('');
 
   useEffect(() => {
     let mounted = true;
@@ -53,9 +55,19 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
     };
   }, []);
 
-  const filteredCommittee = selectedCommitteeCategory === 'All'
-    ? committeeMembers
-    : committeeMembers.filter(m => m.category === selectedCommitteeCategory);
+  const availableCategories = ['All', ...Array.from(new Set(committeeMembers.map(m => m.category))).sort()];
+
+  const filteredCommittee = committeeMembers.filter(m => {
+    const matchesCat = selectedCommitteeCategory === 'All' || m.category === selectedCommitteeCategory;
+    const searchLower = committeeSearch.trim().toLowerCase();
+    const matchesSearch = !searchLower ||
+      m.name.toLowerCase().includes(searchLower) ||
+      m.role.toLowerCase().includes(searchLower) ||
+      m.category.toLowerCase().includes(searchLower) ||
+      (m.location && m.location.toLowerCase().includes(searchLower)) ||
+      (m.phone && m.phone.toLowerCase().includes(searchLower));
+    return matchesCat && matchesSearch;
+  });
 
   return (
     <section id="about" className="py-16 sm:py-24 bg-amber-50/50 dark:bg-stone-900/40 transition-colors">
@@ -207,28 +219,45 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         {/* Tab 2: Committee Members */}
         {activeSubTab === 'committee' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            {/* Filter buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {['All', 'Patron', 'Executive', 'Secretariat', 'Finance', 'Cultural'].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCommitteeCategory(cat)}
-                  className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                    selectedCommitteeCategory === cat
-                      ? 'bg-amber-600 text-white shadow-sm'
-                      : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-amber-400'
-                  }`}
+            {/* Search and Category Control Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-stone-850 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+              {/* Search input */}
+              <div className="relative w-full sm:w-72">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={committeeSearch}
+                  onChange={(e) => setCommitteeSearch(e.target.value)}
+                  placeholder="Search office bearers, roles..."
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              {/* Dynamic Category Selector */}
+              <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                <select
+                  value={selectedCommitteeCategory}
+                  onChange={(e) => setSelectedCommitteeCategory(e.target.value)}
+                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-50 dark:bg-stone-800 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
-                  {cat}
-                </button>
-              ))}
+                  {availableCategories.map(cat => (
+                    <option key={cat} value={cat}>
+                      {cat === 'All' ? 'All Sub-Committees & Main Committee' : cat}
+                    </option>
+                  ))}
+                </select>
+
+                <span className="text-xs font-medium text-stone-500 dark:text-stone-400 whitespace-nowrap px-2">
+                  Showing {filteredCommittee.length} of {committeeMembers.length} Office Bearers
+                </span>
+              </div>
             </div>
 
             {/* Committee Cards Grid */}
             {loadingData ? (
               <div className="text-center py-12 text-sm text-stone-500">Loading committee members...</div>
             ) : filteredCommittee.length === 0 ? (
-              <div className="text-center py-12 text-sm text-stone-500">No committee members found in this category.</div>
+              <div className="text-center py-12 text-sm text-stone-500">No committee members found matching your filter.</div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredCommittee.map((member) => (
@@ -237,29 +266,33 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                     className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
                   >
                     <div>
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 text-amber-950 font-bold text-lg flex items-center justify-center mb-4 shadow-sm">
-                        {member.name.split(' ').slice(1, 3).map(n => n[0]).join('') || member.name[0]}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 text-amber-950 font-bold text-sm flex items-center justify-center shadow-sm">
+                          {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
+                        </div>
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-right truncate max-w-[140px]" title={member.category}>
+                          {member.category}
+                        </span>
                       </div>
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400 block mb-1">
-                        {member.category} Committee
-                      </span>
+
                       <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
                         {member.name}
                       </h4>
-                      <p className="text-xs font-medium text-stone-600 dark:text-stone-400 mt-1">
+                      <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 mt-1">
                         {member.role}
                       </p>
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-500 dark:text-stone-400 flex items-center justify-between">
-                      <span>📍 {member.location}</span>
+                      <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Dotma, Kokrajhar'}</span>
                       {member.phone && (
                         <a
                           href={`tel:${member.phone}`}
-                          className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                          className="font-semibold text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0 flex items-center gap-1"
                           title="Call member"
                         >
                           <Phone className="w-3.5 h-3.5" />
+                          <span>{member.phone}</span>
                         </a>
                       )}
                     </div>

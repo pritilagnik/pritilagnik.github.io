@@ -718,43 +718,74 @@ export function getLocalFeedback(): FeedbackRecord[] {
   }
 }
 
+// Helper to remove undefined properties before saving objects to Firestore
+function cleanFirestoreObject<T extends Record<string, any>>(obj: T): Record<string, any> {
+  const clean: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined) {
+      clean[key] = value;
+    }
+  }
+  return clean;
+}
+
 // ==================== COMMITTEE MEMBERS ====================
 const COMMITTEE_COL = 'committee_members';
 
 export async function fetchCommitteeMembers(): Promise<CommitteeMember[]> {
+  const mergedMap = new Map<string, CommitteeMember>();
+
+  // 1. Seed defaults first
+  DEFAULT_COMMITTEE_MEMBERS.forEach(m => mergedMap.set(m.id, m));
+
+  // 2. Fetch from Firestore
   try {
     const colRef = collection(db, COMMITTEE_COL);
     const snap = await getDocs(colRef);
+    const existingIds = new Set<string>();
     if (!snap.empty) {
-      const records: CommitteeMember[] = [];
       snap.forEach(docSnap => {
-        records.push({ ...docSnap.data() as CommitteeMember, id: docSnap.id });
+        const data = docSnap.data() as CommitteeMember;
+        const id = data.id || docSnap.id;
+        mergedMap.set(id, { ...data, id });
+        existingIds.add(id);
       });
-      localStorage.setItem('pritilagnik_committee', JSON.stringify(records));
-      return records;
-    } else {
-      // First time initialization in Firestore with default members
-      try {
-        for (const member of DEFAULT_COMMITTEE_MEMBERS) {
-          await setDoc(doc(db, COMMITTEE_COL, member.id), member);
-        }
-      } catch (seedErr) {
-        console.warn('Could not seed initial committee members to Firestore:', seedErr);
-      }
+    }
+
+    // Seed any missing default committee members into Firestore
+    const missingDefaults = DEFAULT_COMMITTEE_MEMBERS.filter(m => !existingIds.has(m.id));
+    if (missingDefaults.length > 0) {
+      Promise.allSettled(
+        missingDefaults.map(member =>
+          setDoc(doc(db, COMMITTEE_COL, member.id), cleanFirestoreObject(member))
+        )
+      ).catch(seedErr => console.warn('Could not seed missing committee members to Firestore:', seedErr));
     }
   } catch (err) {
     console.warn('Fetching committee members failed, fallback to local cache:', err);
   }
 
+  // 3. Merge with local storage cache
   try {
     const stored = localStorage.getItem('pritilagnik_committee');
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const local: CommitteeMember[] = JSON.parse(stored);
+      local.forEach(m => {
+        mergedMap.set(m.id, m);
+      });
+    }
   } catch (e) {}
 
-  return DEFAULT_COMMITTEE_MEMBERS;
+  const mergedList = Array.from(mergedMap.values());
+  try {
+    localStorage.setItem('pritilagnik_committee', JSON.stringify(mergedList));
+  } catch (e) {}
+
+  return mergedList;
 }
 
 export async function saveCommitteeMember(member: CommitteeMember): Promise<void> {
+  const cleanMember = cleanFirestoreObject(member);
   try {
     const current = await fetchCommitteeMembers();
     const updated = [member, ...current.filter(m => m.id !== member.id)];
@@ -763,7 +794,7 @@ export async function saveCommitteeMember(member: CommitteeMember): Promise<void
 
   try {
     const docRef = doc(db, COMMITTEE_COL, member.id);
-    await setDoc(docRef, member);
+    await setDoc(docRef, cleanMember);
   } catch (err) {
     console.warn('Firestore saveCommitteeMember warning:', err);
   }
@@ -788,24 +819,26 @@ export async function deleteCommitteeMember(id: string): Promise<void> {
 const TEAMS_COL = 'organising_teams';
 
 export async function fetchOrganisingTeams(): Promise<OrganisingTeam[]> {
+  const mergedMap = new Map<string, OrganisingTeam>();
+
+  DEFAULT_ORGANISING_TEAMS.forEach(t => mergedMap.set(t.id, t));
+
   try {
     const colRef = collection(db, TEAMS_COL);
     const snap = await getDocs(colRef);
     if (!snap.empty) {
-      const records: OrganisingTeam[] = [];
       snap.forEach(docSnap => {
-        records.push({ ...docSnap.data() as OrganisingTeam, id: docSnap.id });
+        const data = docSnap.data() as OrganisingTeam;
+        const id = data.id || docSnap.id;
+        mergedMap.set(id, { ...data, id });
       });
-      localStorage.setItem('pritilagnik_teams', JSON.stringify(records));
-      return records;
     } else {
-      // First time initialization in Firestore with default teams
-      try {
-        for (const team of DEFAULT_ORGANISING_TEAMS) {
-          await setDoc(doc(db, TEAMS_COL, team.id), team);
+      for (const team of DEFAULT_ORGANISING_TEAMS) {
+        try {
+          await setDoc(doc(db, TEAMS_COL, team.id), cleanFirestoreObject(team));
+        } catch (seedErr) {
+          console.warn('Could not seed initial organising team to Firestore:', seedErr);
         }
-      } catch (seedErr) {
-        console.warn('Could not seed initial organising teams to Firestore:', seedErr);
       }
     }
   } catch (err) {
@@ -814,13 +847,24 @@ export async function fetchOrganisingTeams(): Promise<OrganisingTeam[]> {
 
   try {
     const stored = localStorage.getItem('pritilagnik_teams');
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const local: OrganisingTeam[] = JSON.parse(stored);
+      local.forEach(t => {
+        mergedMap.set(t.id, t);
+      });
+    }
   } catch (e) {}
 
-  return DEFAULT_ORGANISING_TEAMS;
+  const mergedList = Array.from(mergedMap.values());
+  try {
+    localStorage.setItem('pritilagnik_teams', JSON.stringify(mergedList));
+  } catch (e) {}
+
+  return mergedList;
 }
 
 export async function saveOrganisingTeam(team: OrganisingTeam): Promise<void> {
+  const cleanTeam = cleanFirestoreObject(team);
   try {
     const current = await fetchOrganisingTeams();
     const updated = [team, ...current.filter(t => t.id !== team.id)];
@@ -829,7 +873,7 @@ export async function saveOrganisingTeam(team: OrganisingTeam): Promise<void> {
 
   try {
     const docRef = doc(db, TEAMS_COL, team.id);
-    await setDoc(docRef, team);
+    await setDoc(docRef, cleanTeam);
   } catch (err) {
     console.warn('Firestore saveOrganisingTeam warning:', err);
   }
@@ -854,24 +898,26 @@ export async function deleteOrganisingTeam(id: string): Promise<void> {
 const ACCOMMODATIONS_COL = 'accommodations';
 
 export async function fetchAccommodations(): Promise<AccommodationOption[]> {
+  const mergedMap = new Map<string, AccommodationOption>();
+
+  DEFAULT_ACCOMMODATIONS.forEach(a => mergedMap.set(a.id, a));
+
   try {
     const colRef = collection(db, ACCOMMODATIONS_COL);
     const snap = await getDocs(colRef);
     if (!snap.empty) {
-      const records: AccommodationOption[] = [];
       snap.forEach(docSnap => {
-        records.push({ ...docSnap.data() as AccommodationOption, id: docSnap.id });
+        const data = docSnap.data() as AccommodationOption;
+        const id = data.id || docSnap.id;
+        mergedMap.set(id, { ...data, id });
       });
-      localStorage.setItem('pritilagnik_accommodations', JSON.stringify(records));
-      return records;
     } else {
-      // First time initialization in Firestore with default accommodations
-      try {
-        for (const acc of DEFAULT_ACCOMMODATIONS) {
-          await setDoc(doc(db, ACCOMMODATIONS_COL, acc.id), acc);
+      for (const acc of DEFAULT_ACCOMMODATIONS) {
+        try {
+          await setDoc(doc(db, ACCOMMODATIONS_COL, acc.id), cleanFirestoreObject(acc));
+        } catch (seedErr) {
+          console.warn('Could not seed initial accommodation to Firestore:', seedErr);
         }
-      } catch (seedErr) {
-        console.warn('Could not seed initial accommodations to Firestore:', seedErr);
       }
     }
   } catch (err) {
@@ -880,13 +926,24 @@ export async function fetchAccommodations(): Promise<AccommodationOption[]> {
 
   try {
     const stored = localStorage.getItem('pritilagnik_accommodations');
-    if (stored) return JSON.parse(stored);
+    if (stored) {
+      const local: AccommodationOption[] = JSON.parse(stored);
+      local.forEach(a => {
+        mergedMap.set(a.id, a);
+      });
+    }
   } catch (e) {}
 
-  return DEFAULT_ACCOMMODATIONS;
+  const mergedList = Array.from(mergedMap.values());
+  try {
+    localStorage.setItem('pritilagnik_accommodations', JSON.stringify(mergedList));
+  } catch (e) {}
+
+  return mergedList;
 }
 
 export async function saveAccommodation(acc: AccommodationOption): Promise<void> {
+  const cleanAcc = cleanFirestoreObject(acc);
   try {
     const current = await fetchAccommodations();
     const updated = [acc, ...current.filter(a => a.id !== acc.id)];
@@ -895,7 +952,7 @@ export async function saveAccommodation(acc: AccommodationOption): Promise<void>
 
   try {
     const docRef = doc(db, ACCOMMODATIONS_COL, acc.id);
-    await setDoc(docRef, acc);
+    await setDoc(docRef, cleanAcc);
   } catch (err) {
     console.warn('Firestore saveAccommodation warning:', err);
   }
