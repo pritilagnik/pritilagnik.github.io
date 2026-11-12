@@ -52,7 +52,7 @@ export const ThakurAnniversarySection: React.FC = () => {
               {BIRTH_ANNIVERSARY_INFO.highlights.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm"
+                  className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm"
                 >
                   <div className="flex items-center justify-between text-xs text-amber-700 dark:text-amber-400 font-semibold mb-1">
                     <span>{item.title}</span>
@@ -78,7 +78,7 @@ export const ThakurAnniversarySection: React.FC = () => {
               </button>
 
               {showMore && (
-                <div className="mt-4 p-5 rounded-xl bg-white dark:bg-stone-850 border border-amber-300 dark:border-stone-700 text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed space-y-3 animate-in fade-in duration-300">
+                <div className="mt-4 p-5 rounded-xl bg-white dark:bg-stone-900 border border-amber-300 dark:border-stone-700 text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed space-y-3 animate-in fade-in duration-300">
                   <p>{BIRTH_ANNIVERSARY_INFO.significanceText}</p>
                   <div className="pt-2 border-t border-stone-200 dark:border-stone-700 flex flex-wrap gap-4 text-xs font-medium text-stone-600 dark:text-stone-400">
                     <span>🕊️ Mass congregational harmony</span>

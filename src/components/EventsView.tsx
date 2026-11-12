@@ -362,7 +362,7 @@ Joyguru!
               <div
                 key={ev.id}
                 onClick={() => setActiveSession(ev)}
-                className="cursor-pointer group p-4 sm:p-5 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-xs hover:border-amber-400 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                className="cursor-pointer group p-4 sm:p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs hover:border-amber-400 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 {/* Index badge & Time */}
                 <div className="flex items-center gap-3 md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-stone-100 dark:border-stone-800 pb-2 md:pb-0 md:pr-4">
@@ -408,7 +408,7 @@ Joyguru!
         {/* ========================================================================= */}
         {/* UTSAV GROUND MAP SECTION */}
         {/* ========================================================================= */}
-        <div id="ground-map" className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8 scroll-mt-24">
+        <div id="ground-map" className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8 scroll-mt-24">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
             <div>
               <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
@@ -548,7 +548,7 @@ Joyguru!
         {/* ========================================================================= */}
         {/* OFFICIAL EVENT DOCUMENTS & ADMIN MANAGEMENT INTERFACE */}
         {/* ========================================================================= */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8">
+        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8">
           {/* Header Row */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-6">
             <div>
@@ -745,7 +745,7 @@ Joyguru!
                 <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300">
                   Manage Existing Uploaded Documents ({documents.length})
                 </h4>
-                <div className="overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-850">
+                <div className="overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-stone-50 dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 text-[10px] uppercase font-bold tracking-wider">
                       <tr>
@@ -1036,7 +1036,7 @@ Joyguru!
               </div>
             </div>
 
-            <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed bg-stone-50 dark:bg-stone-850 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
+            <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed bg-stone-50 dark:bg-stone-900 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
               {activeSession.description}
             </p>
 

@@ -108,7 +108,7 @@ export const ContactView: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-md transition-all flex flex-col justify-between"
+                  className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div>
                     <div className="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-3">
@@ -140,7 +140,7 @@ export const ContactView: React.FC = () => {
           </div>
 
           {/* Reception Committee Member Names and Contact Numbers */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200 dark:border-stone-800 pb-4">
               <div>
                 <h2 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
@@ -206,7 +206,7 @@ export const ContactView: React.FC = () => {
           </div>
 
           {/* Core Geographical Description Required by User */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
             <div className="p-5 sm:p-6 rounded-2xl bg-amber-50 dark:bg-stone-900 border border-amber-200 dark:border-stone-700 text-stone-800 dark:text-stone-200 text-sm sm:text-base leading-relaxed">
               <p className="font-sans leading-relaxed">
                 The Maha-Mahotsav can be located at serene landscape surrounded the villages inhabitated by communities such as Bodos, Koch-Rajbongshi and Begali. It is accessible through Railway via Kokrajhar( 16KMS approx.), Fakiragram (15 KM Approx.) and Gossaigaon (25KMS approx.) Railway Stations. It is accessible from NH27 via Karigaon (30KMS), Patgaon (21 KMS), Ramfalbil (13KMS), Serfanguri (11KMS), Gossaigaon(21 KMS).
@@ -322,7 +322,7 @@ export const ContactView: React.FC = () => {
 
         {/* Inquiry Form */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white dark:bg-stone-850 rounded-3xl p-6 sm:p-10 border border-stone-200 dark:border-stone-800 shadow-lg">
+          <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-10 border border-stone-200 dark:border-stone-800 shadow-lg">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
                 Send Direct Message to Organizers

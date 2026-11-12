@@ -81,7 +81,7 @@ export const PastGatheringsGallery: React.FC = () => {
                 className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   selectedCategory === cat
                     ? 'bg-amber-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:border-amber-400'
+                    : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-amber-400'
                 }`}
               >
                 {cat}
@@ -96,7 +96,7 @@ export const PastGatheringsGallery: React.FC = () => {
             <div
               key={item.id}
               onClick={() => setActiveItem(item)}
-              className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+              className="group cursor-pointer rounded-2xl overflow-hidden bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
             >
               <div className="relative h-60 overflow-hidden bg-stone-950">
                 <img

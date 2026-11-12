@@ -1282,7 +1282,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-stone-100 dark:bg-stone-850 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
+                  <thead className="bg-stone-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
                     <tr>
                       <th className="py-3 px-4">Photo</th>
                       <th className="py-3 px-4">Delegate Name & ID</th>
@@ -1469,7 +1469,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-stone-100 dark:bg-stone-850 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
+                  <thead className="bg-stone-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
                     <tr>
                       <th className="py-3 px-4">Photo</th>
                       <th className="py-3 px-4">Car Plate & Pass ID</th>
@@ -1823,7 +1823,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
 
                 {/* File Upload OR Direct URL Dual Mode */}
-                <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
                       <Upload className="w-4 h-4 text-amber-600" />
@@ -1928,7 +1928,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-850 flex flex-col justify-between"
+                    className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900 flex flex-col justify-between"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
@@ -2050,7 +2050,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
                 {/* Media Input Area based on Type */}
                 {newGalType === 'image' ? (
-                  <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
                         <ImageIcon className="w-4 h-4 text-amber-600" />
@@ -2177,7 +2177,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {galleryItems.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-850 flex flex-col justify-between"
+                    className="rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 flex flex-col justify-between"
                   >
                     <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
                       {item.type === 'video' ? (
@@ -2276,7 +2276,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       )}
                     </div>
 
-                    <p className="text-xs text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-850 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
+                    <p className="text-xs text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-900 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
                       "{fb.comments}"
                     </p>
                   </div>
@@ -2493,13 +2493,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                   {filteredList.map((member) => (
                     <div
                       key={member.id}
-                      className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                      className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800/90 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
                     >
                       <div>
-                        <div className="flex items-start justify-between mb-3 gap-2">
-                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 truncate max-w-[150px]" title={member.category}>
-                            {member.category}
-                          </span>
+                        {/* Header: Avatar + Full Name + Edit/Delete Buttons */}
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-500 text-stone-950 font-extrabold text-xs flex items-center justify-center shadow-sm shrink-0 border border-amber-300 dark:border-amber-400/40">
+                              {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
+                            </div>
+                            <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel leading-tight break-words flex-1">
+                              {member.name}
+                            </h4>
+                          </div>
+
+                          {/* Action buttons */}
                           <div className="flex items-center gap-1 shrink-0">
                             <button
                               onClick={() => {
@@ -2521,17 +2529,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                           </div>
                         </div>
 
-                        <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
-                          {member.name}
-                        </h4>
-                        <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 font-medium">
+                        {/* Category badge just ABOVE role / position */}
+                        <div className="mt-1.5 mb-1">
+                          <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/50 dark:border-amber-800/60" title={member.category}>
+                            {member.category}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
                           {member.role}
                         </p>
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-500 dark:text-stone-400 flex items-center justify-between">
+                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 flex items-center justify-between">
                         <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
-                        {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 shrink-0">{member.phone}</span>}
+                        {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold shrink-0">{member.phone}</span>}
                       </div>
                     </div>
                   ))}

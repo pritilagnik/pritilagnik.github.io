@@ -82,33 +82,33 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
           </p>
 
           {/* Sub-navigation Tabs (Priti-Lagnik 2026 / Organising Committee / Volunteers) */}
-          <div className="mt-8 inline-flex p-1.5 rounded-xl bg-stone-200/80 dark:bg-stone-800 border border-stone-300 dark:border-stone-700">
+          <div className="mt-8 inline-flex p-1.5 rounded-2xl bg-stone-200/90 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 shadow-sm">
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('overview')}
-              className={`px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
                 activeSubTab === 'overview'
                   ? 'bg-amber-600 text-white shadow-sm'
-                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
+                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white dark:hover:bg-stone-800/80'
               }`}
             >
               Priti-Lagnik 2026
             </button>
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('committee')}
-              className={`px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
                 activeSubTab === 'committee'
                   ? 'bg-amber-600 text-white shadow-sm'
-                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
+                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white dark:hover:bg-stone-800/80'
               }`}
             >
               Organising Committee
             </button>
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('teams')}
-              className={`px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+              className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
                 activeSubTab === 'teams'
                   ? 'bg-amber-600 text-white shadow-sm'
-                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white'
+                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white dark:hover:bg-stone-800/80'
               }`}
             >
               Volunteers
@@ -143,42 +143,42 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
 
                 {/* 4 Core Pillars */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3">
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80">
+                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
                     <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
                       <Heart className="w-4 h-4" />
                       <span>Universal Love (Priti)</span>
                     </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                    <p className="text-xs text-stone-600 dark:text-stone-300">
                       Nurturing empathy, mutual reverence, and peace across communities.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80">
+                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
                     <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
                       <Compass className="w-4 h-4" />
                       <span>Divine Communion (Lagnik)</span>
                     </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                    <p className="text-xs text-stone-600 dark:text-stone-300">
                       Daily meditation, prayerful discipline, and character building.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80">
+                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
                     <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
                       <Utensils className="w-4 h-4" />
                       <span>Maha Annadan Seva</span>
                     </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                    <p className="text-xs text-stone-600 dark:text-stone-300">
                       Serving sacred, hygienic satvik prasad to over 100,000 pilgrims.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700/80">
+                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
                     <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
                       <BookOpen className="w-4 h-4" />
                       <span>Swastyayani & Health</span>
                     </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                    <p className="text-xs text-stone-600 dark:text-stone-300">
                       Existential health principles, yoga, pure nutrition, and eco-care.
                     </p>
                   </div>
@@ -220,7 +220,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         {activeSubTab === 'committee' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             {/* Search and Category Control Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-stone-850 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-md">
               {/* Search input */}
               <div className="relative w-full sm:w-72">
                 <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -229,7 +229,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                   value={committeeSearch}
                   onChange={(e) => setCommitteeSearch(e.target.value)}
                   placeholder="Search office bearers, roles..."
-                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
 
@@ -238,10 +238,10 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 <select
                   value={selectedCommitteeCategory}
                   onChange={(e) => setSelectedCommitteeCategory(e.target.value)}
-                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-50 dark:bg-stone-800 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-amber-50 dark:bg-stone-950 text-amber-950 dark:text-stone-100 border border-amber-200 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
                   {availableCategories.map(cat => (
-                    <option key={cat} value={cat}>
+                    <option key={cat} value={cat} className="bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100">
                       {cat === 'All' ? 'All Sub-Committees & Main Committee' : cat}
                     </option>
                   ))}
@@ -263,35 +263,40 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 {filteredCommittee.map((member) => (
                   <div
                     key={member.id}
-                    className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                    className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800/90 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
                   >
                     <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 text-amber-950 font-bold text-sm flex items-center justify-center shadow-sm">
+                      {/* Avatar initial beside Full Name (Full Width) */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-500 text-stone-950 font-extrabold text-sm flex items-center justify-center shadow-sm shrink-0 border border-amber-300 dark:border-amber-400/40">
                           {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
                         </div>
-                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 text-right truncate max-w-[140px]" title={member.category}>
+                        <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel leading-snug break-words flex-1">
+                          {member.name}
+                        </h4>
+                      </div>
+
+                      {/* Category Badge just ABOVE Role / Position */}
+                      <div className="mt-2 mb-1.5">
+                        <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/50 dark:border-amber-700/60" title={member.category}>
                           {member.category}
                         </span>
                       </div>
 
-                      <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
-                        {member.name}
-                      </h4>
-                      <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 mt-1">
+                      <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
                         {member.role}
                       </p>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-500 dark:text-stone-400 flex items-center justify-between">
+                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-between">
                       <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Dotma, Kokrajhar'}</span>
                       {member.phone && (
                         <a
                           href={`tel:${member.phone}`}
-                          className="font-semibold text-amber-600 dark:hover:text-amber-400 transition-colors shrink-0 flex items-center gap-1"
+                          className="font-semibold text-amber-700 dark:text-amber-300 hover:text-amber-600 dark:hover:text-amber-200 transition-colors shrink-0 flex items-center gap-1.5 bg-amber-50 dark:bg-stone-800 px-2 py-1 rounded-lg border border-amber-200/60 dark:border-stone-700"
                           title="Call member"
                         >
-                          <Phone className="w-3.5 h-3.5" />
+                          <Phone className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                           <span>{member.phone}</span>
                         </a>
                       )}
@@ -315,22 +320,22 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                 {organisingTeams.map((team) => (
                   <div
                     key={team.id}
-                    className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                    className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-3">
-                        <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                        <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800/50">
                           {team.volunteersCount} Active Volunteers
                         </span>
-                        <Users className="w-4 h-4 text-stone-400" />
+                        <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                       </div>
 
                       <h4 className="text-lg font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
                         {team.name}
                       </h4>
 
-                      <div className="mt-2 text-xs text-stone-600 dark:text-stone-400 font-medium">
-                        Lead: <span className="text-stone-900 dark:text-stone-200 font-semibold">{team.lead}</span>
+                      <div className="mt-2 text-xs text-stone-600 dark:text-stone-300 font-medium">
+                        Lead: <span className="text-amber-800 dark:text-amber-300 font-semibold">{team.lead}</span>
                       </div>
 
                       <ul className="mt-4 space-y-2 text-xs text-stone-600 dark:text-stone-300">
@@ -343,13 +348,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                       </ul>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
-                      <span className="text-stone-500 dark:text-stone-400">Desk: {team.contactPerson}</span>
+                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs text-stone-600 dark:text-stone-300">
+                      <span>Desk: {team.contactPerson}</span>
                       <a
                         href={`tel:${team.contactNumber}`}
-                        className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-400 hover:underline"
+                        className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-300 hover:underline"
                       >
-                        <Phone className="w-3.5 h-3.5" />
+                        <Phone className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                         <span>{team.contactNumber}</span>
                       </a>
                     </div>

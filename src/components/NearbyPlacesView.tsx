@@ -211,7 +211,7 @@ export const NearbyPlacesView: React.FC = () => {
         </div>
 
         {/* Filters and Search Bar */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="p-4 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
             <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 mr-1 flex items-center gap-1">
               <Trees className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export const NearbyPlacesView: React.FC = () => {
           {filteredPlaces.map((place) => (
             <div
               key={place.id}
-              className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-xl transition-all flex flex-col justify-between"
+              className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-xl transition-all flex flex-col justify-between"
             >
               <div className="space-y-4">
                 {/* Badge Row */}
@@ -329,7 +329,7 @@ export const NearbyPlacesView: React.FC = () => {
         </div>
 
         {/* Travel Tips Banner */}
-        <div className="p-6 rounded-3xl bg-amber-100/60 dark:bg-stone-850 border border-amber-300/80 dark:border-stone-700 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-amber-950 dark:text-amber-200">
+        <div className="p-6 rounded-3xl bg-amber-100/60 dark:bg-stone-900 border border-amber-300/80 dark:border-stone-700 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-amber-950 dark:text-amber-200">
           <div className="flex items-center gap-3">
             <Info className="w-6 h-6 text-amber-700 dark:text-amber-400 shrink-0" />
             <div>

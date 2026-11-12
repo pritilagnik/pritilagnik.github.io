@@ -128,7 +128,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {aboutDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-white dark:bg-stone-850 shadow-xl border border-stone-200 dark:border-stone-700 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-white dark:bg-stone-900 shadow-xl border border-stone-200 dark:border-stone-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <button
                     onClick={() => handleAboutSubClick('overview')}
                     className="w-full text-left px-4 py-2.5 text-xs text-stone-700 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
@@ -222,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {langDropdownOpen && (
-                <div className="absolute top-full right-0 mt-2 w-44 rounded-xl bg-white dark:bg-stone-850 shadow-xl border border-stone-200 dark:border-stone-700 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute top-full right-0 mt-2 w-44 rounded-xl bg-white dark:bg-stone-900 shadow-xl border border-stone-200 dark:border-stone-800 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-3 py-1 text-[10px] uppercase font-bold tracking-wider text-stone-400 border-b border-stone-100 dark:border-stone-800 mb-1">
                     Select Language
                   </div>
