@@ -17,7 +17,7 @@ export interface CommitteeMember {
   id: string;
   name: string;
   role: string;
-  category: 'Patron' | 'Executive' | 'Secretariat' | 'Finance' | 'Cultural';
+  category: string;
   location: string;
   phone?: string;
   image?: string;

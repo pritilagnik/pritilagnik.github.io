@@ -121,17 +121,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [committeeMembers, setCommitteeMembers] = useState<CommitteeMember[]>([]);
   const [editingMember, setEditingMember] = useState<CommitteeMember | null>(null);
   const [isAddingMember, setIsAddingMember] = useState(false);
+  const [adminCommitteeSearch, setAdminCommitteeSearch] = useState('');
+  const [adminCommitteeCategory, setAdminCommitteeCategory] = useState('All');
   const [memberForm, setMemberForm] = useState<{
     id?: string;
     name: string;
     role: string;
-    category: 'Patron' | 'Executive' | 'Secretariat' | 'Finance' | 'Cultural';
+    category: string;
     location: string;
     phone: string;
   }>({
     name: '',
     role: '',
-    category: 'Executive',
+    category: 'Main Committee',
     location: '',
     phone: ''
   });
@@ -2350,7 +2352,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       required
                       value={memberForm.name}
                       onChange={(e) => setMemberForm({ ...memberForm, name: e.target.value })}
-                      placeholder="e.g. Sjt. Hitesh Chandra Roy"
+                      placeholder="e.g. Sjt. Prakash Basumatary"
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
@@ -2364,50 +2366,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       required
                       value={memberForm.role}
                       onChange={(e) => setMemberForm({ ...memberForm, role: e.target.value })}
-                      placeholder="e.g. President, Reception Committee"
+                      placeholder="e.g. President, General Secretary..."
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      Category *
+                      Committee / Sub-Committee *
                     </label>
-                    <select
+                    <input
+                      type="text"
+                      required
                       value={memberForm.category}
-                      onChange={(e) => setMemberForm({ ...memberForm, category: e.target.value as any })}
+                      onChange={(e) => setMemberForm({ ...memberForm, category: e.target.value })}
+                      placeholder="e.g. Main Committee, Finance Sub-Committee..."
+                      list="admin-committee-category-list"
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    >
-                      <option value="Executive">Executive</option>
-                      <option value="Patron">Patron</option>
-                      <option value="Secretariat">Secretariat</option>
-                      <option value="Finance">Finance</option>
-                      <option value="Cultural">Cultural</option>
-                    </select>
+                    />
+                    <datalist id="admin-committee-category-list">
+                      {Array.from(new Set(committeeMembers.map(m => m.category))).sort().map(cat => (
+                        <option key={cat} value={cat} />
+                      ))}
+                    </datalist>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      Location / Region
+                      Address / Remarks / Location
                     </label>
                     <input
                       type="text"
                       value={memberForm.location}
                       onChange={(e) => setMemberForm({ ...memberForm, location: e.target.value })}
-                      placeholder="e.g. Dotma, Kokrajhar"
+                      placeholder="e.g. Kokrajhar, Dotma, Chairman..."
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      Phone Number (Optional)
+                      Mobile No. (Optional)
                     </label>
                     <input
                       type="text"
                       value={memberForm.phone}
                       onChange={(e) => setMemberForm({ ...memberForm, phone: e.target.value })}
-                      placeholder="+91 94350 XXXXX"
+                      placeholder="e.g. 9435027290"
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
@@ -2434,51 +2439,105 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               </form>
             )}
 
-            {/* Committee Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {committeeMembers.map((member) => (
-                <div
-                  key={member.id}
-                  className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+            {/* Filter and Search Bar for Committee Members */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-stone-50 dark:bg-stone-800/80 p-4 rounded-2xl border border-stone-200 dark:border-stone-700">
+              <div className="relative w-full sm:w-80">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={adminCommitteeSearch}
+                  onChange={(e) => setAdminCommitteeSearch(e.target.value)}
+                  placeholder="Search by name, role, location, mobile..."
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <select
+                  value={adminCommitteeCategory}
+                  onChange={(e) => setAdminCommitteeCategory(e.target.value)}
+                  className="px-3 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 border border-stone-300 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-                        {member.category}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => handleEditMemberClick(member)}
-                          className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
-                          title="Edit member"
-                        >
-                          <Edit2 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteMember(member.id)}
-                          className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
-                          title="Delete member from Firebase"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                  <option value="All">All Categories ({committeeMembers.length})</option>
+                  {Array.from(new Set(committeeMembers.map(m => m.category))).sort().map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Committee Cards Grid */}
+            {(() => {
+              const filteredList = committeeMembers.filter(m => {
+                const matchesCat = adminCommitteeCategory === 'All' || m.category === adminCommitteeCategory;
+                const searchLower = adminCommitteeSearch.trim().toLowerCase();
+                const matchesSearch = !searchLower ||
+                  m.name.toLowerCase().includes(searchLower) ||
+                  m.role.toLowerCase().includes(searchLower) ||
+                  m.category.toLowerCase().includes(searchLower) ||
+                  (m.location && m.location.toLowerCase().includes(searchLower)) ||
+                  (m.phone && m.phone.toLowerCase().includes(searchLower));
+                return matchesCat && matchesSearch;
+              });
+
+              if (filteredList.length === 0) {
+                return (
+                  <div className="text-center py-12 text-sm text-stone-500 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800">
+                    No committee members found matching your search.
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {filteredList.map((member) => (
+                    <div
+                      key={member.id}
+                      className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                    >
+                      <div>
+                        <div className="flex items-start justify-between mb-3 gap-2">
+                          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 truncate max-w-[150px]" title={member.category}>
+                            {member.category}
+                          </span>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              onClick={() => {
+                                setIsAddingMember(true);
+                                handleEditMemberClick(member);
+                              }}
+                              className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                              title="Edit member"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteMember(member.id)}
+                              className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                              title="Delete member from Firebase"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
+                          {member.name}
+                        </h4>
+                        <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 font-medium">
+                          {member.role}
+                        </p>
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-500 dark:text-stone-400 flex items-center justify-between">
+                        <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
+                        {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 shrink-0">{member.phone}</span>}
                       </div>
                     </div>
-
-                    <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
-                      {member.name}
-                    </h4>
-                    <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 font-medium">
-                      {member.role}
-                    </p>
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-500 dark:text-stone-400 flex items-center justify-between">
-                    <span>📍 {member.location}</span>
-                    {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300">{member.phone}</span>}
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              );
+            })()}
           </div>
         )}
 

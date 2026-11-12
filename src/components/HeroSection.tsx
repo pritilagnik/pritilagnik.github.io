@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs font-medium tracking-wider uppercase mb-3 animate-in fade-in duration-500">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>Sacred Spiritual Confluence · Dotma 2026</span>
+          <span>प्रिति-लाग्निक · Dotma 2026</span>
         </div>
 
         {/* Marquee Headline */}
@@ -52,7 +52,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </h1>
 
         <p className="mt-4 text-base sm:text-lg md:text-xl text-stone-200 font-light max-w-3xl mx-auto text-balance leading-relaxed">
-          Celebrating Divine Love (Priti), Existential Communion (Lagnik), and Universal Seva under the sacred inspiration of Sree Sree Thakur.
+          Celebrating 139th Birth Anniversary of Sree Sree Thakur Anukulchandra.
         </p>
 
         {/* Key Event Highlights Row */}
