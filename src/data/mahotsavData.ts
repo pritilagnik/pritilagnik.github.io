@@ -124,26 +124,12 @@ export const BIRTH_ANNIVERSARY_INFO = {
 
 export const COMMITTEE_MEMBERS: CommitteeMember[] = [
   {
-    "id": "cm-1",
-    "name": "Sjt. Hagrama Mohilary",
-    "role": "Patron",
-    "category": "Main Committee",
-    "location": "Hon'ble CEM, BTC"
-  },
-  {
-    "id": "cm-2",
-    "name": "Sjt. Pramod Boro",
-    "role": "Patron",
-    "category": "Main Committee",
-    "location": "Hon'ble MP, Rajya Sabha"
-  },
-  {
     "id": "cm-3",
     "name": "Sjt. Prakash Basumatary",
     "role": "President",
     "category": "Main Committee",
     "location": "EM, BTC",
-    "phone": "8135825909"
+    "phone": "000000000"
   },
   {
     "id": "cm-4",
@@ -1682,40 +1668,40 @@ export const ORGANISING_TEAMS: OrganisingTeam[] = [
   {
     id: "team-reception",
     name: "Reception & Atithi Seva Cell",
-    lead: "Sjt. Rupen Narzary & Smt. Minati Roy",
+    lead: "Rupen Narzary & Smt. Minati Roy",
     volunteersCount: 140,
     responsibilities: [
       "Warm reception at Fakiragram & Kokrajhar railway stations and Rupsi airport",
       "Registration badge distribution and guidance for outstation delegations",
       "Information counters with multilingual staff (Bodo, Assamese, Bengali, Hindi, English)"
     ],
-    contactPerson: "Sjt. Rupen Narzary",
+    contactPerson: " Rupen Narzary",
     contactNumber: "+91 98540 12345"
   },
   {
     id: "team-annadan",
     name: "Maha Annadan & Kitchen Logistics Wing",
-    lead: "Sjt. Tapas K. Bhattacharya & Team",
+    lead: " Tapas K. Bhattacharya & Team",
     volunteersCount: 380,
     responsibilities: [
       "Preparation of pure satvik meals for 80,000+ attendees daily",
       "Maintenance of sacred hygiene, firewood and clean steam cauldrons",
       "Eco-friendly zero-plastic leaf plate distribution and water stations"
     ],
-    contactPerson: "Sjt. Tapas Bhattacharya",
+    contactPerson: " Tapas Bhattacharya",
     contactNumber: "+91 94355 99112"
   },
   {
     id: "team-security",
     name: "Volunteer Shanti Sena & Traffic Control",
-    lead: "Sjt. Hemanta Kumar Brahma",
+    lead: " Hemanta Kumar Brahma",
     volunteersCount: 260,
     responsibilities: [
       "Pandal crowd order, entry/exit management, and queue guidance",
       "Vehicle parking coordination at West Dangarkuthi designated zones",
       "Liaison with local police administration and emergency corridors"
     ],
-    contactPerson: "Sjt. H. K. Brahma",
+    contactPerson: " H. K. Brahma",
     contactNumber: "+91 97060 45678"
   },
   {
@@ -1734,27 +1720,27 @@ export const ORGANISING_TEAMS: OrganisingTeam[] = [
   {
     id: "team-accommodation",
     name: "Accommodation & Pilgrim Niwas Board",
-    lead: "Sjt. Sanjib Debnath",
+    lead: " Sanjib Debnath",
     volunteersCount: 85,
     responsibilities: [
       "Room allocation at Yatri Niwas, partner guest houses, and community halls",
       "Bedding, blankets, pure drinking water, and clean restroom management",
       "Daily luggage cloakroom and lost-and-found desk"
     ],
-    contactPerson: "Sjt. Sanjib Debnath",
+    contactPerson: " Sanjib Debnath",
     contactNumber: "+91 94352 66778"
   },
   {
     id: "team-media",
     name: "Media, Stage & High-Definition Broadcast",
-    lead: "Sjt. Gautam Swargiary",
+    lead: " Gautam Swargiary",
     volunteersCount: 35,
     responsibilities: [
       "Ultra-clear live streaming across YouTube and social media channels",
       "State-of-the-art acoustic sound engineering for devotional discourses",
       "Press media releases, daily newsletter bulletins, and photography archive"
     ],
-    contactPerson: "Sjt. Gautam Swargiary",
+    contactPerson: " Gautam Swargiary",
     contactNumber: "+91 98640 77112"
   }
 ];
@@ -1999,7 +1985,7 @@ export const ACCOMMODATIONS: AccommodationOption[] = [
     capacity: "2,500 Pilgrims",
     tariff: "Complimentary / Voluntary Donation",
     amenities: ["Clean Foam Mattresses & Blankets", "Pure Filtered Drinking Water", "Hot Water for Elders", "Separate Wings for Families & Women", "Satvik Langar Access"],
-    contactName: "Sjt. Sanjib Debnath (Niwas In-charge)",
+    contactName: " Sanjib Debnath (Niwas In-charge)",
     phone: "+91 94352 66778",
     whatsapp: "+919435266778",
     bookingStatus: "Available"
@@ -2013,7 +1999,7 @@ export const ACCOMMODATIONS: AccommodationOption[] = [
     capacity: "45 AC & Non-AC Rooms",
     tariff: "₹ 800 – ₹ 1,500 / night",
     amenities: ["Attached Bathrooms", "Free Wi-Fi", "Dedicated Mahotsav Shuttle", "24/7 Power Backup", "Secure Parking"],
-    contactName: "Sjt. Babul Basumatary",
+    contactName: "Babul Basumatary",
     phone: "+91 98540 88990",
     whatsapp: "+919854088990",
     bookingStatus: "Filling Fast"
@@ -2041,7 +2027,7 @@ export const ACCOMMODATIONS: AccommodationOption[] = [
     capacity: "40 Executive Rooms",
     tariff: "₹ 1,400 – ₹ 2,600 / night",
     amenities: ["Pick-up from Kokrajhar Station", "Wi-Fi", "Generator Backup", "Card / UPI Payment", "Travel Desk"],
-    contactName: "Sjt. K. Brahma",
+    contactName: "K. Brahma",
     phone: "+91 97061 33221",
     whatsapp: "+919706133221",
     bookingStatus: "Available"
@@ -2055,7 +2041,7 @@ export const ACCOMMODATIONS: AccommodationOption[] = [
     capacity: "4,000 Volunteers & Youth Delegates",
     tariff: "Free for Registered Delegations",
     amenities: ["Waterproof Heavy Canvas Tents", "Individual Cots & Linens", "Solar Street Lights", "Eco-friendly Washrooms", "Luggage Storage Locker"],
-    contactName: "Sjt. R. K. Singha",
+    contactName: " R. K. Singha",
     phone: "+91 94355 44332",
     whatsapp: "+919435544332",
     bookingStatus: "Available"
