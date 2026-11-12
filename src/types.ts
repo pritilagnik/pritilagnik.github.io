@@ -21,6 +21,7 @@ export interface CommitteeMember {
   location: string;
   phone?: string;
   image?: string;
+  sortOrder?: number; // Sorting priority (1 = Top priority e.g. Patron/President, default = 99)
 }
 
 export interface OrganisingTeam {

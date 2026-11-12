@@ -130,12 +130,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     category: string;
     location: string;
     phone: string;
+    sortOrder?: number;
   }>({
     name: '',
     role: '',
     category: 'Main Committee',
     location: '',
-    phone: ''
+    phone: '',
+    sortOrder: 99
   });
   const [committeeSaveSuccess, setCommitteeSaveSuccess] = useState('');
 
@@ -626,16 +628,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       id,
       name: memberForm.name.trim(),
       role: memberForm.role.trim(),
-      category: memberForm.category || 'Executive',
+      category: memberForm.category || 'Main Committee',
       location: memberForm.location.trim() || 'Dotma, Kokrajhar',
-      phone: memberForm.phone.trim() || undefined
+      phone: memberForm.phone.trim() || undefined,
+      sortOrder: memberForm.sortOrder !== undefined ? Number(memberForm.sortOrder) : 99
     };
 
     await saveCommitteeMember(newMember);
     setCommitteeMembers(prev => [newMember, ...prev.filter(m => m.id !== id)]);
     setIsAddingMember(false);
     setEditingMember(null);
-    setMemberForm({ name: '', role: '', category: 'Executive', location: '', phone: '' });
+    setMemberForm({ name: '', role: '', category: 'Main Committee', location: '', phone: '', sortOrder: 99 });
     setCommitteeSaveSuccess('Committee member updated successfully in Firebase!');
     setTimeout(() => setCommitteeSaveSuccess(''), 4000);
   };
@@ -648,7 +651,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       role: member.role,
       category: member.category,
       location: member.location,
-      phone: member.phone || ''
+      phone: member.phone || '',
+      sortOrder: member.sortOrder ?? 99
     });
     setIsAddingMember(true);
   };
@@ -2303,7 +2307,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <button
                 onClick={() => {
                   setEditingMember(null);
-                  setMemberForm({ name: '', role: '', category: 'Executive', location: 'Dotma, Kokrajhar', phone: '' });
+                  setMemberForm({ name: '', role: '', category: 'Main Committee', location: 'Dotma, Kokrajhar', phone: '', sortOrder: 99 });
                   setIsAddingMember(prev => !prev);
                 }}
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors shrink-0"
@@ -2416,6 +2420,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Sort Priority Order (1 = Highest, 99 = Default)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      value={memberForm.sortOrder ?? 99}
+                      onChange={(e) => setMemberForm({ ...memberForm, sortOrder: parseInt(e.target.value) || 99 })}
+                      placeholder="e.g. 1 for Patron, 2 for President, 99 for Default"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-2 pt-2">
@@ -2466,7 +2485,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               </div>
             </div>
 
-            {/* Committee Cards Grid */}
+            {/* Committee Cards Grid with Hierarchy & Sorting */}
             {(() => {
               const filteredList = committeeMembers.filter(m => {
                 const matchesCat = adminCommitteeCategory === 'All' || m.category === adminCommitteeCategory;
@@ -2488,62 +2507,117 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 );
               }
 
+              // Group & Sort hierarchically when "All" is selected
+              let groupedStructure: { categoryName: string; members: CommitteeMember[] }[] = [];
+
+              if (adminCommitteeCategory !== 'All') {
+                groupedStructure = [
+                  {
+                    categoryName: adminCommitteeCategory,
+                    members: [...filteredList].sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99))
+                  }
+                ];
+              } else {
+                const categoryMap = new Map<string, CommitteeMember[]>();
+                filteredList.forEach(m => {
+                  const cat = m.category || 'Main Committee';
+                  if (!categoryMap.has(cat)) {
+                    categoryMap.set(cat, []);
+                  }
+                  categoryMap.get(cat)!.push(m);
+                });
+
+                const categories = Array.from(categoryMap.keys());
+                categories.sort((a, b) => {
+                  if (a === 'Main Committee') return -1;
+                  if (b === 'Main Committee') return 1;
+                  return a.localeCompare(b);
+                });
+
+                groupedStructure = categories.map(cat => ({
+                  categoryName: cat,
+                  members: (categoryMap.get(cat) || []).sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99))
+                }));
+              }
+
               return (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {filteredList.map((member) => (
-                    <div
-                      key={member.id}
-                      className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800/90 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
-                    >
-                      <div>
-                        {/* Header: Avatar + Full Name + Edit/Delete Buttons */}
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-500 text-stone-950 font-extrabold text-xs flex items-center justify-center shadow-sm shrink-0 border border-amber-300 dark:border-amber-400/40">
-                              {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
-                            </div>
-                            <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel leading-tight break-words flex-1">
-                              {member.name}
-                            </h4>
-                          </div>
-
-                          {/* Action buttons */}
-                          <div className="flex items-center gap-1 shrink-0">
-                            <button
-                              onClick={() => {
-                                setIsAddingMember(true);
-                                handleEditMemberClick(member);
-                              }}
-                              className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
-                              title="Edit member"
-                            >
-                              <Edit2 className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteMember(member.id)}
-                              className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
-                              title="Delete member from Firebase"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Category badge just ABOVE role / position */}
-                        <div className="mt-1.5 mb-1">
-                          <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/50 dark:border-amber-800/60" title={member.category}>
-                            {member.category}
+                <div className="space-y-8">
+                  {groupedStructure.map((group) => (
+                    <div key={group.categoryName} className="space-y-4">
+                      {adminCommitteeCategory === 'All' && (
+                        <div className="flex items-center gap-3 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <h4 className="font-serif-cinzel font-bold text-base text-amber-700 dark:text-amber-400">
+                            {group.categoryName}
+                          </h4>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                            {group.members.length} Members
                           </span>
                         </div>
+                      )}
 
-                        <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
-                          {member.role}
-                        </p>
-                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {group.members.map((member) => (
+                          <div
+                            key={member.id}
+                            className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800/90 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                          >
+                            <div>
+                              {/* Header: Avatar + Full Name + Priority Badge + Edit/Delete Buttons */}
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-500 text-stone-950 font-extrabold text-xs flex items-center justify-center shadow-sm shrink-0 border border-amber-300 dark:border-amber-400/40">
+                                    {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
+                                  </div>
+                                  <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel leading-tight break-words flex-1">
+                                    {member.name}
+                                  </h4>
+                                </div>
 
-                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 flex items-center justify-between">
-                        <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
-                        {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold shrink-0">{member.phone}</span>}
+                                {/* Action buttons */}
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    onClick={() => {
+                                      setIsAddingMember(true);
+                                      handleEditMemberClick(member);
+                                    }}
+                                    className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                                    title="Edit member"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteMember(member.id)}
+                                    className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                                    title="Delete member from Firebase"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Category badge & Priority Order just ABOVE role / position */}
+                              <div className="mt-1.5 mb-1 flex items-center gap-1.5 flex-wrap">
+                                <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/50 dark:border-amber-800/60" title={member.category}>
+                                  {member.category}
+                                </span>
+                                {member.sortOrder !== undefined && member.sortOrder < 99 && (
+                                  <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold font-mono bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-400/40">
+                                    #{member.sortOrder} Priority
+                                  </span>
+                                )}
+                              </div>
+
+                              <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
+                                {member.role}
+                              </p>
+                            </div>
+
+                            <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 flex items-center justify-between">
+                              <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
+                              {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold shrink-0">{member.phone}</span>}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
