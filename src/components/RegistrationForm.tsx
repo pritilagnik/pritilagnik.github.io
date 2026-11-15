@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { RegistrationRecord } from '../types';
 import { saveRegistration } from '../services/registrationService';
+import { recordSessionEmail } from '../services/visitorService';
 import { CarPassForm } from './CarPassForm';
 import { exportElementAsPdf, exportElementAsImage } from '../utils/exportCardUtils';
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
@@ -171,6 +172,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     };
 
     await saveRegistration(newRecord);
+    if (newRecord.email) {
+      void recordSessionEmail(newRecord.email);
+    }
     setSubmittedRecord(newRecord);
     setIsSubmitting(false);
 

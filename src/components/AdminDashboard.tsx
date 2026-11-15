@@ -78,6 +78,7 @@ import {
   deleteAccommodation
 } from '../services/registrationService';
 import { EVENT_DETAILS } from '../data/mahotsavData';
+import { recordSessionEmail } from '../services/visitorService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
 import { exportElementAsPdf, exportElementAsImage, exportBulkDelegateCardsPdf, BulkExportProgress } from '../utils/exportCardUtils';
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
@@ -285,6 +286,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       localStorage.setItem('pritilagnik_admin_session', 'true');
       localStorage.setItem('pritilagnik_admin_email', 'admin@dotma.org');
       localStorage.setItem('pritilagnik_admin_name', 'Root Administrator');
+      void recordSessionEmail('admin@dotma.org');
       loadAllData();
       return;
     }
@@ -299,6 +301,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         localStorage.setItem('pritilagnik_admin_session', 'true');
         localStorage.setItem('pritilagnik_admin_email', matched.email);
         localStorage.setItem('pritilagnik_admin_name', matched.name);
+        void recordSessionEmail(matched.email);
         loadAllData();
         return;
       }
