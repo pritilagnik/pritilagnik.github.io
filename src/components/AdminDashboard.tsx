@@ -31,7 +31,12 @@ import {
   ExternalLink,
   FileDown,
   Upload,
-  UserPlus
+  UserPlus,
+  Building2,
+  Edit2,
+  Bed,
+  Check,
+  X
 } from 'lucide-react';
 import {
   RegistrationRecord,
@@ -39,7 +44,10 @@ import {
   AdminUser,
   EventDocument,
   GalleryItem,
-  FeedbackRecord
+  FeedbackRecord,
+  CommitteeMember,
+  OrganisingTeam,
+  AccommodationOption
 } from '../types';
 import {
   fetchAllRegistrations,
@@ -58,7 +66,16 @@ import {
   fetchDynamicGalleryItems,
   saveGalleryItem,
   removeGalleryItem,
-  fetchAllFeedback
+  fetchAllFeedback,
+  fetchCommitteeMembers,
+  saveCommitteeMember,
+  deleteCommitteeMember,
+  fetchOrganisingTeams,
+  saveOrganisingTeam,
+  deleteOrganisingTeam,
+  fetchAccommodations,
+  saveAccommodation,
+  deleteAccommodation
 } from '../services/registrationService';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
@@ -86,7 +103,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  type TabType = 'delegates' | 'cars' | 'multi_admin' | 'documents' | 'gallery' | 'feedback';
+  type TabType = 'delegates' | 'cars' | 'committee' | 'teams' | 'accommodations' | 'multi_admin' | 'documents' | 'gallery' | 'feedback';
   const [activeTab, setActiveTab] = useState<TabType>('delegates');
 
   // Delegates data
@@ -99,6 +116,84 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [selectedCarPass, setSelectedCarPass] = useState<CarPassRecord | null>(null);
   const [selectedCarQr, setSelectedCarQr] = useState<string>('');
   const [parkingZoneInput, setParkingZoneInput] = useState('Gate 1 Main Pavilion Parking Bay');
+
+  // Committee Members state
+  const [committeeMembers, setCommitteeMembers] = useState<CommitteeMember[]>([]);
+  const [editingMember, setEditingMember] = useState<CommitteeMember | null>(null);
+  const [isAddingMember, setIsAddingMember] = useState(false);
+  const [adminCommitteeSearch, setAdminCommitteeSearch] = useState('');
+  const [adminCommitteeCategory, setAdminCommitteeCategory] = useState('All');
+  const [memberForm, setMemberForm] = useState<{
+    id?: string;
+    name: string;
+    role: string;
+    category: string;
+    location: string;
+    phone: string;
+    sortOrder?: number;
+  }>({
+    name: '',
+    role: '',
+    category: 'Main Committee',
+    location: '',
+    phone: '',
+    sortOrder: 99
+  });
+  const [committeeSaveSuccess, setCommitteeSaveSuccess] = useState('');
+
+  // Organising Teams state
+  const [organisingTeams, setOrganisingTeams] = useState<OrganisingTeam[]>([]);
+  const [editingTeam, setEditingTeam] = useState<OrganisingTeam | null>(null);
+  const [isAddingTeam, setIsAddingTeam] = useState(false);
+  const [teamForm, setTeamForm] = useState<{
+    id?: string;
+    name: string;
+    lead: string;
+    volunteersCount: number;
+    responsibilities: string;
+    contactPerson: string;
+    contactNumber: string;
+  }>({
+    name: '',
+    lead: '',
+    volunteersCount: 50,
+    responsibilities: '',
+    contactPerson: '',
+    contactNumber: ''
+  });
+  const [teamSaveSuccess, setTeamSaveSuccess] = useState('');
+
+  // Accommodations state
+  const [accommodations, setAccommodations] = useState<AccommodationOption[]>([]);
+  const [editingAcc, setEditingAcc] = useState<AccommodationOption | null>(null);
+  const [isAddingAcc, setIsAddingAcc] = useState(false);
+  const [accForm, setAccForm] = useState<{
+    id?: string;
+    name: string;
+    type: 'Ashram Niwas' | 'Guest House' | 'Hotel' | 'Tent Village';
+    distance: string;
+    location: string;
+    capacity: string;
+    tariff: string;
+    amenities: string;
+    contactName: string;
+    phone: string;
+    whatsapp: string;
+    bookingStatus: 'Available' | 'Filling Fast' | 'Limited';
+  }>({
+    name: '',
+    type: 'Guest House',
+    distance: '',
+    location: '',
+    capacity: '',
+    tariff: '',
+    amenities: '',
+    contactName: '',
+    phone: '',
+    whatsapp: '',
+    bookingStatus: 'Available'
+  });
+  const [accSaveSuccess, setAccSaveSuccess] = useState('');
 
   // Multi-Admin data
   const [adminList, setAdminList] = useState<AdminUser[]>([]);
@@ -149,13 +244,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [regs, cars, admins, docs, gallery, feedback] = await Promise.all([
+      const [regs, cars, admins, docs, gallery, feedback, committee, teams, accs] = await Promise.all([
         fetchAllRegistrations(),
         fetchAllCarPasses(),
         fetchAllAdmins(),
         fetchAllEventDocuments(),
         fetchDynamicGalleryItems(),
-        fetchAllFeedback()
+        fetchAllFeedback(),
+        fetchCommitteeMembers(),
+        fetchOrganisingTeams(),
+        fetchAccommodations()
       ]);
       setRegistrations(regs);
       setCarPasses(cars);
@@ -163,6 +261,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       setDocuments(docs);
       setGalleryItems(gallery);
       setFeedbackList(feedback);
+      setCommitteeMembers(committee);
+      setOrganisingTeams(teams);
+      setAccommodations(accs);
     } catch (e) {
       console.error('Error loading dashboard data:', e);
     } finally {
@@ -515,6 +616,189 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     }
   };
 
+  // ================= COMMITTEE HANDLERS =================
+  const handleSaveMemberSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!memberForm.name.trim() || !memberForm.role.trim()) {
+      alert('Please fill out Member Name and Role.');
+      return;
+    }
+    const id = memberForm.id || `c-${Date.now()}`;
+    const newMember: CommitteeMember = {
+      id,
+      name: memberForm.name.trim(),
+      role: memberForm.role.trim(),
+      category: memberForm.category || 'Main Committee',
+      location: memberForm.location.trim() || 'Dotma, Kokrajhar',
+      phone: memberForm.phone.trim() || undefined,
+      sortOrder: memberForm.sortOrder !== undefined ? Number(memberForm.sortOrder) : 99
+    };
+
+    await saveCommitteeMember(newMember);
+    setCommitteeMembers(prev => [newMember, ...prev.filter(m => m.id !== id)]);
+    setIsAddingMember(false);
+    setEditingMember(null);
+    setMemberForm({ name: '', role: '', category: 'Main Committee', location: '', phone: '', sortOrder: 99 });
+    setCommitteeSaveSuccess('Committee member updated successfully in Firebase!');
+    setTimeout(() => setCommitteeSaveSuccess(''), 4000);
+  };
+
+  const handleEditMemberClick = (member: CommitteeMember) => {
+    setEditingMember(member);
+    setMemberForm({
+      id: member.id,
+      name: member.name,
+      role: member.role,
+      category: member.category,
+      location: member.location,
+      phone: member.phone || '',
+      sortOrder: member.sortOrder ?? 99
+    });
+    setIsAddingMember(true);
+  };
+
+  const handleDeleteMember = async (id: string) => {
+    if (confirm('Are you sure you want to remove this committee member from Firebase?')) {
+      await deleteCommitteeMember(id);
+      setCommitteeMembers(prev => prev.filter(m => m.id !== id));
+    }
+  };
+
+  // ================= TEAMS HANDLERS =================
+  const handleSaveTeamSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!teamForm.name.trim() || !teamForm.lead.trim()) {
+      alert('Please fill out Team Name and Lead.');
+      return;
+    }
+    const id = teamForm.id || `team-${Date.now()}`;
+    const resps = teamForm.responsibilities
+      .split('\n')
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    const newTeam: OrganisingTeam = {
+      id,
+      name: teamForm.name.trim(),
+      lead: teamForm.lead.trim(),
+      volunteersCount: Number(teamForm.volunteersCount) || 50,
+      responsibilities: resps.length > 0 ? resps : ['Coordinate operational responsibilities and pilgrim seva.'],
+      contactPerson: teamForm.contactPerson.trim() || teamForm.lead.trim(),
+      contactNumber: teamForm.contactNumber.trim() || '+91 94350 78334'
+    };
+
+    await saveOrganisingTeam(newTeam);
+    setOrganisingTeams(prev => [newTeam, ...prev.filter(t => t.id !== id)]);
+    setIsAddingTeam(false);
+    setEditingTeam(null);
+    setTeamForm({
+      name: '',
+      lead: '',
+      volunteersCount: 50,
+      responsibilities: '',
+      contactPerson: '',
+      contactNumber: ''
+    });
+    setTeamSaveSuccess('Organising team updated successfully in Firebase!');
+    setTimeout(() => setTeamSaveSuccess(''), 4000);
+  };
+
+  const handleEditTeamClick = (team: OrganisingTeam) => {
+    setEditingTeam(team);
+    setTeamForm({
+      id: team.id,
+      name: team.name,
+      lead: team.lead,
+      volunteersCount: team.volunteersCount,
+      responsibilities: team.responsibilities.join('\n'),
+      contactPerson: team.contactPerson,
+      contactNumber: team.contactNumber
+    });
+    setIsAddingTeam(true);
+  };
+
+  const handleDeleteTeam = async (id: string) => {
+    if (confirm('Are you sure you want to remove this organising team from Firebase?')) {
+      await deleteOrganisingTeam(id);
+      setOrganisingTeams(prev => prev.filter(t => t.id !== id));
+    }
+  };
+
+  // ================= ACCOMMODATION HANDLERS =================
+  const handleSaveAccommodationSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!accForm.name.trim() || !accForm.tariff.trim()) {
+      alert('Please fill out Accommodation Name and Tariff.');
+      return;
+    }
+    const id = accForm.id || `acc-${Date.now()}`;
+    const amenitiesList = accForm.amenities
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    const newAcc: AccommodationOption = {
+      id,
+      name: accForm.name.trim(),
+      type: accForm.type,
+      distance: accForm.distance.trim() || 'Dotma Area',
+      location: accForm.location.trim() || 'Dotma, Kokrajhar',
+      capacity: accForm.capacity.trim() || 'Adequate',
+      tariff: accForm.tariff.trim(),
+      amenities: amenitiesList.length > 0 ? amenitiesList : ['Clean Beds', 'Drinking Water', 'Restrooms'],
+      contactName: accForm.contactName.trim() || 'Stay In-Charge',
+      phone: accForm.phone.trim() || '+91 94350 78334',
+      whatsapp: accForm.whatsapp.trim() || accForm.phone.trim() || '+919435078334',
+      bookingStatus: accForm.bookingStatus
+    };
+
+    await saveAccommodation(newAcc);
+    setAccommodations(prev => [newAcc, ...prev.filter(a => a.id !== id)]);
+    setIsAddingAcc(false);
+    setEditingAcc(null);
+    setAccForm({
+      name: '',
+      type: 'Guest House',
+      distance: '',
+      location: '',
+      capacity: '',
+      tariff: '',
+      amenities: '',
+      contactName: '',
+      phone: '',
+      whatsapp: '',
+      bookingStatus: 'Available'
+    });
+    setAccSaveSuccess('Accommodation updated successfully in Firebase!');
+    setTimeout(() => setAccSaveSuccess(''), 4000);
+  };
+
+  const handleEditAccClick = (acc: AccommodationOption) => {
+    setEditingAcc(acc);
+    setAccForm({
+      id: acc.id,
+      name: acc.name,
+      type: acc.type,
+      distance: acc.distance,
+      location: acc.location,
+      capacity: acc.capacity,
+      tariff: acc.tariff,
+      amenities: acc.amenities.join(', '),
+      contactName: acc.contactName,
+      phone: acc.phone,
+      whatsapp: acc.whatsapp,
+      bookingStatus: acc.bookingStatus
+    });
+    setIsAddingAcc(true);
+  };
+
+  const handleDeleteAccommodation = async (id: string) => {
+    if (confirm('Are you sure you want to remove this accommodation listing from Firebase?')) {
+      await deleteAccommodation(id);
+      setAccommodations(prev => prev.filter(a => a.id !== id));
+    }
+  };
+
   // ================= EXPORTS =================
   const exportDelegatesCSV = () => {
     if (registrations.length === 0) return;
@@ -824,6 +1108,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
           </button>
 
           <button
+            onClick={() => setActiveTab('committee')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
+              activeTab === 'committee'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-850'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Committee ({committeeMembers.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('teams')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
+              activeTab === 'teams'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-850'
+            }`}
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Teams & Volunteers ({organisingTeams.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('accommodations')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
+              activeTab === 'accommodations'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-850'
+            }`}
+          >
+            <Building2 className="w-4 h-4" />
+            <span>Hotels & Stays ({accommodations.length})</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('multi_admin')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
               activeTab === 'multi_admin'
@@ -966,7 +1286,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-stone-100 dark:bg-stone-850 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
+                  <thead className="bg-stone-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
                     <tr>
                       <th className="py-3 px-4">Photo</th>
                       <th className="py-3 px-4">Delegate Name & ID</th>
@@ -1153,7 +1473,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-stone-100 dark:bg-stone-850 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
+                  <thead className="bg-stone-100 dark:bg-stone-900 text-stone-600 dark:text-stone-400 font-semibold uppercase tracking-wider border-b border-stone-200 dark:border-stone-800">
                     <tr>
                       <th className="py-3 px-4">Photo</th>
                       <th className="py-3 px-4">Car Plate & Pass ID</th>
@@ -1507,7 +1827,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
 
                 {/* File Upload OR Direct URL Dual Mode */}
-                <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
                       <Upload className="w-4 h-4 text-amber-600" />
@@ -1612,7 +1932,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {documents.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-850 flex flex-col justify-between"
+                    className="p-4 rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50/50 dark:bg-stone-900 flex flex-col justify-between"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
@@ -1734,7 +2054,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
                 {/* Media Input Area based on Type */}
                 {newGalType === 'image' ? (
-                  <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-3">
+                  <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                       <span className="text-xs font-bold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
                         <ImageIcon className="w-4 h-4 text-amber-600" />
@@ -1861,7 +2181,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 {galleryItems.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-850 flex flex-col justify-between"
+                    className="rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-900 flex flex-col justify-between"
                   >
                     <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
                       {item.type === 'video' ? (
@@ -1960,12 +2280,892 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       )}
                     </div>
 
-                    <p className="text-xs text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-850 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
+                    <p className="text-xs text-stone-700 dark:text-stone-300 bg-stone-50 dark:bg-stone-900 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
                       "{fb.comments}"
                     </p>
                   </div>
                 ))
               )}
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB: COMMITTEE MEMBERS ================= */}
+        {activeTab === 'committee' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-amber-600" />
+                  <span>Organising & Reception Committee ({committeeMembers.length})</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Manage committee members, patrons, executive leads, and desk coordinators. All updates are saved directly in Firebase Firestore.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setEditingMember(null);
+                  setMemberForm({ name: '', role: '', category: 'Main Committee', location: 'Dotma, Kokrajhar', phone: '', sortOrder: 99 });
+                  setIsAddingMember(prev => !prev);
+                }}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isAddingMember ? 'Close Form' : 'Add Committee Member'}</span>
+              </button>
+            </div>
+
+            {committeeSaveSuccess && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                <Check className="w-4 h-4" />
+                <span>{committeeSaveSuccess}</span>
+              </div>
+            )}
+
+            {/* Add / Edit Form */}
+            {isAddingMember && (
+              <form
+                onSubmit={handleSaveMemberSubmit}
+                className="bg-amber-50/50 dark:bg-stone-900/90 rounded-3xl p-6 sm:p-8 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-4 animate-in fade-in duration-200"
+              >
+                <div className="flex items-center justify-between border-b border-amber-200 dark:border-stone-700 pb-3">
+                  <h4 className="font-serif-cinzel font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+                    {editingMember ? 'Edit Committee Member' : 'Add Committee Member to Firebase'}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingMember(false);
+                      setEditingMember(null);
+                    }}
+                    className="p-1 rounded-md text-stone-400 hover:text-stone-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Member Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={memberForm.name}
+                      onChange={(e) => setMemberForm({ ...memberForm, name: e.target.value })}
+                      placeholder="e.g. Sjt. Prakash Basumatary"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Designation / Role *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={memberForm.role}
+                      onChange={(e) => setMemberForm({ ...memberForm, role: e.target.value })}
+                      placeholder="e.g. President, General Secretary..."
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Committee / Sub-Committee *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={memberForm.category}
+                      onChange={(e) => setMemberForm({ ...memberForm, category: e.target.value })}
+                      placeholder="e.g. Main Committee, Finance Sub-Committee..."
+                      list="admin-committee-category-list"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                    <datalist id="admin-committee-category-list">
+                      {Array.from(new Set(committeeMembers.map(m => m.category))).sort().map(cat => (
+                        <option key={cat} value={cat} />
+                      ))}
+                    </datalist>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Address / Remarks / Location
+                    </label>
+                    <input
+                      type="text"
+                      value={memberForm.location}
+                      onChange={(e) => setMemberForm({ ...memberForm, location: e.target.value })}
+                      placeholder="e.g. Kokrajhar, Dotma, Chairman..."
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Mobile No. (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={memberForm.phone}
+                      onChange={(e) => setMemberForm({ ...memberForm, phone: e.target.value })}
+                      placeholder="e.g. 9435027290"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Sort Priority Order (1 = Highest, 99 = Default)
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      value={memberForm.sortOrder ?? 99}
+                      onChange={(e) => setMemberForm({ ...memberForm, sortOrder: parseInt(e.target.value) || 99 })}
+                      placeholder="e.g. 1 for Patron, 2 for President, 99 for Default"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingMember(false);
+                      setEditingMember(null);
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors"
+                  >
+                    {editingMember ? 'Save Changes' : 'Add Member to Firebase'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Filter and Search Bar for Committee Members */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-stone-50 dark:bg-stone-800/80 p-4 rounded-2xl border border-stone-200 dark:border-stone-700">
+              <div className="relative w-full sm:w-80">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={adminCommitteeSearch}
+                  onChange={(e) => setAdminCommitteeSearch(e.target.value)}
+                  placeholder="Search by name, role, location, mobile..."
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <select
+                  value={adminCommitteeCategory}
+                  onChange={(e) => setAdminCommitteeCategory(e.target.value)}
+                  className="px-3 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 border border-stone-300 dark:border-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="All">All Categories ({committeeMembers.length})</option>
+                  {Array.from(new Set(committeeMembers.map(m => m.category))).sort().map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Committee Cards Grid with Hierarchy & Sorting */}
+            {(() => {
+              const filteredList = committeeMembers.filter(m => {
+                const matchesCat = adminCommitteeCategory === 'All' || m.category === adminCommitteeCategory;
+                const searchLower = adminCommitteeSearch.trim().toLowerCase();
+                const matchesSearch = !searchLower ||
+                  m.name.toLowerCase().includes(searchLower) ||
+                  m.role.toLowerCase().includes(searchLower) ||
+                  m.category.toLowerCase().includes(searchLower) ||
+                  (m.location && m.location.toLowerCase().includes(searchLower)) ||
+                  (m.phone && m.phone.toLowerCase().includes(searchLower));
+                return matchesCat && matchesSearch;
+              });
+
+              if (filteredList.length === 0) {
+                return (
+                  <div className="text-center py-12 text-sm text-stone-500 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800">
+                    No committee members found matching your search.
+                  </div>
+                );
+              }
+
+              // Group & Sort hierarchically when "All" is selected
+              let groupedStructure: { categoryName: string; members: CommitteeMember[] }[] = [];
+
+              if (adminCommitteeCategory !== 'All') {
+                groupedStructure = [
+                  {
+                    categoryName: adminCommitteeCategory,
+                    members: [...filteredList].sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99))
+                  }
+                ];
+              } else {
+                const categoryMap = new Map<string, CommitteeMember[]>();
+                filteredList.forEach(m => {
+                  const cat = m.category || 'Main Committee';
+                  if (!categoryMap.has(cat)) {
+                    categoryMap.set(cat, []);
+                  }
+                  categoryMap.get(cat)!.push(m);
+                });
+
+                const categories = Array.from(categoryMap.keys());
+                categories.sort((a, b) => {
+                  if (a === 'Main Committee') return -1;
+                  if (b === 'Main Committee') return 1;
+                  return a.localeCompare(b);
+                });
+
+                groupedStructure = categories.map(cat => ({
+                  categoryName: cat,
+                  members: (categoryMap.get(cat) || []).sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99))
+                }));
+              }
+
+              return (
+                <div className="space-y-8">
+                  {groupedStructure.map((group) => (
+                    <div key={group.categoryName} className="space-y-4">
+                      {adminCommitteeCategory === 'All' && (
+                        <div className="flex items-center gap-3 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <h4 className="font-serif-cinzel font-bold text-base text-amber-700 dark:text-amber-400">
+                            {group.categoryName}
+                          </h4>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                            {group.members.length} Members
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {group.members.map((member) => (
+                          <div
+                            key={member.id}
+                            className="bg-white dark:bg-stone-900 rounded-2xl p-5 border border-stone-200 dark:border-stone-800/90 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                          >
+                            <div>
+                              {/* Header: Avatar + Full Name + Priority Badge + Edit/Delete Buttons */}
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-500 text-stone-950 font-extrabold text-xs flex items-center justify-center shadow-sm shrink-0 border border-amber-300 dark:border-amber-400/40">
+                                    {member.name.split(' ').filter(n => !['Sjt.', 'Dr.', 'Shri', 'Smt.'].includes(n))[0]?.[0] || member.name[0]}
+                                  </div>
+                                  <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel leading-tight break-words flex-1">
+                                    {member.name}
+                                  </h4>
+                                </div>
+
+                                {/* Action buttons */}
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    onClick={() => {
+                                      setIsAddingMember(true);
+                                      handleEditMemberClick(member);
+                                    }}
+                                    className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                                    title="Edit member"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteMember(member.id)}
+                                    className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                                    title="Delete member from Firebase"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Category badge & Priority Order just ABOVE role / position */}
+                              <div className="mt-1.5 mb-1 flex items-center gap-1.5 flex-wrap">
+                                <span className="inline-block px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/50 dark:border-amber-800/60" title={member.category}>
+                                  {member.category}
+                                </span>
+                                {member.sortOrder !== undefined && member.sortOrder < 99 && (
+                                  <span className="inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold font-mono bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-400/40">
+                                    #{member.sortOrder} Priority
+                                  </span>
+                                )}
+                              </div>
+
+                              <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
+                                {member.role}
+                              </p>
+                            </div>
+
+                            <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 flex items-center justify-between">
+                              <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
+                              {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold shrink-0">{member.phone}</span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        )}
+
+        {/* ================= TAB: ORGANISING TEAMS (VOLUNTEERS) ================= */}
+        {activeTab === 'teams' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <UserCheck className="w-5 h-5 text-amber-600" />
+                  <span>Organising Teams & Volunteers ({organisingTeams.length})</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Manage volunteer wings, team leads, active counts, and allocated seva areas. Synced live with Firebase Firestore.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setEditingTeam(null);
+                  setTeamForm({
+                    name: '',
+                    lead: '',
+                    volunteersCount: 50,
+                    responsibilities: '',
+                    contactPerson: '',
+                    contactNumber: ''
+                  });
+                  setIsAddingTeam(prev => !prev);
+                }}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isAddingTeam ? 'Close Form' : 'Add Volunteer Team'}</span>
+              </button>
+            </div>
+
+            {teamSaveSuccess && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                <Check className="w-4 h-4" />
+                <span>{teamSaveSuccess}</span>
+              </div>
+            )}
+
+            {/* Add / Edit Team Form */}
+            {isAddingTeam && (
+              <form
+                onSubmit={handleSaveTeamSubmit}
+                className="bg-amber-50/50 dark:bg-stone-900/90 rounded-3xl p-6 sm:p-8 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-4 animate-in fade-in duration-200"
+              >
+                <div className="flex items-center justify-between border-b border-amber-200 dark:border-stone-700 pb-3">
+                  <h4 className="font-serif-cinzel font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+                    {editingTeam ? 'Edit Organising Team' : 'Add Organising Team to Firebase'}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingTeam(false);
+                      setEditingTeam(null);
+                    }}
+                    className="p-1 rounded-md text-stone-400 hover:text-stone-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Team Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={teamForm.name}
+                      onChange={(e) => setTeamForm({ ...teamForm, name: e.target.value })}
+                      placeholder="e.g. Maha Annadan & Kitchen Wing"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Team Lead / Head *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={teamForm.lead}
+                      onChange={(e) => setTeamForm({ ...teamForm, lead: e.target.value })}
+                      placeholder="e.g. Sjt. Tapas K. Bhattacharya"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Active Volunteers Count *
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={teamForm.volunteersCount}
+                      onChange={(e) => setTeamForm({ ...teamForm, volunteersCount: parseInt(e.target.value) || 0 })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Contact Person
+                    </label>
+                    <input
+                      type="text"
+                      value={teamForm.contactPerson}
+                      onChange={(e) => setTeamForm({ ...teamForm, contactPerson: e.target.value })}
+                      placeholder="e.g. Sjt. Tapas Bhattacharya"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Contact Phone *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={teamForm.contactNumber}
+                      onChange={(e) => setTeamForm({ ...teamForm, contactNumber: e.target.value })}
+                      placeholder="+91 94355 99112"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Responsibilities & Seva Tasks (One per line)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={teamForm.responsibilities}
+                    onChange={(e) => setTeamForm({ ...teamForm, responsibilities: e.target.value })}
+                    placeholder="Preparation of satvik meals&#10;Sacred kitchen hygiene maintenance&#10;Distribution across pandal"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingTeam(false);
+                      setEditingTeam(null);
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors"
+                  >
+                    {editingTeam ? 'Save Team Changes' : 'Add Team to Firebase'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Teams Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {organisingTeams.map((team) => (
+                <div
+                  key={team.id}
+                  className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+                        {team.volunteersCount} Active Volunteers
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleEditTeamClick(team)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                          title="Edit team"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTeam(team.id)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                          title="Delete team from Firebase"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
+                      {team.name}
+                    </h4>
+
+                    <div className="mt-2 text-xs text-stone-600 dark:text-stone-400 font-medium">
+                      Lead: <span className="text-stone-900 dark:text-stone-200 font-semibold">{team.lead}</span>
+                    </div>
+
+                    <ul className="mt-4 space-y-2 text-xs text-stone-600 dark:text-stone-300">
+                      {team.responsibilities.map((resp, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="text-amber-500 font-bold">·</span>
+                          <span>{resp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
+                    <span className="text-stone-500 dark:text-stone-400">Desk: {team.contactPerson}</span>
+                    <a
+                      href={`tel:${team.contactNumber}`}
+                      className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-400 hover:underline"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{team.contactNumber}</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ================= TAB: ACCOMMODATIONS & HOTELS ================= */}
+        {activeTab === 'accommodations' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-amber-600" />
+                  <span>Accommodations & Hotels ({accommodations.length})</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Manage ashram dormitories, guest houses, partner hotels, and tent villages for outstation attendees. Stored in Firebase.
+                </p>
+              </div>
+
+              <button
+                onClick={() => {
+                  setEditingAcc(null);
+                  setAccForm({
+                    name: '',
+                    type: 'Guest House',
+                    distance: '1 km from venue',
+                    location: 'Dotma Town',
+                    capacity: '50 Rooms',
+                    tariff: '₹ 1,000 / night',
+                    amenities: 'Attached Bathrooms, Wi-Fi, Generator Backup',
+                    contactName: 'Front Desk',
+                    phone: '+91 94350 78334',
+                    whatsapp: '+919435078334',
+                    bookingStatus: 'Available'
+                  });
+                  setIsAddingAcc(prev => !prev);
+                }}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors shrink-0"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{isAddingAcc ? 'Close Form' : 'Add Stay Listing'}</span>
+              </button>
+            </div>
+
+            {accSaveSuccess && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                <Check className="w-4 h-4" />
+                <span>{accSaveSuccess}</span>
+              </div>
+            )}
+
+            {/* Add / Edit Accommodation Form */}
+            {isAddingAcc && (
+              <form
+                onSubmit={handleSaveAccommodationSubmit}
+                className="bg-amber-50/50 dark:bg-stone-900/90 rounded-3xl p-6 sm:p-8 border-2 border-amber-400 dark:border-amber-600 shadow-lg space-y-4 animate-in fade-in duration-200"
+              >
+                <div className="flex items-center justify-between border-b border-amber-200 dark:border-stone-700 pb-3">
+                  <h4 className="font-serif-cinzel font-bold text-sm sm:text-base text-stone-900 dark:text-stone-100">
+                    {editingAcc ? 'Edit Accommodation Listing' : 'Add New Accommodation to Firebase'}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingAcc(false);
+                      setEditingAcc(null);
+                    }}
+                    className="p-1 rounded-md text-stone-400 hover:text-stone-700"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Accommodation Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={accForm.name}
+                      onChange={(e) => setAccForm({ ...accForm, name: e.target.value })}
+                      placeholder="e.g. Dotma Central Yatri Ashram Niwas"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Facility Type *
+                    </label>
+                    <select
+                      value={accForm.type}
+                      onChange={(e) => setAccForm({ ...accForm, type: e.target.value as any })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="Ashram Niwas">Ashram Niwas</option>
+                      <option value="Guest House">Guest House</option>
+                      <option value="Hotel">Hotel</option>
+                      <option value="Tent Village">Tent Village</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Tariff / Rate *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={accForm.tariff}
+                      onChange={(e) => setAccForm({ ...accForm, tariff: e.target.value })}
+                      placeholder="e.g. Complimentary / ₹ 1,200 per night"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Distance from Venue
+                    </label>
+                    <input
+                      type="text"
+                      value={accForm.distance}
+                      onChange={(e) => setAccForm({ ...accForm, distance: e.target.value })}
+                      placeholder="e.g. 0.5 km from Mandap"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Location / Address
+                    </label>
+                    <input
+                      type="text"
+                      value={accForm.location}
+                      onChange={(e) => setAccForm({ ...accForm, location: e.target.value })}
+                      placeholder="e.g. West Dangarkuthi, Dotma"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Capacity
+                    </label>
+                    <input
+                      type="text"
+                      value={accForm.capacity}
+                      onChange={(e) => setAccForm({ ...accForm, capacity: e.target.value })}
+                      placeholder="e.g. 2,000 Pilgrims / 40 Rooms"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Contact Person
+                    </label>
+                    <input
+                      type="text"
+                      value={accForm.contactName}
+                      onChange={(e) => setAccForm({ ...accForm, contactName: e.target.value })}
+                      placeholder="e.g. Sjt. Sanjib Debnath"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      value={accForm.phone}
+                      onChange={(e) => setAccForm({ ...accForm, phone: e.target.value })}
+                      placeholder="+91 94352 XXXXX"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Booking Status
+                    </label>
+                    <select
+                      value={accForm.bookingStatus}
+                      onChange={(e) => setAccForm({ ...accForm, bookingStatus: e.target.value as any })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="Available">Available</option>
+                      <option value="Filling Fast">Filling Fast</option>
+                      <option value="Limited">Limited</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Amenities (Comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={accForm.amenities}
+                    onChange={(e) => setAccForm({ ...accForm, amenities: e.target.value })}
+                    placeholder="Clean Mattresses, Drinking Water, Attached Bathrooms, Wi-Fi"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsAddingAcc(false);
+                      setEditingAcc(null);
+                    }}
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors"
+                  >
+                    {editingAcc ? 'Save Stay Changes' : 'Add Stay Listing to Firebase'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Accommodations Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {accommodations.map((acc) => (
+                <div
+                  key={acc.id}
+                  className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                        {acc.type}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                            acc.bookingStatus === 'Available'
+                              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'
+                              : 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'
+                          }`}
+                        >
+                          {acc.bookingStatus}
+                        </span>
+                        <button
+                          onClick={() => handleEditAccClick(acc)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors ml-1"
+                          title="Edit stay"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAccommodation(acc.id)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                          title="Delete stay from Firebase"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">
+                      {acc.name}
+                    </h4>
+
+                    <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 mt-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span>{acc.distance} · {acc.location}</span>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between text-xs">
+                      <span className="text-stone-500">Tariff:</span>
+                      <span className="font-bold text-amber-700 dark:text-amber-400">{acc.tariff}</span>
+                    </div>
+
+                    <div className="mt-1 flex items-center justify-between text-xs">
+                      <span className="text-stone-500">Capacity:</span>
+                      <span className="font-semibold text-stone-800 dark:text-stone-200">{acc.capacity}</span>
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-1">
+                      {acc.amenities.map((am, i) => (
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+                          {am}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
+                    <span className="text-stone-500 dark:text-stone-400">Contact: {acc.contactName}</span>
+                    <a
+                      href={`tel:${acc.phone}`}
+                      className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-400 hover:underline"
+                    >
+                      <Phone className="w-3.5 h-3.5" />
+                      <span>{acc.phone}</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

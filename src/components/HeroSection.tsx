@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-400/40 text-amber-300 text-xs font-medium tracking-wider uppercase mb-3 animate-in fade-in duration-500">
           <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>Sacred Spiritual Confluence · Dotma 2026</span>
+          <span>प्रिति-लाग्निक · Dotma 2026</span>
         </div>
 
         {/* Marquee Headline */}
@@ -52,7 +52,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </h1>
 
         <p className="mt-4 text-base sm:text-lg md:text-xl text-stone-200 font-light max-w-3xl mx-auto text-balance leading-relaxed">
-          Celebrating Divine Love (Priti), Existential Communion (Lagnik), and Universal Seva under the sacred inspiration of Sree Sree Thakur.
+          Celebrating 139th Birth Anniversary of Sree Sree Thakur Anukulchandra.
         </p>
 
         {/* Key Event Highlights Row */}
@@ -66,14 +66,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <MapPin className="w-4 h-4 text-amber-400" />
             <span>West Dangarkuthi, Dotma, Kokrajhar, Assam - 783347</span>
           </div>
-          <span className="text-amber-500/60 hidden sm:inline">·</span>
-          <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-amber-400" />
-            <span>100,000+ Expected Attendees</span>
-          </div>
         </div>
 
-        {/* Action Buttons: Discover More & Register */}
+        {/* Action Buttons: Discover More & Register for Accomodation */}
         <div className="mt-7 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <button
             onClick={onDiscoverMore}
@@ -88,7 +83,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="flex items-center gap-2 px-7 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-xl ring-2 ring-amber-400/50"
           >
             <HeartHandshake className="w-4 h-4 text-stone-950" />
-            <span>Register as Attendee</span>
+            <span>Register for Accomodation</span>
           </button>
         </div>
       </div>

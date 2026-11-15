@@ -85,7 +85,7 @@ export const CountdownTimer: React.FC = () => {
             <span>Official Event Countdown</span>
           </div>
           <h3 className="text-lg md:text-xl font-serif-cinzel font-semibold text-stone-100 mt-1">
-            Opening Auspicious Dawn · November 18, 2026
+            20 December, 2026
           </h3>
         </div>
 

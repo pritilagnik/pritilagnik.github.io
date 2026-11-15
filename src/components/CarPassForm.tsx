@@ -195,7 +195,7 @@ export const CarPassForm: React.FC<CarPassFormProps> = ({ onSuccess, onCheckStat
           {/* Acknowledgement Card (Printable with Big CAR PASS Banner) */}
           <div
             id="car-acknowledgement-card"
-            className="printable-card-target bg-white dark:bg-stone-850 rounded-2xl p-6 sm:p-8 border-4 border-amber-500 dark:border-amber-400 shadow-md space-y-5"
+            className="printable-card-target bg-white dark:bg-stone-900 rounded-2xl p-6 sm:p-8 border-4 border-amber-500 dark:border-amber-400 shadow-md space-y-5"
           >
             {/* VERY BIG VISIBLE CAR PASS BANNER */}
             <div className="bg-amber-500 text-stone-950 font-black tracking-widest text-center py-3 px-4 rounded-xl shadow-inner border-2 border-amber-600">

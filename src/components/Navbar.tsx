@@ -14,7 +14,8 @@ import {
   PhoneCall,
   Search,
   Globe,
-  MessageSquare
+  MessageSquare,
+  Compass
 } from 'lucide-react';
 import { PageTab, AboutSubTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -127,24 +128,24 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {aboutDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-white dark:bg-stone-850 shadow-xl border border-stone-200 dark:border-stone-700 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl bg-white dark:bg-stone-900 shadow-xl border border-stone-200 dark:border-stone-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <button
                     onClick={() => handleAboutSubClick('overview')}
                     className="w-full text-left px-4 py-2.5 text-xs text-stone-700 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
                   >
-                    Maha Mahotsav Overview
+                    Priti-Lagnik 2026
                   </button>
                   <button
                     onClick={() => handleAboutSubClick('committee')}
                     className="w-full text-left px-4 py-2.5 text-xs text-stone-700 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
                   >
-                    Executive & Advisory Committee
+                    Organising Committee
                   </button>
                   <button
                     onClick={() => handleAboutSubClick('organising-teams')}
                     className="w-full text-left px-4 py-2.5 text-xs text-stone-700 dark:text-stone-200 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
                   >
-                    Organising & Seva Teams
+                    Volunteers
                   </button>
                 </div>
               )}
@@ -184,6 +185,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
+              onClick={() => handleNavClick('nearby')}
+              className={`transition-colors whitespace-nowrap shrink-0 hover:text-amber-600 dark:hover:text-amber-400 ${
+                currentTab === 'nearby'
+                  ? 'text-amber-600 dark:text-amber-400 font-semibold'
+                  : 'text-stone-700 dark:text-stone-300'
+              }`}
+            >
+              {t('nearby')}
+            </button>
+
+            <button
               onClick={() => handleNavClick('contact')}
               className={`transition-colors whitespace-nowrap shrink-0 hover:text-amber-600 dark:hover:text-amber-400 ${
                 currentTab === 'contact'
@@ -210,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {langDropdownOpen && (
-                <div className="absolute top-full right-0 mt-2 w-44 rounded-xl bg-white dark:bg-stone-850 shadow-xl border border-stone-200 dark:border-stone-700 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute top-full right-0 mt-2 w-44 rounded-xl bg-white dark:bg-stone-900 shadow-xl border border-stone-200 dark:border-stone-800 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                   <div className="px-3 py-1 text-[10px] uppercase font-bold tracking-wider text-stone-400 border-b border-stone-100 dark:border-stone-800 mb-1">
                     Select Language
                   </div>
@@ -376,7 +388,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     : 'text-stone-700 dark:text-stone-300'
                 }`}
               >
-                <span>About Maha Mahotsav</span>
+                <span>Priti-Lagnik 2026</span>
               </button>
               <button
                 onClick={() => handleAboutSubClick('committee')}
@@ -386,7 +398,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     : 'text-stone-700 dark:text-stone-300'
                 }`}
               >
-                <span>Committee Members</span>
+                <span>Organising Committee</span>
               </button>
               <button
                 onClick={() => handleAboutSubClick('organising-teams')}
@@ -396,7 +408,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     : 'text-stone-700 dark:text-stone-300'
                 }`}
               >
-                <span>Organising Teams & Seva Units</span>
+                <span>Volunteers</span>
               </button>
             </div>
 
@@ -434,6 +446,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Building2 className="w-4 h-4 text-amber-600" />
               <span>Accommodation & Lodging</span>
+            </button>
+
+            <button
+              onClick={() => handleNavClick('nearby')}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium ${
+                currentTab === 'nearby'
+                  ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 font-semibold'
+                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
+              }`}
+            >
+              <Compass className="w-4 h-4 text-amber-600" />
+              <span>Nearby Places to Visit</span>
             </button>
 
             <button
@@ -547,7 +571,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-500 text-white shadow-sm"
             >
               <UserCheck className="w-4 h-4" />
-              <span>Register as Attendee / Delegation</span>
+              <span>Register</span>
             </button>
           </div>
         </div>

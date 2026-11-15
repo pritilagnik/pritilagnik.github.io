@@ -1,4 +1,4 @@
-export type PageTab = 'home' | 'about' | 'events' | 'gallery' | 'accommodation' | 'contact' | 'admin' | 'status-check';
+export type PageTab = 'home' | 'about' | 'events' | 'gallery' | 'accommodation' | 'contact' | 'admin' | 'status-check' | 'nearby';
 export type AboutSubTab = 'overview' | 'committee' | 'teams' | 'organising-teams';
 
 export interface ThakurProfile {
@@ -17,10 +17,11 @@ export interface CommitteeMember {
   id: string;
   name: string;
   role: string;
-  category: 'Patron' | 'Executive' | 'Secretariat' | 'Finance' | 'Cultural';
+  category: string;
   location: string;
   phone?: string;
   image?: string;
+  sortOrder?: number; // Sorting priority (1 = Top priority e.g. Patron/President, default = 99)
 }
 
 export interface OrganisingTeam {

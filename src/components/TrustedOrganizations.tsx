@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
-import { ShieldCheck, Play, X, ExternalLink, Building, HeartHandshake } from 'lucide-react';
+import React from 'react';
+import { ShieldCheck, Building, HeartHandshake, CheckCircle2 } from 'lucide-react';
 import { TRUSTED_ORGANIZATIONS } from '../data/mahotsavData';
 
 export const TrustedOrganizations: React.FC = () => {
-  const [partnerVideoOpen, setPartnerVideoOpen] = useState(false);
-  const [activePartnerName, setActivePartnerName] = useState('');
-
-  const handleOpenVideo = (name: string) => {
-    setActivePartnerName(name);
-    setPartnerVideoOpen(true);
-  };
-
   return (
     <section className="py-16 sm:py-24 bg-white dark:bg-stone-950 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,66 +49,16 @@ export const TrustedOrganizations: React.FC = () => {
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Verified Seva Partner</span>
                 </span>
-                <button
-                  onClick={() => handleOpenVideo(org.name)}
-                  className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 font-semibold hover:underline"
-                >
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>Watch Message</span>
-                </button>
+                <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Active Association</span>
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Partner Video Modal */}
-      {partnerVideoOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-3xl bg-stone-900 rounded-2xl overflow-hidden shadow-2xl border border-stone-700">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-800 text-white">
-              <div>
-                <h4 className="font-serif-cinzel font-semibold text-amber-300">
-                  {activePartnerName} · Solidarity Message
-                </h4>
-                <p className="text-xs text-stone-400">
-                  Support video message for Priti-Lagnik Maha Mahotsav 2026
-                </p>
-              </div>
-              <button
-                onClick={() => setPartnerVideoOpen(false)}
-                className="p-1.5 rounded-lg text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
-                aria-label="Close video"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="relative aspect-video bg-black flex items-center justify-center">
-              <video
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-                poster="/src/assets/images/cultural_concourse_assam_1793101657203.jpg"
-              >
-                <source
-                  src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-                  type="video/mp4"
-                />
-              </video>
-            </div>
-
-            <div className="p-4 bg-stone-950 text-right">
-              <button
-                onClick={() => setPartnerVideoOpen(false)}
-                className="px-4 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-white text-xs font-medium"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
+

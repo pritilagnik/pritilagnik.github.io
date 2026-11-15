@@ -151,7 +151,7 @@ export const StatusCheckView: React.FC = () => {
 
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
-          <div className="flex flex-col sm:flex-row gap-2 bg-white dark:bg-stone-850 p-2 rounded-2xl border border-stone-300 dark:border-stone-700 shadow-md">
+          <div className="flex flex-col sm:flex-row gap-2 bg-white dark:bg-stone-900 p-2 rounded-2xl border border-stone-300 dark:border-stone-700 shadow-md">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -176,7 +176,7 @@ export const StatusCheckView: React.FC = () => {
 
         {/* Result Area */}
         {searched && !loading && !delegateRecord && !carPassRecord && (
-          <div className="p-8 text-center bg-white dark:bg-stone-850 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm max-w-lg mx-auto space-y-3">
+          <div className="p-8 text-center bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-800 shadow-sm max-w-lg mx-auto space-y-3">
             <AlertCircle className="w-10 h-10 text-amber-500 mx-auto" />
             <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
               No Record Found

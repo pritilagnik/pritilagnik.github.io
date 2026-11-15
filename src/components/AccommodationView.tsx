@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Building2,
   MapPin,
@@ -12,10 +12,17 @@ import {
   CheckCircle2,
   X
 } from 'lucide-react';
-import { ACCOMMODATIONS, EVENT_DETAILS } from '../data/mahotsavData';
+import { fetchAccommodations } from '../services/registrationService';
+import { EVENT_DETAILS } from '../data/mahotsavData';
 import { AccommodationOption } from '../types';
 
-export const AccommodationView: React.FC = () => {
+interface AccommodationViewProps {
+  onNavigateRegister?: () => void;
+}
+
+export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigateRegister }) => {
+  const [accommodations, setAccommodations] = useState<AccommodationOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>('All');
   const [selectedAcc, setSelectedAcc] = useState<AccommodationOption | null>(null);
   const [inquirySent, setInquirySent] = useState(false);
@@ -23,15 +30,34 @@ export const AccommodationView: React.FC = () => {
     name: '',
     phone: '',
     guests: 2,
-    checkIn: '2026-11-18',
+    checkIn: '2026-12-19',
     notes: '',
   });
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAccommodations()
+      .then((data) => {
+        if (isMounted) {
+          setAccommodations(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.warn('Error fetching accommodations:', err);
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const types = ['All', 'Ashram Niwas', 'Guest House', 'Hotel', 'Tent Village'];
 
   const filteredAccommodations = filterType === 'All'
-    ? ACCOMMODATIONS
-    : ACCOMMODATIONS.filter(a => a.type === filterType);
+    ? accommodations
+    : accommodations.filter(a => a.type === filterType);
 
   const handleOpenInquiry = (acc: AccommodationOption) => {
     setSelectedAcc(acc);
@@ -52,28 +78,46 @@ export const AccommodationView: React.FC = () => {
     }, 500);
   };
 
+  const handleGoToRegistration = () => {
+    if (onNavigateRegister) {
+      onNavigateRegister();
+    } else {
+      const el = document.getElementById('register');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="py-12 sm:py-20 bg-stone-50/50 dark:bg-stone-900/30 min-h-screen transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2">
-            <Building2 className="w-4 h-4 text-amber-600" />
-            <span>Pilgrim Lodging & Stay Facilities</span>
+          {/* Section: Pilgrim Lodging & Stay Facilities updated text */}
+          <div className="p-4 rounded-2xl bg-amber-100/70 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/70 text-xs sm:text-sm text-amber-900 dark:text-amber-200 text-center max-w-2xl mx-auto mb-6 shadow-xs leading-relaxed">
+            <Sparkles className="w-4 h-4 text-amber-600 inline mr-1.5 -mt-0.5" />
+            <span>
+              Free Accomodation will be arranged for Guest/Participants from outside BTR (Bodoland Territorial Region) on request. However, the free accomodation facility is limited and early registration is requested.
+            </span>
           </div>
+
           <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
             Accommodation & Hotel Guidance
           </h1>
-          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
-            From free on-site Yatri Ashram dormitories with pure satvik prasad to private executive hotels in Kokrajhar town with round-the-clock festival shuttles.
+
+          {/* Section: From free on-site Yatri Ashram dormitories... updated text */}
+          <p className="mt-3 text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed font-medium">
+            Hotel/Guest House Guidance for self-arranged accomodation
           </p>
 
-          {/* Accommodation Advisory Banner */}
-          <div className="mt-6 p-4 rounded-2xl bg-amber-100/60 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-700/60 text-xs text-amber-900 dark:text-amber-200 text-left max-w-2xl mx-auto flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <p>
-              <strong>Pilgrim Notice:</strong> Due to heavy anticipated attendance (over 100,000 devotees), early booking of private hotels and advance registration for Ashram dormitories is strongly advised. Free shuttle e-rickshaws and buses connect all verified accommodations to the Dotma pandal.
-            </p>
+          {/* Destination Link to: Registration link for free accomodation */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button
+              onClick={handleGoToRegistration}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95"
+            >
+              <Users className="w-4 h-4" />
+              <span>Registration link for free accomodation</span>
+            </button>
           </div>
         </div>
 
@@ -86,7 +130,7 @@ export const AccommodationView: React.FC = () => {
               className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all ${
                 filterType === t
                   ? 'bg-amber-600 text-white shadow-md'
-                  : 'bg-white dark:bg-stone-850 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-amber-400'
+                  : 'bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-800 hover:border-amber-400'
               }`}
             >
               {t}
@@ -95,12 +139,22 @@ export const AccommodationView: React.FC = () => {
         </div>
 
         {/* Accommodation Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredAccommodations.map((acc) => (
-            <div
-              key={acc.id}
-              className="bg-white dark:bg-stone-850 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
-            >
+        {loading ? (
+          <div className="text-center py-16 text-sm text-stone-500">
+            <Sparkles className="w-6 h-6 text-amber-500 animate-spin mx-auto mb-2" />
+            Loading accommodation options...
+          </div>
+        ) : filteredAccommodations.length === 0 ? (
+          <div className="text-center py-16 text-sm text-stone-500">
+            No accommodation options listed in this category yet.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {filteredAccommodations.map((acc) => (
+              <div
+                key={acc.id}
+                className="bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+              >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400">
@@ -190,6 +244,7 @@ export const AccommodationView: React.FC = () => {
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Reservation Assistance Modal */}

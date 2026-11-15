@@ -317,14 +317,14 @@ Joyguru!
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
-            <Calendar className="w-4 h-4 text-amber-600" />
-            <span>Interactive Festival Calendar</span>
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span>Priti-Lagnik Maha-Mahotsav 2026</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
-            Events & Commemorative Schedules
+            Programme Schedule
           </h1>
           <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base leading-relaxed">
-            Main Commemoration: <strong>20 December 2026</strong> at West Dangarkuthi, Dotma, Kokrajhar. Toggle through the interactive festival calendar to explore dawn kirtans, discourses, Anandabazar Annadan, and cultural symposiums.
+            20th December, 2026 (Sunday) · West Dangarkuthi, Dotma, Kokrajhar
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -333,162 +333,222 @@ Joyguru!
               className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-stone-900 hover:bg-stone-800 dark:bg-stone-800 dark:hover:bg-stone-700 text-white shadow-sm transition-colors"
             >
               <Printer className="w-4 h-4" />
-              <span>Print Complete Program Guide</span>
+              <span>Print Programme Schedule</span>
             </button>
+            <a
+              href="#ground-map"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors"
+            >
+              <MapPin className="w-4 h-4" />
+              <span>View Utsav Ground Map</span>
+            </a>
           </div>
         </div>
 
-        {/* INTERACTIVE CALENDAR SELECTOR */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {days.map((d) => {
-            const isSelected = selectedDay === d.dayNumber;
-            return (
-              <button
-                key={d.dayNumber}
-                onClick={() => {
-                  setSelectedDay(d.dayNumber);
-                  setActiveSession(null);
-                }}
-                className={`p-5 rounded-3xl text-left border-2 transition-all shadow-sm ${
-                  isSelected
-                    ? 'bg-amber-600 text-white border-amber-600 shadow-xl scale-[1.02]'
-                    : 'bg-white dark:bg-stone-850 text-stone-900 dark:text-stone-100 border-stone-200 dark:border-stone-800 hover:border-amber-400'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span
-                    className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
-                      isSelected
-                        ? 'bg-white/20 text-white'
-                        : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
-                    }`}
-                  >
-                    {d.tag}
-                  </span>
-                  <span className={`text-xs font-mono font-bold ${isSelected ? 'text-amber-100' : 'text-stone-400'}`}>
-                    {d.weekday}
-                  </span>
-                </div>
-
-                <div className={`text-xl sm:text-2xl font-serif-cinzel font-bold mt-1 ${isSelected ? 'text-white' : 'text-stone-900 dark:text-stone-100'}`}>
-                  {d.dateStr}
-                </div>
-
-                <p className={`text-xs mt-2 line-clamp-2 leading-relaxed ${isSelected ? 'text-amber-100' : 'text-stone-500 dark:text-stone-400'}`}>
-                  {d.title}
-                </p>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Category & Search Filter Bar for Sessions */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-            <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 mr-1 flex items-center gap-1">
-              <Filter className="w-3.5 h-3.5" />
-              <span>Category:</span>
+        {/* 12-Item Chronological Programme Schedule */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3">
+            <h2 className="text-xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-amber-600" />
+              <span>Order of Solemn & Cultural Observances</span>
+            </h2>
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+              12 Sacred Sessions
             </span>
-            {sessionCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
-                  selectedCategory === cat
-                    ? 'bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 font-semibold'
-                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
           </div>
 
-          <div className="w-full md:w-64">
-            <input
-              type="text"
-              placeholder="Search session, venue, speaker..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3.5 py-1.5 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-        </div>
-
-        {/* Timeline Event Cards */}
-        {filteredEvents.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-stone-850 rounded-2xl border border-stone-200 dark:border-stone-800 p-8">
-            <Calendar className="w-10 h-10 text-stone-400 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-stone-800 dark:text-stone-200">
-              No sessions match your search criteria.
-            </h3>
-            <p className="text-xs text-stone-500 mt-1">
-              Try clearing filters or switching to another day in the calendar.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredEvents.map((ev) => (
+          <div className="grid grid-cols-1 gap-3 sm:gap-4">
+            {EVENT_SCHEDULE.map((ev, index) => (
               <div
                 key={ev.id}
                 onClick={() => setActiveSession(ev)}
-                className="cursor-pointer group p-5 sm:p-6 rounded-2xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                className="cursor-pointer group p-4 sm:p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xs hover:border-amber-400 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
-                {/* Left Info: Day & Time */}
-                <div className="md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-stone-100 dark:border-stone-800 pb-3 md:pb-0 md:pr-4">
-                  <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 mb-1.5">
-                    Day {ev.day} · {ev.category}
-                  </span>
-                  <div className="text-sm font-semibold text-stone-900 dark:text-stone-100 font-mono flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-amber-600 shrink-0" />
-                    <span>{ev.time}</span>
+                {/* Index badge & Time */}
+                <div className="flex items-center gap-3 md:w-56 shrink-0 border-b md:border-b-0 md:border-r border-stone-100 dark:border-stone-800 pb-2 md:pb-0 md:pr-4">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold text-sm flex items-center justify-center shrink-0">
+                    {index + 1}
                   </div>
-                  <div className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                    {ev.date}
+                  <div>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-700 dark:text-amber-400 block">
+                      {ev.category}
+                    </span>
+                    <div className="text-sm font-bold text-stone-900 dark:text-stone-100 font-mono">
+                      {ev.time}
+                    </div>
                   </div>
                 </div>
 
                 {/* Middle Info: Title, Venue, Description */}
-                <div className="flex-1 space-y-2">
-                  <h3 className="text-lg sm:text-xl font-bold font-serif-cinzel text-stone-900 dark:text-stone-100 leading-snug group-hover:text-amber-600 transition-colors">
+                <div className="flex-1 space-y-1">
+                  <h3 className="text-base sm:text-lg font-bold font-serif-cinzel text-stone-900 dark:text-stone-100 leading-snug group-hover:text-amber-600 transition-colors">
                     {ev.title}
                   </h3>
                   <div className="flex items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400 font-medium">
-                    <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                    <MapPin className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                     <span>{ev.venue}</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed">
+                  <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed pt-0.5">
                     {ev.description}
                   </p>
-
-                  {ev.speakers && ev.speakers.length > 0 && (
-                    <div className="pt-1 flex flex-wrap items-center gap-1.5 text-xs text-stone-500 dark:text-stone-400">
-                      <span className="font-semibold text-stone-700 dark:text-stone-300">Presiding / Speakers:</span>
-                      {ev.speakers.map((sp, idx) => (
-                        <span key={idx} className="bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded text-[11px]">
-                          {sp}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
 
                 {/* Right Action */}
                 <div className="shrink-0 flex items-center justify-end">
-                  <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-stone-900 px-3 py-1.5 rounded-lg border border-amber-200 dark:border-stone-700 flex items-center gap-1">
-                    <span>View Details</span>
+                  <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-stone-900 px-3 py-1.5 rounded-lg border border-amber-200 dark:border-stone-700 flex items-center gap-1 group-hover:bg-amber-100 dark:group-hover:bg-stone-800 transition-colors">
+                    <span>Details</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
               </div>
             ))}
           </div>
-        )}
+        </div>
+
+        {/* ========================================================================= */}
+        {/* UTSAV GROUND MAP SECTION */}
+        {/* ========================================================================= */}
+        <div id="ground-map" className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8 scroll-mt-24">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-5">
+            <div>
+              <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
+                <MapPin className="w-4 h-4 text-amber-600" />
+                <span>Venue Layout & Facilities</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 mt-1">
+                Utsav Ground Map
+              </h2>
+              <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-300 mt-1">
+                West Dangarkuthi, Dotma, Kokrajhar · Navigational layout plan of Sri Mandir, stages, bhandara halls, medical aid, and parking bays.
+              </p>
+            </div>
+
+            <a
+              href="https://maps.google.com/?q=26.4633,90.1583"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-all whitespace-nowrap"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>Open in Google Maps</span>
+            </a>
+          </div>
+
+          {/* Graphical Ground Plan Schematic */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="lg:col-span-7 bg-amber-50/70 dark:bg-stone-900/90 rounded-2xl p-6 border border-amber-200 dark:border-stone-700 relative overflow-hidden">
+              <div className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-4 flex items-center justify-between">
+                <span>Campus Layout Schematic</span>
+                <span className="text-amber-700 dark:text-amber-400">Orientation: North &uarr;</span>
+              </div>
+
+              {/* Schematic Map Visual Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border-2 border-amber-500 shadow-xs">
+                  <div className="text-amber-600 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-amber-500 text-white text-[11px] flex items-center justify-center font-mono">1</span>
+                    <span className="font-serif-cinzel">Sri Mandir</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Holy Sanctum, Vedic Invocation, Bhog Offering & Candle Lighting
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-xs">
+                  <div className="text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[11px] flex items-center justify-center font-mono">2</span>
+                    <span className="font-serif-cinzel">Satsang Pavilion</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Central Stage, Chorus Bhajans, Discourses & Closing Assembly
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-xs">
+                  <div className="text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white text-[11px] flex items-center justify-center font-mono">3</span>
+                    <span className="font-serif-cinzel">Bhandara Hall</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Anandabazar, Morning Breakfast & Mass Satvik Mahaprasad
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-xs">
+                  <div className="text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-rose-600 text-white text-[11px] flex items-center justify-center font-mono">4</span>
+                    <span className="font-serif-cinzel">Medical Camp</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Free Health Checkup, Doctors, First Aid & Ambulance
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-xs">
+                  <div className="text-amber-700 dark:text-amber-400 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-amber-700 text-white text-[11px] flex items-center justify-center font-mono">5</span>
+                    <span className="font-serif-cinzel">Reception Desk</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Secretariat, Pass Verification, Inquiries & Helpdesk
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 shadow-xs">
+                  <div className="text-cyan-600 dark:text-cyan-400 font-bold text-xs flex items-center gap-1.5 mb-1">
+                    <span className="w-5 h-5 rounded-full bg-cyan-600 text-white text-[11px] flex items-center justify-center font-mono">6</span>
+                    <span className="font-serif-cinzel">Yatri Dormitory</span>
+                  </div>
+                  <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
+                    Free Lodging for out-of-BTR participants & clean rest quarters
+                  </p>
+                </div>
+              </div>
+
+              {/* Bottom Transit Banner on the Map */}
+              <div className="mt-4 p-3 rounded-xl bg-amber-100/70 dark:bg-stone-800 border border-amber-300/60 dark:border-stone-700 text-xs text-stone-700 dark:text-stone-300 flex items-center justify-between">
+                <span>🚗 Parking Bays: North & South Gates · 24/7 Security</span>
+                <span className="font-mono text-amber-800 dark:text-amber-300 font-bold">Dotma - 783347</span>
+              </div>
+            </div>
+
+            {/* Right Guide Details */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+                <h3 className="text-base font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                  Key Venue Highlights
+                </h3>
+                <ul className="space-y-2.5 text-xs text-stone-600 dark:text-stone-300">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Sri Mandir Sanctum:</strong> The spiritual heart of the Utsav for holy Bhog offering and prayers.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Anandabazar Bhandara:</strong> Uninterrupted seating and serving of satvik prasad from 11:00 AM onwards.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Free Medical Camp:</strong> Operational throughout the day with physicians and pharmacy support.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span><strong>Security & Vehicle Bays:</strong> Dedicated entry gates with marshals and pass checking for seamless transit.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 text-xs text-amber-900 dark:text-amber-200">
+                <strong>Help on Grounds:</strong> Voluntaries wearing official badge ribbons are stationed at every major intersection to guide delegates.
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* ========================================================================= */}
         {/* OFFICIAL EVENT DOCUMENTS & ADMIN MANAGEMENT INTERFACE */}
         {/* ========================================================================= */}
-        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8">
+        <div className="p-6 sm:p-10 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-8">
           {/* Header Row */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 border-b border-stone-200 dark:border-stone-800 pb-6">
             <div>
@@ -685,7 +745,7 @@ Joyguru!
                 <h4 className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300">
                   Manage Existing Uploaded Documents ({documents.length})
                 </h4>
-                <div className="overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-850">
+                <div className="overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-stone-50 dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 text-[10px] uppercase font-bold tracking-wider">
                       <tr>
@@ -976,7 +1036,7 @@ Joyguru!
               </div>
             </div>
 
-            <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed bg-stone-50 dark:bg-stone-850 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
+            <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed bg-stone-50 dark:bg-stone-900 p-3 rounded-xl border border-stone-200 dark:border-stone-800">
               {activeSession.description}
             </p>
 
