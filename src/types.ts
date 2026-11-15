@@ -152,4 +152,25 @@ export interface FeedbackRecord {
   submittedAt: string;
 }
 
+export interface VisitorStats {
+  dailyCount: number;
+  allTimeCount: number;
+  dateKey: string;
+}
+
+export interface VisitorLog {
+  id: string;
+  date: string;
+  userAgent: string;
+  ip: string;
+  deviceType: 'mobile' | 'desktop';
+  mobileOs: 'iOS' | 'Android' | 'Other' | 'N/A';
+  sessionEmails: string[];
+  primaryEmail: string;
+  pagePath: string;
+  referrer: string;
+  visitedAt: string;
+  updatedAt: string;
+}
+
 export type Language = 'hi' | 'en' | 'brx' | 'bn' | 'as';

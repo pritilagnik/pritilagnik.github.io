@@ -57,6 +57,104 @@ service cloud.firestore {
       allow read, list, write: if true;
     }
 
+    // Strict ID & validation helpers for visitor tracking
+    function isValidVisitorId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidVisitorStatCreate(statId, data) {
+      return (
+        statId == 'all_time' &&
+        data.keys().hasAll(['totalCount', 'updatedAt']) &&
+        data.keys().hasOnly(['totalCount', 'updatedAt']) &&
+        data.totalCount is int &&
+        data.totalCount == 1 &&
+        data.updatedAt is string &&
+        data.updatedAt.size() > 0 &&
+        data.updatedAt.size() <= 64
+      ) || (
+        statId.matches('^daily_[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+        data.keys().hasAll(['date', 'count', 'updatedAt']) &&
+        data.keys().hasOnly(['date', 'count', 'updatedAt']) &&
+        data.date is string &&
+        data.date.size() == 10 &&
+        data.count is int &&
+        data.count == 1 &&
+        data.updatedAt is string &&
+        data.updatedAt.size() > 0 &&
+        data.updatedAt.size() <= 64
+      );
+    }
+
+    function isValidVisitorStatUpdate(statId, data, prev) {
+      return (
+        statId == 'all_time' &&
+        data.keys().hasAll(['totalCount', 'updatedAt']) &&
+        data.keys().hasOnly(['totalCount', 'updatedAt']) &&
+        data.totalCount is int &&
+        data.totalCount == prev.get('totalCount', 0) + 1 &&
+        data.updatedAt is string &&
+        data.updatedAt.size() > 0 &&
+        data.updatedAt.size() <= 64
+      ) || (
+        statId.matches('^daily_[0-9]{4}-[0-9]{2}-[0-9]{2}$') &&
+        data.keys().hasAll(['date', 'count', 'updatedAt']) &&
+        data.keys().hasOnly(['date', 'count', 'updatedAt']) &&
+        data.date is string &&
+        data.date.size() == 10 &&
+        data.date == prev.date &&
+        data.count is int &&
+        data.count == prev.get('count', 0) + 1 &&
+        data.updatedAt is string &&
+        data.updatedAt.size() > 0 &&
+        data.updatedAt.size() <= 64
+      );
+    }
+
+    function isValidVisitorLog(data) {
+      return data.keys().hasAll(['id', 'date', 'userAgent', 'ip', 'deviceType', 'mobileOs', 'sessionEmails', 'primaryEmail', 'pagePath', 'referrer', 'visitedAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'date', 'userAgent', 'ip', 'deviceType', 'mobileOs', 'sessionEmails', 'primaryEmail', 'pagePath', 'referrer', 'visitedAt', 'updatedAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 64 &&
+        data.date is string && data.date.size() == 10 &&
+        data.userAgent is string && data.userAgent.size() > 0 && data.userAgent.size() <= 512 &&
+        data.ip is string && data.ip.size() > 0 && data.ip.size() <= 64 &&
+        data.deviceType in ['mobile', 'desktop'] &&
+        data.mobileOs in ['iOS', 'Android', 'Other', 'N/A'] &&
+        data.sessionEmails is list && data.sessionEmails.size() <= 10 && (data.sessionEmails.size() == 0 || data.sessionEmails[0] is string) &&
+        data.primaryEmail is string && data.primaryEmail.size() <= 128 &&
+        data.pagePath is string && data.pagePath.size() <= 256 &&
+        data.referrer is string && data.referrer.size() <= 512 &&
+        data.visitedAt is string && data.visitedAt.size() > 0 && data.visitedAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() > 0 && data.updatedAt.size() <= 64;
+    }
+
+    // Visitor Stats: public get for footer counter, atomic increment create/update only
+    match /visitor_stats/{statId} {
+      allow get: if isValidVisitorId(statId);
+      allow list: if false;
+      allow create: if isValidVisitorId(statId) && isValidVisitorStatCreate(statId, request.resource.data);
+      allow update: if isValidVisitorId(statId) && isValidVisitorStatUpdate(statId, request.resource.data, resource.data);
+      allow delete: if false;
+    }
+
+    // Visitor Logs: write-only from client (create & session email append), no public read/list to protect PII (IP & emails)
+    match /visitor_logs/{visitId} {
+      allow read, list, delete: if false;
+      allow create: if isValidVisitorId(visitId) && isValidVisitorLog(request.resource.data);
+      allow update: if isValidVisitorId(visitId) &&
+        isValidVisitorLog(request.resource.data) &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sessionEmails', 'primaryEmail', 'updatedAt']) &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.date == resource.data.date &&
+        request.resource.data.userAgent == resource.data.userAgent &&
+        request.resource.data.ip == resource.data.ip &&
+        request.resource.data.deviceType == resource.data.deviceType &&
+        request.resource.data.mobileOs == resource.data.mobileOs &&
+        request.resource.data.pagePath == resource.data.pagePath &&
+        request.resource.data.referrer == resource.data.referrer &&
+        request.resource.data.visitedAt == resource.data.visitedAt;
+    }
+
     // Catch-all
     match /{document=**} {
       allow read, write: if false;

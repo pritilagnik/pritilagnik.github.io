@@ -245,6 +245,101 @@
         "bookingStatus": { "type": "string" }
       },
       "required": ["name", "type", "location", "tariff", "phone"]
+    },
+    "VisitorStats": {
+      "title": "VisitorStats",
+      "description": "Daily and all-time aggregate visitor counter documents",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Date key in YYYY-MM-DD format for daily stats",
+          "maxLength": 32
+        },
+        "count": {
+          "type": "number",
+          "description": "Visitor count for the specific day"
+        },
+        "totalCount": {
+          "type": "number",
+          "description": "All-time visitor count"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last counter update",
+          "maxLength": 64
+        }
+      },
+      "required": ["updatedAt"]
+    },
+    "VisitorLog": {
+      "title": "VisitorLog",
+      "description": "Detailed visitor telemetry persisted for administrative reference (not displayed publicly)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique visit record ID",
+          "maxLength": 64
+        },
+        "date": {
+          "type": "string",
+          "description": "Visit date in YYYY-MM-DD (Asia/Kolkata)",
+          "maxLength": 32
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "Browser User-Agent string",
+          "maxLength": 512
+        },
+        "ip": {
+          "type": "string",
+          "description": "Visitor public IP address",
+          "maxLength": 64
+        },
+        "deviceType": {
+          "type": "string",
+          "description": "Device category (mobile or desktop)",
+          "enum": ["mobile", "desktop"],
+          "maxLength": 16
+        },
+        "mobileOs": {
+          "type": "string",
+          "description": "Mobile operating system if mobile (iOS, Android, Other, or N/A)",
+          "enum": ["iOS", "Android", "Other", "N/A"],
+          "maxLength": 16
+        },
+        "sessionEmails": {
+          "type": "array",
+          "description": "Emails associated with the visitor session, if any"
+        },
+        "primaryEmail": {
+          "type": "string",
+          "description": "Primary session email if available, or empty string",
+          "maxLength": 128
+        },
+        "pagePath": {
+          "type": "string",
+          "description": "Visited URL path and hash",
+          "maxLength": 256
+        },
+        "referrer": {
+          "type": "string",
+          "description": "Document referrer URL",
+          "maxLength": 512
+        },
+        "visitedAt": {
+          "type": "string",
+          "description": "ISO timestamp of visit creation",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update",
+          "maxLength": 64
+        }
+      },
+      "required": ["id", "date", "userAgent", "ip", "deviceType", "mobileOs", "sessionEmails", "primaryEmail", "visitedAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -271,6 +366,14 @@
     "/accommodations/{accId}": {
       "schema": "Accommodation",
       "description": "Hotels and stay options managed via admin panel"
+    },
+    "/visitor_stats/{statId}": {
+      "schema": "VisitorStats",
+      "description": "Daily (daily_YYYY-MM-DD) and all-time (all_time) visitor counts"
+    },
+    "/visitor_logs/{visitId}": {
+      "schema": "VisitorLog",
+      "description": "Visitor metadata logs (User Agent, IP, deviceType, mobileOs, sessionEmails)"
     }
   }
 }
