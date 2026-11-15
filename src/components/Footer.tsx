@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   MapPin,
@@ -6,11 +6,14 @@ import {
   Mail,
   ExternalLink,
   Heart,
-  ChevronRight
+  ChevronRight,
+  Users,
+  CalendarDays
 } from 'lucide-react';
-import { PageTab, AboutSubTab } from '../types';
+import { PageTab, AboutSubTab, VisitorStats } from '../types';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 import { LegalModal, LegalDocType } from './LegalModal';
+import { recordVisitorVisit, subscribeToVisitorCounts } from '../services/visitorService';
 
 interface FooterProps {
   onSelectTab: (tab: PageTab) => void;
@@ -19,6 +22,21 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab }) => {
   const [activeLegalDoc, setActiveLegalDoc] = useState<LegalDocType | null>(null);
+  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToVisitorCounts((stats) => {
+      setVisitorStats(stats);
+    });
+
+    recordVisitorVisit().catch(() => {
+      // Errors are logged structurally inside visitorService
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const handleNav = (tab: PageTab) => {
     onSelectTab(tab);
@@ -279,8 +297,43 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
           </div>
         </div>
 
+        {/* Centered Visitor Counter Strip (Daily & All-Time Visitors only) */}
+        <div className="mt-10 pt-6 border-t border-stone-800 flex items-center justify-center">
+          <div className="inline-flex flex-wrap items-center justify-center gap-4 sm:gap-8 px-6 py-3 rounded-2xl bg-stone-950/75 border border-stone-800 shadow-inner">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                <CalendarDays className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <span className="block text-[10px] uppercase tracking-wider text-stone-400 font-semibold">
+                  Today&apos;s Visitors
+                </span>
+                <span className="text-sm font-mono font-bold text-amber-300 tabular-nums">
+                  {visitorStats ? visitorStats.dailyCount.toLocaleString() : '—'}
+                </span>
+              </div>
+            </div>
+
+            <div className="hidden sm:block h-7 w-px bg-stone-800" />
+
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                <Users className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <span className="block text-[10px] uppercase tracking-wider text-stone-400 font-semibold">
+                  All-Time Visitors
+                </span>
+                <span className="text-sm font-mono font-bold text-white tabular-nums">
+                  {visitorStats ? visitorStats.allTimeCount.toLocaleString() : '—'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom copyright and developer credit line */}
-        <div className="mt-12 pt-6 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-3">
+        <div className="mt-6 pt-6 border-t border-stone-800/70 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 gap-3">
           <span>
             © 2026 Priti-Lagnik Maha Mahotsav Central Organising Committee · Dotma, Kokrajhar, Assam, India - 783347.
           </span>

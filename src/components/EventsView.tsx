@@ -29,6 +29,7 @@ import {
   saveEventDocument,
   removeEventDocument
 } from '../services/registrationService';
+import { recordSessionEmail } from '../services/visitorService';
 
 export const EventsView: React.FC = () => {
   // Calendar state
@@ -145,6 +146,7 @@ export const EventsView: React.FC = () => {
       setIsAdmin(true);
       localStorage.setItem('pritilagnik_admin_session', 'true');
       localStorage.setItem('pritilagnik_admin_email', 'admin@dotma.org');
+      void recordSessionEmail('admin@dotma.org');
       setShowAdminLoginModal(false);
       setAdminAuthError('');
       setAdminPassword('');
