@@ -15,7 +15,7 @@ import {
   Building2,
   DollarSign
 } from 'lucide-react';
-import { EVENT_DETAILS, COMMITTEE_MEMBERS } from '../data/mahotsavData';
+import { EVENT_DETAILS } from '../data/mahotsavData';
 import { FullWidthMap } from './FullWidthMap';
 import { recordSessionEmail } from '../services/visitorService';
 
@@ -74,14 +74,14 @@ export const ContactView: React.FC = () => {
     }
   ];
 
-  // Key reception committee members
+  // Reception committee members
   const receptionMembers = [
-    { name: "Dr. Hitesh Chandra Roy", role: "President, Reception Committee", phone: "+91 94350 44556" },
-    { name: "Sjt. Biseswar Ramchiary", role: "Chief Patron & Elder", phone: "+91 94350 11223" },
-    { name: "Sjt. Manoranjan Brahma", role: "General Secretary, Reception Committee", phone: "+91 94351 22334" },
-    { name: "Sjt. Dipak Narzary", role: "Joint Convenor, Reception Desk", phone: "+91 94353 33445" },
-    { name: "Sjt. Rabindra Nath Roy", role: "Secretariat Coordinator", phone: "+91 94354 55667" },
-    { name: "Sjt. Sanjib Kumar Brahma", role: "Public Relations & Volunteers Lead", phone: "+91 94357 88990" }
+    { name: "Dr. Hitesh Chandra Roy", role: "President, Reception Committee" },
+    { name: "Sjt. Biseswar Ramchiary", role: "Chief Patron & Elder" },
+    { name: "Sjt. Manoranjan Brahma", role: "General Secretary, Reception Committee" },
+    { name: "Sjt. Dipak Narzary", role: "Joint Convenor, Reception Desk" },
+    { name: "Sjt. Rabindra Nath Roy", role: "Secretariat Coordinator" },
+    { name: "Sjt. Sanjib Kumar Brahma", role: "Public Relations & Volunteers Lead" }
   ];
 
   return (
@@ -143,7 +143,7 @@ export const ContactView: React.FC = () => {
             })}
           </div>
 
-          {/* Reception Committee Member Names and Contact Numbers */}
+          {/* Reception Committee Members */}
           <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-200 dark:border-stone-800 pb-4">
               <div>
@@ -151,7 +151,7 @@ export const ContactView: React.FC = () => {
                   Reception Committee Members
                 </h2>
                 <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                  Direct contacts for the executive and central secretariat leaders
+                  Executive and central secretariat leadership
                 </p>
               </div>
 
@@ -182,13 +182,6 @@ export const ContactView: React.FC = () => {
                       {member.role}
                     </span>
                   </div>
-                  <a
-                    href={`tel:${member.phone}`}
-                    className="p-2 rounded-lg bg-white dark:bg-stone-700 text-amber-700 dark:text-amber-300 hover:bg-amber-600 hover:text-white transition-colors shadow-2xs shrink-0"
-                    title={`Call ${member.name}`}
-                  >
-                    <Phone className="w-4 h-4" />
-                  </a>
                 </div>
               ))}
             </div>

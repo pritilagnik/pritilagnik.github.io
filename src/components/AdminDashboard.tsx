@@ -130,14 +130,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     role: string;
     category: string;
     location: string;
-    phone: string;
     sortOrder?: number;
   }>({
     name: '',
     role: '',
     category: 'Main Committee',
     location: '',
-    phone: '',
     sortOrder: 99
   });
   const [committeeSaveSuccess, setCommitteeSaveSuccess] = useState('');
@@ -153,14 +151,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     volunteersCount: number;
     responsibilities: string;
     contactPerson: string;
-    contactNumber: string;
   }>({
     name: '',
     lead: '',
     volunteersCount: 50,
     responsibilities: '',
-    contactPerson: '',
-    contactNumber: ''
+    contactPerson: ''
   });
   const [teamSaveSuccess, setTeamSaveSuccess] = useState('');
 
@@ -633,7 +629,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       role: memberForm.role.trim(),
       category: memberForm.category || 'Main Committee',
       location: memberForm.location.trim() || 'Dotma, Kokrajhar',
-      phone: memberForm.phone.trim() || undefined,
+      phone: editingMember?.phone,
       sortOrder: memberForm.sortOrder !== undefined ? Number(memberForm.sortOrder) : 99
     };
 
@@ -641,7 +637,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     setCommitteeMembers(prev => [newMember, ...prev.filter(m => m.id !== id)]);
     setIsAddingMember(false);
     setEditingMember(null);
-    setMemberForm({ name: '', role: '', category: 'Main Committee', location: '', phone: '', sortOrder: 99 });
+    setMemberForm({ name: '', role: '', category: 'Main Committee', location: '', sortOrder: 99 });
     setCommitteeSaveSuccess('Committee member updated successfully in Firebase!');
     setTimeout(() => setCommitteeSaveSuccess(''), 4000);
   };
@@ -654,7 +650,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       role: member.role,
       category: member.category,
       location: member.location,
-      phone: member.phone || '',
       sortOrder: member.sortOrder ?? 99
     });
     setIsAddingMember(true);
@@ -687,7 +682,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       volunteersCount: Number(teamForm.volunteersCount) || 50,
       responsibilities: resps.length > 0 ? resps : ['Coordinate operational responsibilities and pilgrim seva.'],
       contactPerson: teamForm.contactPerson.trim() || teamForm.lead.trim(),
-      contactNumber: teamForm.contactNumber.trim() || '+91 94350 78334'
+      contactNumber: editingTeam?.contactNumber || ''
     };
 
     await saveOrganisingTeam(newTeam);
@@ -699,8 +694,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       lead: '',
       volunteersCount: 50,
       responsibilities: '',
-      contactPerson: '',
-      contactNumber: ''
+      contactPerson: ''
     });
     setTeamSaveSuccess('Organising team updated successfully in Firebase!');
     setTimeout(() => setTeamSaveSuccess(''), 4000);
@@ -714,8 +708,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       lead: team.lead,
       volunteersCount: team.volunteersCount,
       responsibilities: team.responsibilities.join('\n'),
-      contactPerson: team.contactPerson,
-      contactNumber: team.contactNumber
+      contactPerson: team.contactPerson
     });
     setIsAddingTeam(true);
   };
@@ -2310,7 +2303,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <button
                 onClick={() => {
                   setEditingMember(null);
-                  setMemberForm({ name: '', role: '', category: 'Main Committee', location: 'Dotma, Kokrajhar', phone: '', sortOrder: 99 });
+                  setMemberForm({ name: '', role: '', category: 'Main Committee', location: 'Dotma, Kokrajhar', sortOrder: 99 });
                   setIsAddingMember(prev => !prev);
                 }}
                 className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors shrink-0"
@@ -2413,19 +2406,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
 
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      Mobile No. (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={memberForm.phone}
-                      onChange={(e) => setMemberForm({ ...memberForm, phone: e.target.value })}
-                      placeholder="e.g. 9435027290"
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
                       Sort Priority Order (1 = Highest, 99 = Default)
                     </label>
                     <input
@@ -2497,8 +2477,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                   m.name.toLowerCase().includes(searchLower) ||
                   m.role.toLowerCase().includes(searchLower) ||
                   m.category.toLowerCase().includes(searchLower) ||
-                  (m.location && m.location.toLowerCase().includes(searchLower)) ||
-                  (m.phone && m.phone.toLowerCase().includes(searchLower));
+                  (m.location && m.location.toLowerCase().includes(searchLower));
                 return matchesCat && matchesSearch;
               });
 
@@ -2615,9 +2594,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                               </p>
                             </div>
 
-                            <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 flex items-center justify-between">
-                              <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
-                              {member.phone && <span className="font-mono text-stone-700 dark:text-stone-300 font-semibold shrink-0">{member.phone}</span>}
+                            <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300">
+                              <span className="truncate">{member.location ? `📍 ${member.location}` : '📍 Kokrajhar'}</span>
                             </div>
                           </div>
                         ))}
@@ -2652,8 +2630,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     lead: '',
                     volunteersCount: 50,
                     responsibilities: '',
-                    contactPerson: '',
-                    contactNumber: ''
+                    contactPerson: ''
                   });
                   setIsAddingTeam(prev => !prev);
                 }}
@@ -2749,19 +2726,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      Contact Phone *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={teamForm.contactNumber}
-                      onChange={(e) => setTeamForm({ ...teamForm, contactNumber: e.target.value })}
-                      placeholder="+91 94355 99112"
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                  </div>
                 </div>
 
                 <div>
@@ -2846,15 +2810,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     </ul>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
+                  <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs">
                     <span className="text-stone-500 dark:text-stone-400">Desk: {team.contactPerson}</span>
-                    <a
-                      href={`tel:${team.contactNumber}`}
-                      className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-400 hover:underline"
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>{team.contactNumber}</span>
-                    </a>
                   </div>
                 </div>
               ))}

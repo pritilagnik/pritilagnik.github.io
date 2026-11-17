@@ -47,7 +47,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
     delegationSize: 1,
     arrivalDate: '2026-12-20',
     departureDate: '2026-12-21',
-    needAccommodation: true,
+    needAccommodation: false,
     accommodationType: 'Ashram Dormitory (Dotma Niwas)',
     foodPreference: 'Pure Satvik' as 'Pure Satvik' | 'Regular Satvik',
     volunteerInterest: false,

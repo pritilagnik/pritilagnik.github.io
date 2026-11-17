@@ -4,7 +4,6 @@ import {
   Heart,
   Users,
   Compass,
-  Phone,
   Utensils,
   Sparkles,
   MapPin,
@@ -66,8 +65,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         m.name.toLowerCase().includes(searchLower) ||
         m.role.toLowerCase().includes(searchLower) ||
         m.category.toLowerCase().includes(searchLower) ||
-        (m.location && m.location.toLowerCase().includes(searchLower)) ||
-        (m.phone && m.phone.toLowerCase().includes(searchLower));
+        (m.location && m.location.toLowerCase().includes(searchLower));
       return matchesCat && matchesSearch;
     });
 
@@ -199,25 +197,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
-                    <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
-                      <Utensils className="w-4 h-4" />
-                      <span>Maha Annadan Seva</span>
-                    </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-300">
-                      Serving sacred, hygienic satvik prasad to over 100,000 pilgrims.
-                    </p>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800">
-                    <div className="flex items-center gap-2.5 text-amber-700 dark:text-amber-400 font-semibold text-sm mb-1.5">
-                      <BookOpen className="w-4 h-4" />
-                      <span>Swastyayani & Health</span>
-                    </div>
-                    <p className="text-xs text-stone-600 dark:text-stone-300">
-                      Existential health principles, yoga, pure nutrition, and eco-care.
-                    </p>
-                  </div>
+                  
                 </div>
               </div>
 
@@ -344,18 +324,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                             </p>
                           </div>
 
-                          <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 flex items-center justify-between">
-                            <span className="truncate pr-2">{member.location ? `📍 ${member.location}` : '📍 Dotma, Kokrajhar'}</span>
-                            {member.phone && (
-                              <a
-                                href={`tel:${member.phone}`}
-                                className="font-semibold text-amber-700 dark:text-amber-300 hover:text-amber-600 dark:hover:text-amber-200 transition-colors shrink-0 flex items-center gap-1.5 bg-amber-50 dark:bg-stone-800 px-2 py-1 rounded-lg border border-amber-200/60 dark:border-stone-700"
-                                title="Call member"
-                              >
-                                <Phone className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                                <span>{member.phone}</span>
-                              </a>
-                            )}
+                          <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300">
+                            <span className="truncate">{member.location ? `📍 ${member.location}` : '📍 Dotma, Kokrajhar'}</span>
                           </div>
                         </div>
                       ))}
@@ -407,15 +377,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                       </ul>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs text-stone-600 dark:text-stone-300">
+                    <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300">
                       <span>Desk: {team.contactPerson}</span>
-                      <a
-                        href={`tel:${team.contactNumber}`}
-                        className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-300 hover:underline"
-                      >
-                        <Phone className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                        <span>{team.contactNumber}</span>
-                      </a>
                     </div>
                   </div>
                 ))}
@@ -427,4 +390,3 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
     </section>
   );
 };
-

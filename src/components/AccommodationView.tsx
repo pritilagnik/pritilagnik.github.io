@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Building2,
   MapPin,
-  Phone,
-  MessageSquare,
   Sparkles,
   Users,
   Check,
@@ -210,28 +208,6 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
               <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800 space-y-2">
                 <div className="text-xs text-stone-500 dark:text-stone-400 mb-1">
                   Contact: <span className="text-stone-900 dark:text-stone-200 font-medium">{acc.contactName}</span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href={`tel:${acc.phone}`}
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-stone-900 dark:text-stone-100 text-xs font-semibold transition-colors"
-                  >
-                    <Phone className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
-                    <span>Call Desk</span>
-                  </a>
-
-                  <a
-                    href={`https://wa.me/${acc.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-                      `Hello, I would like to inquire about accommodation booking at ${acc.name} for Priti-Lagnik Maha Mahotsav 2026, Dotma.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors shadow-sm"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>WhatsApp</span>
-                  </a>
                 </div>
 
                 <button

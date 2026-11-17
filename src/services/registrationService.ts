@@ -19,11 +19,6 @@ import {
   OrganisingTeam,
   AccommodationOption
 } from '../types';
-import {
-  COMMITTEE_MEMBERS as DEFAULT_COMMITTEE_MEMBERS,
-  ORGANISING_TEAMS as DEFAULT_ORGANISING_TEAMS,
-  ACCOMMODATIONS as DEFAULT_ACCOMMODATIONS
-} from '../data/mahotsavData';
 
 const REGISTRATIONS_COL = 'registrations';
 const CAR_PASSES_COL = 'car_passes';
@@ -735,32 +730,15 @@ const COMMITTEE_COL = 'committee_members';
 export async function fetchCommitteeMembers(): Promise<CommitteeMember[]> {
   const mergedMap = new Map<string, CommitteeMember>();
 
-  // 1. Seed defaults first
-  DEFAULT_COMMITTEE_MEMBERS.forEach(m => mergedMap.set(m.id, m));
-
-  // 2. Fetch from Firestore
+  // 1. Fetch from Firestore
   try {
     const colRef = collection(db, COMMITTEE_COL);
     const snap = await getDocs(colRef);
-    const existingIds = new Set<string>();
-    if (!snap.empty) {
-      snap.forEach(docSnap => {
-        const data = docSnap.data() as CommitteeMember;
-        const id = data.id || docSnap.id;
-        mergedMap.set(id, { ...data, id });
-        existingIds.add(id);
-      });
-    }
-
-    // Seed any missing default committee members into Firestore
-    const missingDefaults = DEFAULT_COMMITTEE_MEMBERS.filter(m => !existingIds.has(m.id));
-    if (missingDefaults.length > 0) {
-      Promise.allSettled(
-        missingDefaults.map(member =>
-          setDoc(doc(db, COMMITTEE_COL, member.id), cleanFirestoreObject(member))
-        )
-      ).catch(seedErr => console.warn('Could not seed missing committee members to Firestore:', seedErr));
-    }
+    snap.forEach(docSnap => {
+      const data = docSnap.data() as CommitteeMember;
+      const id = data.id || docSnap.id;
+      mergedMap.set(id, { ...data, id });
+    });
   } catch (err) {
     console.warn('Fetching committee members failed, fallback to local cache:', err);
   }
@@ -821,26 +799,14 @@ const TEAMS_COL = 'organising_teams';
 export async function fetchOrganisingTeams(): Promise<OrganisingTeam[]> {
   const mergedMap = new Map<string, OrganisingTeam>();
 
-  DEFAULT_ORGANISING_TEAMS.forEach(t => mergedMap.set(t.id, t));
-
   try {
     const colRef = collection(db, TEAMS_COL);
     const snap = await getDocs(colRef);
-    if (!snap.empty) {
-      snap.forEach(docSnap => {
-        const data = docSnap.data() as OrganisingTeam;
-        const id = data.id || docSnap.id;
-        mergedMap.set(id, { ...data, id });
-      });
-    } else {
-      for (const team of DEFAULT_ORGANISING_TEAMS) {
-        try {
-          await setDoc(doc(db, TEAMS_COL, team.id), cleanFirestoreObject(team));
-        } catch (seedErr) {
-          console.warn('Could not seed initial organising team to Firestore:', seedErr);
-        }
-      }
-    }
+    snap.forEach(docSnap => {
+      const data = docSnap.data() as OrganisingTeam;
+      const id = data.id || docSnap.id;
+      mergedMap.set(id, { ...data, id });
+    });
   } catch (err) {
     console.warn('Fetching organising teams failed, fallback to local cache:', err);
   }
@@ -900,26 +866,14 @@ const ACCOMMODATIONS_COL = 'accommodations';
 export async function fetchAccommodations(): Promise<AccommodationOption[]> {
   const mergedMap = new Map<string, AccommodationOption>();
 
-  DEFAULT_ACCOMMODATIONS.forEach(a => mergedMap.set(a.id, a));
-
   try {
     const colRef = collection(db, ACCOMMODATIONS_COL);
     const snap = await getDocs(colRef);
-    if (!snap.empty) {
-      snap.forEach(docSnap => {
-        const data = docSnap.data() as AccommodationOption;
-        const id = data.id || docSnap.id;
-        mergedMap.set(id, { ...data, id });
-      });
-    } else {
-      for (const acc of DEFAULT_ACCOMMODATIONS) {
-        try {
-          await setDoc(doc(db, ACCOMMODATIONS_COL, acc.id), cleanFirestoreObject(acc));
-        } catch (seedErr) {
-          console.warn('Could not seed initial accommodation to Firestore:', seedErr);
-        }
-      }
-    }
+    snap.forEach(docSnap => {
+      const data = docSnap.data() as AccommodationOption;
+      const id = data.id || docSnap.id;
+      mergedMap.set(id, { ...data, id });
+    });
   } catch (err) {
     console.warn('Fetching accommodations failed, fallback to local cache:', err);
   }
