@@ -42,46 +42,28 @@ export const ContactView: React.FC = () => {
   const deskContacts = [
     {
       title: "For details of programme",
-      role: "Programme & Satsang Coordination",
-      contactPerson: "Programme Convenor",
-      number: "+91 94350 78334",
+      role: "Information",
+      contactPerson: "Dr. Bihung Brahma",
+      number: "+918472014223",
       icon: Calendar,
       color: "amber"
     },
     {
-      title: "For Free Accomodation",
-      role: "Lodging & Yatri Niwas Desk",
-      contactPerson: "Accommodation In-Charge",
-      number: "+91 94351 89201",
-      icon: Building2,
-      color: "emerald"
-    },
-    {
-      title: "For travel guidance",
-      role: "Transit, Railway & Road Escort",
-      contactPerson: "Travel & Logistics Desk",
-      number: "+91 94352 45678",
-      icon: Compass,
-      color: "blue"
-    },
-    {
-      title: "For offerings/donation",
-      role: "Finance & Devotional Offerings",
-      contactPerson: "Offerings & Accounts Desk",
-      number: "+91 94355 67890",
-      icon: HeartHandshake,
-      color: "purple"
+      title: "For details of programme",
+      role: "Information",
+      contactPerson: "Mahananda Brahma",
+      number: "+919954287105",
+      icon: Calendar,
+      color: "amber"
     }
+
   ];
 
   // Reception committee members
   const receptionMembers = [
-    { name: "Dr. Hitesh Chandra Roy", role: "President, Reception Committee" },
-    { name: "Sjt. Biseswar Ramchiary", role: "Chief Patron & Elder" },
-    { name: "Sjt. Manoranjan Brahma", role: "General Secretary, Reception Committee" },
-    { name: "Sjt. Dipak Narzary", role: "Joint Convenor, Reception Desk" },
-    { name: "Sjt. Rabindra Nath Roy", role: "Secretariat Coordinator" },
-    { name: "Sjt. Sanjib Kumar Brahma", role: "Public Relations & Volunteers Lead" }
+    { name: "Dr. Bihung Brahma", role: "Information" },
+    { name: "Mahananda Brahma", role: "Information" }
+    
   ];
 
   return (
