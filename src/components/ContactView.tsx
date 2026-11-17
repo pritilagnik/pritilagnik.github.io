@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { EVENT_DETAILS, COMMITTEE_MEMBERS } from '../data/mahotsavData';
 import { FullWidthMap } from './FullWidthMap';
+import { recordSessionEmail } from '../services/visitorService';
 
 export const ContactView: React.FC = () => {
   const [formState, setFormState] = useState({
@@ -31,6 +32,9 @@ export const ContactView: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formState.name || !formState.phone) return;
+    if (formState.email.trim()) {
+      void recordSessionEmail(formState.email.trim());
+    }
     setSubmitted(true);
   };
 
