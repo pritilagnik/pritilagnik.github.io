@@ -14,37 +14,37 @@ interface HighlightItem {
 const PAST_HIGHLIGHTS: HighlightItem[] = [
   {
     id: "h1",
-    image: "/src/assets/images/past_commemoration_seva_1793101658716.jpg",
-    title: "Maha Annadan Seva",
-    event: "Kokrajhar Centenary Conclave",
-    location: "Dotma, Assam",
+    image: "https://pritilagnikmahamahotsav.in/admin/images/photo_gallery/3a5b5dc79da35e9cf463ca66f9ab1f38_WhatsApp_Image_2025-11-22_at_1.25.36_AM.jpeg",
+    title: "PritiLagnik 2025 Photo Gallery",
+    event: "PritiLagnik 2025",
+    location: "Gossaigaon, Kokrajhar, Assam",
     category: "Seva",
     description: "Disciplined volunteer distribution of hot satvik prasadam to thousands of pilgrims seated on banana and sal leaf mats."
   },
   {
     id: "h2",
-    image: "/src/assets/images/cultural_concourse_assam_1793101657203.jpg",
-    title: "Sattriya & Bodo Folk Devotional Evening",
-    event: "Bodoland Harmony Festival",
-    location: "Kokrajhar Open Amphitheater",
+    image: "https://pritilagnikmahamahotsav.in/admin/images/photo_gallery/9d56f9e1af030defb5a21224d9ac7e58_WhatsApp_Image_2025-11-24_at_11.23.53_PM.jpeg",
+    title: "PritiLagnik 2025 Photo Gallery",
+    event: "PritiLagnik 2025",
+    location: "Gossaigaon, Kokrajhar, Assam",
     category: "Cultural",
     description: "Soul-stirring devotional vocalists and khol players harmonizing traditional indigenous melodies in reverence to the Ideal."
   },
   {
     id: "h3",
-    image: "/src/assets/images/hero_mahotsav_gathering_1793101656670.jpg",
-    title: "Akhanda Usha Kirtan & Dawn Concord",
-    event: "Advent Commemoration Assembly",
-    location: "Dotma Central Mandap",
-    category: "Kirtan",
+    image: "https://pritilagnikmahamahotsav.in/admin/images/photo_gallery/eb9ec0f121641220083e243b27d5c4a0_WhatsApp_Image_2025-11-22_at_1.26.37_AM_2.jpeg",
+    title: "PritiLagnik 2025 Photo Gallery",
+    event: "PritiLagnik 2025",
+    location: "Gossaigaon, Kokrajhar, Assam",
+    category: "Seva",
     description: "Thousands of lit brass lamps and continuous chanting elevating the dawn spiritual ambiance."
   },
   {
     id: "h4",
-    image: "/src/assets/images/thakur_spiritual_portrait_1793101656663.jpg",
-    title: "Sacred Sanctum Darshan & Prayer",
-    event: "Annual Satsang Convention",
-    location: "Dotma Yatri Mandir",
+    image: "https://pritilagnikmahamahotsav.in/admin/images/photo_gallery/78f13a98fca53267fdbe4f871e5a52be_8.jpeg",
+    title: "PritiLagnik 2025 Photo Gallery",
+    event: "PritiLagnik 2025",
+    location: "Gossaigaon, Kokrajhar, Assam",
     category: "Seva",
     description: "Reverent floral archways and quiet meditation assembly commemorating Sree Sree Thakur's universal blessings."
   }
