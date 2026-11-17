@@ -168,12 +168,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
                   <p className="text-base sm:text-lg leading-relaxed text-stone-800 dark:text-stone-200">
                     Priti-Lagnik Maha-Mahotsav 2026 is the District-Level Utsav of Kokrajhar District, going to be organised on 20th December, 2026 (Sunday) to commemorate the 139th Birth Anniversary of Sree Sree Thakur Anukulchandra. The celebration is conceptualised under the divine blessings and guidance of our supremely beloved Sree Sree Acharyadev and the divine inspiration of revered Sree Sree Abindada.
                     <a
-                      href="#past-gatherings"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const el = document.getElementById('past-gatherings');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                      }}
+                      href="https://pritilagnikmahamahotsav.in/index"
                       className="inline-flex items-center gap-1 ml-2 font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 underline underline-offset-4 decoration-amber-400"
                     >
                       <span>Priti-Lagnik 2025</span>
