@@ -462,33 +462,7 @@ const DOCUMENTS_COL = 'event_documents';
 
 export async function fetchAllEventDocuments(): Promise<EventDocument[]> {
   const defaultDocs: EventDocument[] = [
-    {
-      id: "doc-1",
-      title: "Priti-Lagnik 2026 Official Programme Guide",
-      category: "Schedule",
-      fileType: "pdf",
-      fileName: "PritiLagnik_2026_Schedule.pdf",
-      fileSize: "2.4 MB",
-      uploadedAt: "2026-10-25"
-    },
-    {
-      id: "doc-2",
-      title: "Delegate Arrival, Accommodation & Parking Advisory",
-      category: "Guidelines",
-      fileType: "pdf",
-      fileName: "Travel_and_Parking_Advisory_Dotma.pdf",
-      fileSize: "1.8 MB",
-      uploadedAt: "2026-10-26"
-    },
-    {
-      id: "doc-3",
-      title: "Volunteer Seva Manual & Emergency Contacts",
-      category: "Guidelines",
-      fileType: "docx",
-      fileName: "Volunteer_Seva_Manual_2026.docx",
-      fileSize: "950 KB",
-      uploadedAt: "2026-10-27"
-    }
+    
   ];
 
   try {
