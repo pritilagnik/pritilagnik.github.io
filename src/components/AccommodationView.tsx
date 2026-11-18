@@ -94,7 +94,7 @@ export const AccommodationView: React.FC<AccommodationViewProps> = ({ onNavigate
           <div className="p-4 rounded-2xl bg-amber-100/70 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/70 text-xs sm:text-sm text-amber-900 dark:text-amber-200 text-center max-w-2xl mx-auto mb-6 shadow-xs leading-relaxed">
             <Sparkles className="w-4 h-4 text-amber-600 inline mr-1.5 -mt-0.5" />
             <span>
-              Free Accomodation will be arranged for Guest/Participants from outside BTR (Bodoland Territorial Region) on request. However, the free accomodation facility is limited and early registration is requested.
+              Free Accomodation will be arranged for Guest/Participants from outside BTC (Bodoland Territorial Council) on request. However, the free accomodation facility is limited and early registration is requested.
             </span>
           </div>
 
