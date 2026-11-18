@@ -219,6 +219,14 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
                   Arogya Medical Camp
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => handleAboutSub('notices')}
+                  className="text-amber-400/90 hover:text-amber-300 font-semibold transition-colors"
+                >
+                  Notices &amp; Announcements
+                </button>
+              </li>
             </ul>
           </div>
 

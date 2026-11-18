@@ -76,6 +76,11 @@ export default function App() {
               <HeroSection
                 onDiscoverMore={scrollToAbout}
                 onOpenRegister={scrollToRegistration}
+                onViewAllNotices={() => {
+                  setAboutSubTab('notices');
+                  setCurrentTab('about');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               />
 
               {/* 2. About the Event (Mission, History, Videos & Photos) */}

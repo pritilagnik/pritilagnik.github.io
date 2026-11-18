@@ -1,5 +1,5 @@
 export type PageTab = 'home' | 'about' | 'events' | 'gallery' | 'accommodation' | 'contact' | 'admin' | 'status-check' | 'nearby';
-export type AboutSubTab = 'overview' | 'committee' | 'teams' | 'organising-teams';
+export type AboutSubTab = 'overview' | 'committee' | 'teams' | 'organising-teams' | 'notices';
 
 export interface ThakurProfile {
   id: string;
@@ -170,6 +170,24 @@ export interface VisitorLog {
   pagePath: string;
   referrer: string;
   visitedAt: string;
+  updatedAt: string;
+}
+
+export type NoticeCategory = 'General' | 'Schedule' | 'Accommodation' | 'Transport' | 'Urgent' | 'Seva';
+export type NoticePriority = 'Normal' | 'Important' | 'Urgent';
+
+export interface NoticeItem {
+  id: string;
+  title: string;
+  content: string;
+  category: NoticeCategory;
+  priority: NoticePriority;
+  isActive: boolean;
+  showInTicker: boolean;
+  isPinned: boolean;
+  linkUrl: string;
+  createdBy: string;
+  createdAt: string;
   updatedAt: string;
 }
 

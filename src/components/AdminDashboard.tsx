@@ -36,7 +36,10 @@ import {
   Edit2,
   Bed,
   Check,
-  X
+  X,
+  Megaphone,
+  Pin,
+  AlertTriangle
 } from 'lucide-react';
 import {
   RegistrationRecord,
@@ -47,7 +50,10 @@ import {
   FeedbackRecord,
   CommitteeMember,
   OrganisingTeam,
-  AccommodationOption
+  AccommodationOption,
+  NoticeItem,
+  NoticeCategory,
+  NoticePriority
 } from '../types';
 import {
   fetchAllRegistrations,
@@ -77,6 +83,12 @@ import {
   saveAccommodation,
   deleteAccommodation
 } from '../services/registrationService';
+import {
+  fetchAllNotices,
+  saveNotice,
+  deleteNotice,
+  sortNotices
+} from '../services/noticeService';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 import { recordSessionEmail } from '../services/visitorService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
@@ -104,7 +116,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  type TabType = 'delegates' | 'cars' | 'committee' | 'teams' | 'accommodations' | 'multi_admin' | 'documents' | 'gallery' | 'feedback';
+  type TabType = 'delegates' | 'cars' | 'committee' | 'teams' | 'accommodations' | 'notices' | 'multi_admin' | 'documents' | 'gallery' | 'feedback';
   const [activeTab, setActiveTab] = useState<TabType>('delegates');
 
   // Delegates data
@@ -223,6 +235,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   // Feedback data
   const [feedbackList, setFeedbackList] = useState<FeedbackRecord[]>([]);
 
+  // Notices & Announcements state
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
+  const [editingNotice, setEditingNotice] = useState<NoticeItem | null>(null);
+  const [isAddingNotice, setIsAddingNotice] = useState(false);
+  const [noticeSearch, setNoticeSearch] = useState('');
+  const [noticeSaveSuccess, setNoticeSaveSuccess] = useState('');
+  const [noticeForm, setNoticeForm] = useState<{
+    id?: string;
+    title: string;
+    content: string;
+    category: NoticeCategory;
+    priority: NoticePriority;
+    isActive: boolean;
+    showInTicker: boolean;
+    isPinned: boolean;
+    linkUrl: string;
+    createdAt?: string;
+  }>({
+    title: '',
+    content: '',
+    category: 'General',
+    priority: 'Normal',
+    isActive: true,
+    showInTicker: true,
+    isPinned: false,
+    linkUrl: '',
+  });
+
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
@@ -241,7 +281,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [regs, cars, admins, docs, gallery, feedback, committee, teams, accs] = await Promise.all([
+      const [regs, cars, admins, docs, gallery, feedback, committee, teams, accs, allNotices] = await Promise.all([
         fetchAllRegistrations(),
         fetchAllCarPasses(),
         fetchAllAdmins(),
@@ -250,7 +290,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         fetchAllFeedback(),
         fetchCommitteeMembers(),
         fetchOrganisingTeams(),
-        fetchAccommodations()
+        fetchAccommodations(),
+        fetchAllNotices()
       ]);
       setRegistrations(regs);
       setCarPasses(cars);
@@ -261,6 +302,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       setCommitteeMembers(committee);
       setOrganisingTeams(teams);
       setAccommodations(accs);
+      setNotices(allNotices);
     } catch (e) {
       console.error('Error loading dashboard data:', e);
     } finally {
@@ -795,6 +837,102 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     }
   };
 
+  // ================= NOTICES & ANNOUNCEMENTS ACTIONS =================
+  const resetNoticeForm = () => {
+    setNoticeForm({
+      title: '',
+      content: '',
+      category: 'General',
+      priority: 'Normal',
+      isActive: true,
+      showInTicker: true,
+      isPinned: false,
+      linkUrl: '',
+    });
+    setEditingNotice(null);
+    setIsAddingNotice(false);
+  };
+
+  const handleSaveNoticeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!noticeForm.title.trim() || !noticeForm.content.trim()) {
+      alert('Notice Title and Full Announcement Content are required.');
+      return;
+    }
+
+    try {
+      const saved = await saveNotice({
+        id: editingNotice?.id || noticeForm.id,
+        title: noticeForm.title.trim(),
+        content: noticeForm.content.trim(),
+        category: noticeForm.category,
+        priority: noticeForm.priority,
+        isActive: noticeForm.isActive,
+        showInTicker: noticeForm.showInTicker,
+        isPinned: noticeForm.isPinned,
+        linkUrl: noticeForm.linkUrl.trim(),
+        createdBy: editingNotice?.createdBy || currentAdmin.name || currentAdmin.email,
+        createdAt: editingNotice?.createdAt || noticeForm.createdAt || new Date().toISOString(),
+      });
+
+      setNotices(prev => sortNotices([saved, ...prev.filter(n => n.id !== saved.id)]));
+      resetNoticeForm();
+      setNoticeSaveSuccess(
+        editingNotice
+          ? 'Notice updated successfully in Firebase!'
+          : 'Notice published successfully to Firebase & Home Ticker!'
+      );
+      setTimeout(() => setNoticeSaveSuccess(''), 4000);
+    } catch (err) {
+      console.error('Failed to save notice:', err);
+      alert('Failed to save notice to Firebase. Please verify your fields and try again.');
+    }
+  };
+
+  const handleEditNoticeClick = (notice: NoticeItem) => {
+    setEditingNotice(notice);
+    setNoticeForm({
+      id: notice.id,
+      title: notice.title,
+      content: notice.content,
+      category: notice.category,
+      priority: notice.priority,
+      isActive: notice.isActive,
+      showInTicker: notice.showInTicker,
+      isPinned: notice.isPinned,
+      linkUrl: notice.linkUrl || '',
+      createdAt: notice.createdAt,
+    });
+    setIsAddingNotice(true);
+  };
+
+  const handleToggleNoticeField = async (
+    notice: NoticeItem,
+    field: 'isActive' | 'showInTicker' | 'isPinned'
+  ) => {
+    try {
+      const updated = await saveNotice({
+        ...notice,
+        [field]: !notice[field],
+      });
+      setNotices(prev => sortNotices([updated, ...prev.filter(n => n.id !== updated.id)]));
+    } catch (err) {
+      console.error('Failed to toggle notice status:', err);
+    }
+  };
+
+  const handleDeleteNotice = async (id: string) => {
+    if (confirm('Are you sure you want to permanently delete this notice from Firebase?')) {
+      try {
+        await deleteNotice(id);
+        setNotices(prev => prev.filter(n => n.id !== id));
+      } catch (err) {
+        console.error('Failed to delete notice:', err);
+        alert('Failed to delete notice from Firebase.');
+      }
+    }
+  };
+
   // ================= EXPORTS =================
   const exportDelegatesCSV = () => {
     if (registrations.length === 0) return;
@@ -1137,6 +1275,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
           >
             <Building2 className="w-4 h-4" />
             <span>Hotels & Stays ({accommodations.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('notices')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
+              activeTab === 'notices'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-850'
+            }`}
+          >
+            <Megaphone className="w-4 h-4" />
+            <span>Notices &amp; Ticker ({notices.length})</span>
           </button>
 
           <button
@@ -3127,6 +3277,366 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ================= TAB 10: NOTICES & ANNOUNCEMENTS MANAGEMENT ================= */}
+        {activeTab === 'notices' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-stone-900 p-5 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+              <div>
+                <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <Megaphone className="w-5 h-5 text-amber-600" />
+                  <span>Notices &amp; Announcements Manager</span>
+                </h3>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                  Publish, edit, pin, or schedule announcements to the Home ticker below the countdown and the About &rarr; Notices &amp; Announcements page.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={noticeSearch}
+                    onChange={(e) => setNoticeSearch(e.target.value)}
+                    placeholder="Search notices..."
+                    className="pl-8 pr-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+                <button
+                  onClick={() => {
+                    if (isAddingNotice && !editingNotice) {
+                      resetNoticeForm();
+                    } else {
+                      setEditingNotice(null);
+                      setNoticeForm({
+                        title: '',
+                        content: '',
+                        category: 'General',
+                        priority: 'Normal',
+                        isActive: true,
+                        showInTicker: true,
+                        isPinned: false,
+                        linkUrl: '',
+                      });
+                      setIsAddingNotice(true);
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>{isAddingNotice && !editingNotice ? 'Close Form' : 'New Notice / Announcement'}</span>
+                </button>
+              </div>
+            </div>
+
+            {noticeSaveSuccess && (
+              <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{noticeSaveSuccess}</span>
+              </div>
+            )}
+
+            {isAddingNotice && (
+              <form
+                onSubmit={handleSaveNoticeSubmit}
+                className="bg-white dark:bg-stone-900 p-6 rounded-2xl border-2 border-amber-300 dark:border-amber-700 shadow-lg space-y-4 animate-in fade-in duration-200"
+              >
+                <div className="flex items-center justify-between border-b border-stone-200 dark:border-stone-800 pb-3">
+                  <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                    {editingNotice ? `Edit Notice (${editingNotice.id})` : 'Create New Notice / Announcement'}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={resetNoticeForm}
+                    className="p-1 rounded-lg text-stone-400 hover:text-stone-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Announcement Title * <span className="text-[10px] font-normal text-stone-400">(max 160 chars)</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={160}
+                      value={noticeForm.title}
+                      onChange={(e) => setNoticeForm({ ...noticeForm, title: e.target.value })}
+                      placeholder="e.g. Revised Morning Samaveta Prayer & Satsang Timings"
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Category
+                    </label>
+                    <select
+                      value={noticeForm.category}
+                      onChange={(e) => setNoticeForm({ ...noticeForm, category: e.target.value as NoticeCategory })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="General">General</option>
+                      <option value="Schedule">Schedule</option>
+                      <option value="Accommodation">Accommodation</option>
+                      <option value="Transport">Transport</option>
+                      <option value="Seva">Seva</option>
+                      <option value="Urgent">Urgent</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Priority Level
+                    </label>
+                    <select
+                      value={noticeForm.priority}
+                      onChange={(e) => setNoticeForm({ ...noticeForm, priority: e.target.value as NoticePriority })}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    >
+                      <option value="Normal">Normal</option>
+                      <option value="Important">Important</option>
+                      <option value="Urgent">Urgent</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                    Full Notice / Announcement Content * <span className="text-[10px] font-normal text-stone-400">(max 5000 chars)</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={5}
+                    maxLength={5000}
+                    value={noticeForm.content}
+                    onChange={(e) => setNoticeForm({ ...noticeForm, content: e.target.value })}
+                    placeholder="Write the complete notice details, instructions, venue gate updates, or schedule timings..."
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
+                      Optional Reference Link URL
+                    </label>
+                    <input
+                      type="url"
+                      maxLength={512}
+                      value={noticeForm.linkUrl}
+                      onChange={(e) => setNoticeForm({ ...noticeForm, linkUrl: e.target.value })}
+                      placeholder="https://..."
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 py-1.5">
+                    <label className="inline-flex items-center gap-2 text-xs font-medium text-stone-700 dark:text-stone-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={noticeForm.isActive}
+                        onChange={(e) => setNoticeForm({ ...noticeForm, isActive: e.target.checked })}
+                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                      />
+                      <span>Published (Active)</span>
+                    </label>
+
+                    <label className="inline-flex items-center gap-2 text-xs font-medium text-stone-700 dark:text-stone-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={noticeForm.showInTicker}
+                        onChange={(e) => setNoticeForm({ ...noticeForm, showInTicker: e.target.checked })}
+                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                      />
+                      <span>Show in Home Ticker</span>
+                    </label>
+
+                    <label className="inline-flex items-center gap-2 text-xs font-medium text-stone-700 dark:text-stone-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={noticeForm.isPinned}
+                        onChange={(e) => setNoticeForm({ ...noticeForm, isPinned: e.target.checked })}
+                        className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                      />
+                      <span>Pin to Top</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={resetNoticeForm}
+                    className="px-4 py-2 rounded-xl text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition-colors"
+                  >
+                    {editingNotice ? 'Update Notice in Firebase' : 'Publish Notice to Firebase'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Notices List */}
+            {(() => {
+              const q = noticeSearch.trim().toLowerCase();
+              const filtered = notices.filter(
+                (n) =>
+                  !q ||
+                  n.title.toLowerCase().includes(q) ||
+                  n.content.toLowerCase().includes(q) ||
+                  n.category.toLowerCase().includes(q)
+              );
+
+              if (filtered.length === 0) {
+                return (
+                  <div className="bg-white dark:bg-stone-900 rounded-2xl p-10 text-center border border-stone-200 dark:border-stone-800">
+                    <Megaphone className="w-8 h-8 text-amber-500 mx-auto mb-2 opacity-70" />
+                    <p className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+                      No notices or announcements found.
+                    </p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                      Click &ldquo;New Notice / Announcement&rdquo; above to add your first bulletin.
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {filtered.map((notice) => (
+                    <div
+                      key={notice.id}
+                      className={`bg-white dark:bg-stone-900 rounded-2xl p-5 border shadow-sm flex flex-col justify-between transition-shadow hover:shadow-md ${
+                        notice.isActive
+                          ? 'border-stone-200 dark:border-stone-800'
+                          : 'border-dashed border-stone-300 dark:border-stone-700 opacity-75'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-start justify-between gap-2 mb-3">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+                              {notice.category}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                notice.priority === 'Urgent'
+                                  ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300'
+                                  : notice.priority === 'Important'
+                                  ? 'bg-amber-50 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
+                                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
+                              }`}
+                            >
+                              {notice.priority}
+                            </span>
+                            {notice.isPinned && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                                <Pin className="w-2.5 h-2.5" />
+                                <span>Pinned</span>
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              onClick={() => handleEditNoticeClick(notice)}
+                              className="p-1.5 rounded-lg text-stone-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors"
+                              title="Edit notice"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteNotice(notice.id)}
+                              className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-stone-800 transition-colors"
+                              title="Delete notice from Firebase"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        <h4 className="text-base font-bold font-serif-cinzel text-stone-900 dark:text-stone-100">
+                          {notice.title}
+                        </h4>
+
+                        <p className="mt-2 text-xs text-stone-600 dark:text-stone-300 line-clamp-3 whitespace-pre-wrap">
+                          {notice.content}
+                        </p>
+
+                        {notice.linkUrl && (
+                          <a
+                            href={notice.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:underline"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            <span className="truncate max-w-[260px]">{notice.linkUrl}</span>
+                          </a>
+                        )}
+                      </div>
+
+                      <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            onClick={() => handleToggleNoticeField(notice, 'isActive')}
+                            className={`px-2 py-1 rounded-lg font-semibold border transition-colors ${
+                              notice.isActive
+                                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                                : 'bg-stone-100 dark:bg-stone-800 text-stone-500 border-stone-200 dark:border-stone-700'
+                            }`}
+                          >
+                            {notice.isActive ? 'Published' : 'Draft / Hidden'}
+                          </button>
+
+                          <button
+                            onClick={() => handleToggleNoticeField(notice, 'showInTicker')}
+                            className={`px-2 py-1 rounded-lg font-semibold border transition-colors ${
+                              notice.showInTicker
+                                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+                                : 'bg-stone-100 dark:bg-stone-800 text-stone-500 border-stone-200 dark:border-stone-700'
+                            }`}
+                          >
+                            {notice.showInTicker ? 'In Ticker' : 'Ticker Off'}
+                          </button>
+
+                          <button
+                            onClick={() => handleToggleNoticeField(notice, 'isPinned')}
+                            className={`px-2 py-1 rounded-lg font-semibold border transition-colors ${
+                              notice.isPinned
+                                ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800'
+                                : 'bg-stone-100 dark:bg-stone-800 text-stone-500 border-stone-200 dark:border-stone-700'
+                            }`}
+                          >
+                            {notice.isPinned ? 'Pinned' : 'Pin'}
+                          </button>
+                        </div>
+
+                        <span className="text-stone-400 text-[10px]">
+                          {new Date(notice.updatedAt || notice.createdAt).toLocaleDateString('en-IN', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>

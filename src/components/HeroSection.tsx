@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowDown, Calendar, MapPin, Users, HeartHandshake, Sparkles } from 'lucide-react';
 import { CountdownTimer } from './CountdownTimer';
+import { NoticeTicker } from './NoticeTicker';
+import { NoticeModal } from './NoticeModal';
+import { NoticeItem } from '../types';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 
 interface HeroSectionProps {
   onDiscoverMore: () => void;
   onOpenRegister: () => void;
+  onViewAllNotices?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onDiscoverMore,
   onOpenRegister,
+  onViewAllNotices,
 }) => {
+  const [selectedNotice, setSelectedNotice] = useState<NoticeItem | null>(null);
   return (
     <section className="relative min-h-[92vh] flex flex-col justify-between overflow-hidden bg-stone-950">
       {/* Background with real Thakur photo blended with sacred amber gradient backdrop */}
@@ -88,10 +94,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </div>
       </div>
 
-      {/* Embedded Live Countdown Timer targeting Dec 20, 2026 */}
+      {/* Embedded Live Countdown Timer targeting Dec 20, 2026 & Latest Announcement Ticker */}
       <div className="relative z-30 w-full px-4 sm:px-6 lg:px-8 my-8 sm:my-10">
         <CountdownTimer />
+        <NoticeTicker
+          onOpenNotice={(notice) => setSelectedNotice(notice)}
+          onViewAllNotices={() => onViewAllNotices && onViewAllNotices()}
+        />
       </div>
+
+      <NoticeModal
+        notice={selectedNotice}
+        onClose={() => setSelectedNotice(null)}
+        onViewAllNotices={onViewAllNotices}
+      />
     </section>
   );
 };

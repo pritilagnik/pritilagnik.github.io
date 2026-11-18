@@ -155,6 +155,36 @@ service cloud.firestore {
         request.resource.data.visitedAt == resource.data.visitedAt;
     }
 
+    function isValidNotice(data) {
+      return data.keys().hasAll(['id', 'title', 'content', 'category', 'priority', 'isActive', 'showInTicker', 'isPinned', 'linkUrl', 'createdBy', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'title', 'content', 'category', 'priority', 'isActive', 'showInTicker', 'isPinned', 'linkUrl', 'createdBy', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() > 0 && data.id.size() <= 64 &&
+        data.title is string && data.title.size() > 0 && data.title.size() <= 160 &&
+        data.content is string && data.content.size() > 0 && data.content.size() <= 5000 &&
+        data.category in ['General', 'Schedule', 'Accommodation', 'Transport', 'Urgent', 'Seva'] &&
+        data.priority in ['Normal', 'Important', 'Urgent'] &&
+        data.isActive is bool &&
+        data.showInTicker is bool &&
+        data.isPinned is bool &&
+        data.linkUrl is string && data.linkUrl.size() <= 512 &&
+        data.createdBy is string && data.createdBy.size() <= 128 &&
+        data.createdAt is string && data.createdAt.size() > 0 && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() > 0 && data.updatedAt.size() <= 64;
+    }
+
+    // Notices & Announcements: public read/list, schema-validated create/update/delete for admin management
+    match /notices/{noticeId} {
+      allow read, list: if true;
+      allow create: if isValidVisitorId(noticeId) &&
+        isValidNotice(request.resource.data) &&
+        request.resource.data.id == noticeId;
+      allow update: if isValidVisitorId(noticeId) &&
+        isValidNotice(request.resource.data) &&
+        request.resource.data.id == resource.data.id &&
+        request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isValidVisitorId(noticeId);
+    }
+
     // Catch-all
     match /{document=**} {
       allow read, write: if false;

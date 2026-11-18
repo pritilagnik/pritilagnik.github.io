@@ -8,13 +8,20 @@ import {
   Sparkles,
   MapPin,
   Calendar,
-  Search
+  Search,
+  Megaphone,
+  Pin,
+  AlertTriangle,
+  ExternalLink,
+  ArrowRight
 } from 'lucide-react';
-import { AboutSubTab, CommitteeMember, OrganisingTeam } from '../types';
+import { AboutSubTab, CommitteeMember, OrganisingTeam, NoticeItem } from '../types';
 import {
   fetchCommitteeMembers,
   fetchOrganisingTeams
 } from '../services/registrationService';
+import { subscribeToNotices } from '../services/noticeService';
+import { NoticeModal } from './NoticeModal';
 import { EVENT_DETAILS } from '../data/mahotsavData';
 
 interface AboutSectionProps {
@@ -30,9 +37,13 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
 }) => {
   const [committeeMembers, setCommitteeMembers] = useState<CommitteeMember[]>([]);
   const [organisingTeams, setOrganisingTeams] = useState<OrganisingTeam[]>([]);
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [selectedCommitteeCategory, setSelectedCommitteeCategory] = useState<string>('All');
   const [committeeSearch, setCommitteeSearch] = useState<string>('');
+  const [noticeSearch, setNoticeSearch] = useState<string>('');
+  const [selectedNoticeCategory, setSelectedNoticeCategory] = useState<string>('All');
+  const [selectedNotice, setSelectedNotice] = useState<NoticeItem | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -49,8 +60,15 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         if (mounted) setLoadingData(false);
       });
 
+    const unsubNotices = subscribeToNotices((allNotices) => {
+      if (mounted) {
+        setNotices(allNotices.filter((n) => n.isActive));
+      }
+    });
+
     return () => {
       mounted = false;
+      unsubNotices();
     };
   }, []);
 
@@ -120,8 +138,8 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             "The ceremonial function which extols the being and begets prosperity is Utsav."
           </p>
 
-          {/* Sub-navigation Tabs (Priti-Lagnik 2026 / Organising Committee / Volunteers) */}
-          <div className="mt-8 inline-flex p-1.5 rounded-2xl bg-stone-200/90 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 shadow-sm">
+          {/* Sub-navigation Tabs (Priti-Lagnik 2026 / Organising Committee / Volunteers / Notices & Announcements) */}
+          <div className="mt-8 inline-flex flex-wrap justify-center gap-1 p-1.5 rounded-2xl bg-stone-200/90 dark:bg-stone-900 border border-stone-300 dark:border-stone-800 shadow-sm">
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('overview')}
               className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
@@ -145,12 +163,32 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             <button
               onClick={() => onSelectSubTab && onSelectSubTab('teams')}
               className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
-                activeSubTab === 'teams'
+                activeSubTab === 'teams' || activeSubTab === 'organising-teams'
                   ? 'bg-amber-600 text-white shadow-sm'
                   : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white dark:hover:bg-stone-800/80'
               }`}
             >
               Volunteers
+            </button>
+            <button
+              onClick={() => onSelectSubTab && onSelectSubTab('notices')}
+              className={`px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all inline-flex items-center gap-1.5 ${
+                activeSubTab === 'notices'
+                  ? 'bg-amber-600 text-white shadow-sm'
+                  : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white dark:hover:bg-stone-800/80'
+              }`}
+            >
+              <Megaphone className="w-3.5 h-3.5" />
+              <span>Notices &amp; Announcements</span>
+              {notices.length > 0 && (
+                <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
+                  activeSubTab === 'notices'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-amber-500/20 text-amber-800 dark:text-amber-300'
+                }`}>
+                  {notices.length}
+                </span>
+              )}
             </button>
           </div>
         </div>
@@ -338,7 +376,7 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
         )}
 
         {/* Tab 3: Organising Teams */}
-        {activeSubTab === 'teams' && (
+        {(activeSubTab === 'teams' || activeSubTab === 'organising-teams') && (
           <div className="space-y-8 animate-in fade-in duration-300">
             {loadingData ? (
               <div className="text-center py-12 text-sm text-stone-500">Loading volunteer teams...</div>
@@ -386,7 +424,153 @@ export const AboutSection: React.FC<AboutSectionProps> = ({
             )}
           </div>
         )}
+        {/* Tab 4: Notices & Announcements */}
+        {activeSubTab === 'notices' && (
+          <div className="space-y-8 animate-in fade-in duration-300">
+            {/* Search & Category Controls */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white dark:bg-stone-900 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-md">
+              <div className="relative w-full sm:w-80">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={noticeSearch}
+                  onChange={(e) => setNoticeSearch(e.target.value)}
+                  placeholder="Search notices & announcements..."
+                  className="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                {['All', 'General', 'Schedule', 'Accommodation', 'Transport', 'Urgent', 'Seva'].map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedNoticeCategory(cat)}
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-colors ${
+                      selectedNoticeCategory === cat
+                        ? 'bg-amber-600 text-white shadow-sm'
+                        : 'bg-stone-100 dark:bg-stone-950 text-stone-700 dark:text-stone-300 hover:bg-amber-100 dark:hover:bg-stone-800 border border-stone-200 dark:border-stone-800'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {(() => {
+              const filteredNotices = notices.filter((n) => {
+                const matchesCat = selectedNoticeCategory === 'All' || n.category === selectedNoticeCategory;
+                const q = noticeSearch.trim().toLowerCase();
+                const matchesSearch =
+                  !q ||
+                  n.title.toLowerCase().includes(q) ||
+                  n.content.toLowerCase().includes(q) ||
+                  n.category.toLowerCase().includes(q);
+                return matchesCat && matchesSearch;
+              });
+
+              if (filteredNotices.length === 0) {
+                return (
+                  <div className="bg-white dark:bg-stone-900 rounded-2xl p-12 text-center border border-stone-200 dark:border-stone-800 shadow-sm">
+                    <Megaphone className="w-10 h-10 text-amber-500/70 mx-auto mb-3" />
+                    <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100">
+                      No Notices &amp; Announcements Found
+                    </h3>
+                    <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-md mx-auto">
+                      {notices.length === 0
+                        ? 'Official bulletins, schedule updates, and travel advisories published by the Secretariat will appear here.'
+                        : 'Try clearing your search or choosing a different category filter.'}
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {filteredNotices.map((notice) => {
+                    const formattedDate = (() => {
+                      try {
+                        return new Date(notice.updatedAt || notice.createdAt).toLocaleDateString('en-IN', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                        });
+                      } catch {
+                        return notice.createdAt;
+                      }
+                    })();
+
+                    return (
+                      <article
+                        key={notice.id}
+                        onClick={() => setSelectedNotice(notice)}
+                        className="cursor-pointer group bg-white dark:bg-stone-900 rounded-2xl p-6 border border-stone-200 dark:border-stone-800 shadow-sm hover:shadow-lg hover:border-amber-400 dark:hover:border-amber-500/60 transition-all flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/90 text-amber-900 dark:text-amber-200 border border-amber-300/60 dark:border-amber-800">
+                                {notice.category}
+                              </span>
+                              {notice.priority !== 'Normal' && (
+                                <span
+                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${
+                                    notice.priority === 'Urgent'
+                                      ? 'bg-red-100 dark:bg-red-950/90 text-red-700 dark:text-red-300 border-red-300 dark:border-red-800'
+                                      : 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                                  }`}
+                                >
+                                  {notice.priority === 'Urgent' && <AlertTriangle className="w-3 h-3" />}
+                                  <span>{notice.priority}</span>
+                                </span>
+                              )}
+                              {notice.isPinned && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/90 text-emerald-700 dark:text-emerald-300 border border-emerald-300/60 dark:border-emerald-800">
+                                  <Pin className="w-3 h-3" />
+                                  <span>Pinned</span>
+                                </span>
+                              )}
+                            </div>
+
+                            <span className="inline-flex items-center gap-1 text-[11px] text-stone-500 dark:text-stone-400">
+                              <Calendar className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                              <span>{formattedDate}</span>
+                            </span>
+                          </div>
+
+                          <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors leading-snug">
+                            {notice.title}
+                          </h3>
+
+                          <p className="mt-2.5 text-xs sm:text-sm text-stone-600 dark:text-stone-300 leading-relaxed line-clamp-3 whitespace-pre-wrap">
+                            {notice.content}
+                          </p>
+                        </div>
+
+                        <div className="mt-5 pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs">
+                          <span className="text-stone-500 dark:text-stone-400 truncate max-w-[60%]">
+                            {notice.createdBy ? `By ${notice.createdBy}` : 'Central Secretariat'}
+                          </span>
+                          <span className="inline-flex items-center gap-1 font-bold text-amber-700 dark:text-amber-400 group-hover:translate-x-0.5 transition-transform">
+                            {notice.linkUrl && <ExternalLink className="w-3 h-3" />}
+                            <span>Read Full Notice</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </span>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        )}
       </div>
+
+      <NoticeModal
+        notice={selectedNotice}
+        onClose={() => setSelectedNotice(null)}
+      />
     </section>
   );
 };

@@ -147,6 +147,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   >
                     Volunteers
                   </button>
+                  <button
+                    onClick={() => handleAboutSubClick('notices')}
+                    className="w-full text-left px-4 py-2.5 text-xs font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-stone-800 transition-colors border-t border-stone-100 dark:border-stone-800 mt-1 pt-2.5"
+                  >
+                    Notices &amp; Announcements
+                  </button>
                 </div>
               )}
             </div>
@@ -403,12 +409,22 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => handleAboutSubClick('organising-teams')}
                 className={`w-full text-left py-2 text-sm font-medium flex items-center justify-between ${
-                  currentTab === 'about' && aboutSubTab === 'organising-teams'
+                  currentTab === 'about' && (aboutSubTab === 'organising-teams' || aboutSubTab === 'teams')
                     ? 'text-amber-700 dark:text-amber-400 font-semibold'
                     : 'text-stone-700 dark:text-stone-300'
                 }`}
               >
                 <span>Volunteers</span>
+              </button>
+              <button
+                onClick={() => handleAboutSubClick('notices')}
+                className={`w-full text-left py-2 text-sm font-medium flex items-center justify-between ${
+                  currentTab === 'about' && aboutSubTab === 'notices'
+                    ? 'text-amber-700 dark:text-amber-400 font-semibold'
+                    : 'text-stone-700 dark:text-stone-300'
+                }`}
+              >
+                <span>Notices &amp; Announcements</span>
               </button>
             </div>
 

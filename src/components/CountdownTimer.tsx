@@ -151,7 +151,7 @@ export const CountdownTimer: React.FC = () => {
           📍 Dotma, Kokrajhar, Assam, India - 783347
         </span>
         <span className="text-amber-400/90 font-medium">
-          5 Days of Universal Prayer, Satsang & Maha Annadan
+          1 day of Priti Lagnik Maha Mahotsav
         </span>
       </div>
     </div>

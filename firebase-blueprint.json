@@ -340,6 +340,73 @@
         }
       },
       "required": ["id", "date", "userAgent", "ip", "deviceType", "mobileOs", "sessionEmails", "primaryEmail", "visitedAt", "updatedAt"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "Official notices and announcements managed by Secretariat Admin and shown in the home ticker and Notices page",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique notice identifier",
+          "maxLength": 64
+        },
+        "title": {
+          "type": "string",
+          "description": "Notice headline / title",
+          "maxLength": 160
+        },
+        "content": {
+          "type": "string",
+          "description": "Full notice and announcement body text",
+          "maxLength": 5000
+        },
+        "category": {
+          "type": "string",
+          "description": "Announcement category",
+          "enum": ["General", "Schedule", "Accommodation", "Transport", "Urgent", "Seva"],
+          "maxLength": 32
+        },
+        "priority": {
+          "type": "string",
+          "description": "Urgency level",
+          "enum": ["Normal", "Important", "Urgent"],
+          "maxLength": 32
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the notice is published publicly"
+        },
+        "showInTicker": {
+          "type": "boolean",
+          "description": "Whether the notice appears in the Hero latest announcement ticker"
+        },
+        "isPinned": {
+          "type": "boolean",
+          "description": "Whether the notice is pinned to the top"
+        },
+        "linkUrl": {
+          "type": "string",
+          "description": "Optional external reference URL",
+          "maxLength": 512
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "Name or email of admin who created or updated the notice",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation",
+          "maxLength": 64
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "ISO timestamp of last update",
+          "maxLength": 64
+        }
+      },
+      "required": ["id", "title", "content", "category", "priority", "isActive", "showInTicker", "isPinned", "linkUrl", "createdBy", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
@@ -374,6 +441,10 @@
     "/visitor_logs/{visitId}": {
       "schema": "VisitorLog",
       "description": "Visitor metadata logs (User Agent, IP, deviceType, mobileOs, sessionEmails)"
+    },
+    "/notices/{noticeId}": {
+      "schema": "Notice",
+      "description": "Official notices and announcements displayed in the ticker and About -> Notices & Announcements"
     }
   }
 }
