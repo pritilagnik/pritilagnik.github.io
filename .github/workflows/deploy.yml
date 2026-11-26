@@ -48,6 +48,8 @@ jobs:
 
       - name: Create 404.html for SPA Client Routing
         run: cp dist/index.html dist/404.html
+        env:
+          NODE_OPTIONS: "--disable-warning=DEP0040"
 
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v5
@@ -57,3 +59,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        env:
+          NODE_OPTIONS: "--disable-warning=DEP0040"
