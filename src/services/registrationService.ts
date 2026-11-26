@@ -15,10 +15,13 @@ import {
   AdminUser,
   EventDocument,
   GalleryItem,
+  GalleryCategory,
   FeedbackRecord,
   CommitteeMember,
   OrganisingTeam,
-  AccommodationOption
+  AccommodationOption,
+  ReceptionContact,
+  GALLERY_CATEGORIES
 } from '../types';
 
 const REGISTRATIONS_COL = 'registrations';
@@ -520,13 +523,29 @@ export async function removeEventDocument(id: string): Promise<void> {
 // ==================== DYNAMIC GALLERY ITEMS ====================
 const GALLERY_COL = 'gallery_items';
 
+const LEGACY_GALLERY_CATEGORIES: Record<string, GalleryCategory> = {
+  Rituals: 'General',
+  Seva: 'Publicity and Outreach',
+  'Past Gatherings': 'Past Events',
+  Prasadam: 'Bhandar (Holy Feast)',
+  Cultural: 'Cultural Programme',
+  Venue: 'Venue & Grounds'
+};
+
+function normalizeGalleryItem(item: GalleryItem): GalleryItem {
+  const category = GALLERY_CATEGORIES.includes(item.category)
+    ? item.category
+    : LEGACY_GALLERY_CATEGORIES[item.category] || 'General';
+  return { ...item, category };
+}
+
 export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
   const fallbackGallery: GalleryItem[] = [
     {
       id: "gal-1",
       type: "image",
       title: "Divine Portrait of Sree Sree Thakur Anukulchandra",
-      category: "Rituals",
+      category: "General",
       url: "/src/assets/images/sree_sree_thakur.webp",
       thumbnail: "/src/assets/images/sree_sree_thakur.webp",
       description: "The divine countenance and compassionate gaze guiding millions along the path of existential elevation.",
@@ -536,7 +555,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
       id: "gal-2",
       type: "image",
       title: "Jagat Janani Sree Sree Boroma",
-      category: "Rituals",
+      category: "General",
       url: "/src/assets/images/sree_sree_boroma.webp",
       thumbnail: "/src/assets/images/sree_sree_boroma.webp",
       description: "Embodiment of universal motherhood, compassion, and divine maternal grace.",
@@ -546,7 +565,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
       id: "gal-3",
       type: "image",
       title: "Revered Boroda (Amarendranath Chakravarty)",
-      category: "Past Gatherings",
+      category: "Past Events",
       url: "/src/assets/images/sree_sree_boroda.webp",
       thumbnail: "/src/assets/images/sree_sree_boroda.webp",
       description: "The architect of mass organizational seva, Anandabazar, and spiritual conventions.",
@@ -556,7 +575,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
       id: "gal-4",
       type: "image",
       title: "Revered Acharyadev",
-      category: "Past Gatherings",
+      category: "Past Events",
       url: "/src/assets/images/sree_sree_acharya.webp",
       thumbnail: "/src/assets/images/sree_sree_acharya.webp",
       description: "Leading the global spiritual mission of love, eco-harmony, and universal peace.",
@@ -569,7 +588,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
     const snap = await getDocs(colRef);
     if (!snap.empty) {
       const items: GalleryItem[] = [];
-      snap.forEach(d => items.push(d.data() as GalleryItem));
+      snap.forEach(d => items.push(normalizeGalleryItem(d.data() as GalleryItem)));
       // Merge with default archival items
       const mergedMap = new Map<string, GalleryItem>();
       items.forEach(i => mergedMap.set(i.id, i));
@@ -586,7 +605,9 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
 
   try {
     const stored = localStorage.getItem('pritilagnik_gallery');
-    return stored ? sortGalleryItems(JSON.parse(stored)) : fallbackGallery;
+    return stored
+      ? sortGalleryItems((JSON.parse(stored) as GalleryItem[]).map(normalizeGalleryItem))
+      : fallbackGallery;
   } catch (e) {
     return fallbackGallery;
   }
@@ -619,6 +640,110 @@ export async function removeGalleryItem(id: string): Promise<void> {
     await deleteDoc(docRef);
   } catch (err) {
     console.warn('Firestore removeGalleryItem warning:', err);
+  }
+}
+
+// ==================== RECEPTION COMMITTEE & CONTACTS ====================
+const RECEPTION_CONTACTS_COL = 'reception_contacts';
+const RECEPTION_CONTACTS_CONFIG = doc(db, 'site_settings', 'reception_contacts');
+const RECEPTION_CONTACTS_LOCAL_KEY = 'pritilagnik_reception_contacts';
+
+const DEFAULT_RECEPTION_CONTACTS: ReceptionContact[] = [
+  {
+    id: 'desk-bihung',
+    type: 'desk',
+    name: 'Dr. Bihung Brahma',
+    role: 'Information',
+    label: 'For details of programme',
+    phone: '+918472014223'
+  },
+  {
+    id: 'desk-mahananda',
+    type: 'desk',
+    name: 'Mahananda Brahma',
+    role: 'Information',
+    label: 'For details of programme',
+    phone: '+919954287105'
+  },
+  {
+    id: 'committee-bihung',
+    type: 'committee',
+    name: 'Dr. Bihung Brahma',
+    role: 'Information'
+  },
+  {
+    id: 'committee-mahananda',
+    type: 'committee',
+    name: 'Mahananda Brahma',
+    role: 'Information'
+  }
+];
+
+function readReceptionContactsCache(): ReceptionContact[] | null {
+  try {
+    const stored = localStorage.getItem(RECEPTION_CONTACTS_LOCAL_KEY);
+    return stored === null ? null : JSON.parse(stored) as ReceptionContact[];
+  } catch (error) {
+    console.warn('Reading reception contacts from local cache failed:', error);
+    return null;
+  }
+}
+
+function cacheReceptionContacts(contacts: ReceptionContact[]): void {
+  try {
+    localStorage.setItem(RECEPTION_CONTACTS_LOCAL_KEY, JSON.stringify(contacts));
+  } catch (error) {
+    console.warn('Caching reception contacts locally failed:', error);
+  }
+}
+
+export async function fetchReceptionContacts(): Promise<ReceptionContact[]> {
+  try {
+    const [configSnapshot, contactsSnapshot] = await Promise.all([
+      getDoc(RECEPTION_CONTACTS_CONFIG),
+      getDocs(collection(db, RECEPTION_CONTACTS_COL))
+    ]);
+    const isConfigured = configSnapshot.exists() && configSnapshot.data().configured === true;
+
+    if (isConfigured || !contactsSnapshot.empty) {
+      const contacts = contactsSnapshot.docs.map(snapshot => ({
+        ...(snapshot.data() as ReceptionContact),
+        id: snapshot.id
+      }));
+      cacheReceptionContacts(contacts);
+      return contacts;
+    }
+  } catch (error) {
+    console.warn('Fetching reception contacts failed, checking local cache:', error);
+  }
+
+  const cachedContacts = readReceptionContactsCache();
+  if (cachedContacts) return cachedContacts;
+
+  cacheReceptionContacts(DEFAULT_RECEPTION_CONTACTS);
+  return DEFAULT_RECEPTION_CONTACTS;
+}
+
+export async function saveReceptionContacts(contacts: ReceptionContact[]): Promise<boolean> {
+  cacheReceptionContacts(contacts);
+
+  try {
+    const collectionRef = collection(db, RECEPTION_CONTACTS_COL);
+    const existingSnapshot = await getDocs(collectionRef);
+    const activeIds = new Set(contacts.map(contact => contact.id));
+    const deletions = existingSnapshot.docs
+      .filter(snapshot => !activeIds.has(snapshot.id))
+      .map(snapshot => deleteDoc(snapshot.ref));
+    const saves = contacts.map(contact =>
+      setDoc(doc(db, RECEPTION_CONTACTS_COL, contact.id), contact)
+    );
+
+    await Promise.all([...deletions, ...saves]);
+    await setDoc(RECEPTION_CONTACTS_CONFIG, { configured: true });
+    return true;
+  } catch (error) {
+    console.warn('Firestore saveReceptionContacts warning:', error);
+    return false;
   }
 }
 

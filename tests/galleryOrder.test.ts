@@ -8,7 +8,7 @@ function item(id: string, createdAt?: string): GalleryItem {
     id,
     type: 'video',
     title: id,
-    category: 'Past Gatherings',
+    category: 'Past Events',
     url: 'https://example.com/video',
     thumbnail: '',
     description: '',

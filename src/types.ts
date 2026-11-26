@@ -46,17 +46,44 @@ export interface EventScheduleItem {
   speakers?: string[];
 }
 
+export const GALLERY_CATEGORIES = [
+  'General',
+  'Past Events',
+  'Cultural Programme',
+  'Bhandar (Holy Feast)',
+  'Venue & Grounds',
+  'Publicity and Outreach'
+] as const;
+
+export type GalleryCategory = typeof GALLERY_CATEGORIES[number];
+
 export interface GalleryItem {
   id: string;
   type: 'image' | 'video';
   title: string;
-  category: 'Rituals' | 'Seva' | 'Cultural' | 'Past Gatherings' | 'Prasadam' | 'Venue';
+  category: GalleryCategory;
   url: string;
   thumbnail: string;
   description: string;
   createdAt?: string;
   year?: string;
   duration?: string;
+}
+
+export interface ReceptionContact {
+  id: string;
+  type: 'committee' | 'desk';
+  name: string;
+  role: string;
+  label?: string;
+  phone?: string;
+  whatsappUrl?: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  otherUrl?: string;
+  otherLabel?: string;
+  information?: string;
+  image?: string;
 }
 
 export interface AccommodationOption {

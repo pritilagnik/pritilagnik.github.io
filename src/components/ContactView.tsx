@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MapPin,
   Phone,
@@ -11,15 +11,17 @@ import {
   Users,
   Compass,
   HeartHandshake,
-  Calendar,
   Building2,
   DollarSign
 } from 'lucide-react';
 import { EVENT_DETAILS } from '../data/mahotsavData';
+import { ReceptionContact } from '../types';
 import { FullWidthMap } from './FullWidthMap';
 import { recordSessionEmail } from '../services/visitorService';
+import { fetchReceptionContacts } from '../services/registrationService';
 
 export const ContactView: React.FC = () => {
+  const [receptionContacts, setReceptionContacts] = useState<ReceptionContact[]>([]);
   const [formState, setFormState] = useState({
     name: '',
     phone: '',
@@ -28,6 +30,12 @@ export const ContactView: React.FC = () => {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    fetchReceptionContacts()
+      .then(setReceptionContacts)
+      .catch(error => console.error('Loading reception contacts failed:', error));
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,33 +46,14 @@ export const ContactView: React.FC = () => {
     setSubmitted(true);
   };
 
-  // Specific desk contacts requested
-  const deskContacts = [
-    {
-      title: "For details of programme",
-      role: "Information",
-      contactPerson: "Dr. Bihung Brahma",
-      number: "+918472014223",
-      icon: Calendar,
-      color: "amber"
-    },
-    {
-      title: "For details of programme",
-      role: "Information",
-      contactPerson: "Mahananda Brahma",
-      number: "+919954287105",
-      icon: Calendar,
-      color: "amber"
-    }
-
-  ];
-
-  // Reception committee members
-  const receptionMembers = [
-    { name: "Dr. Bihung Brahma", role: "Information" },
-    { name: "Mahananda Brahma", role: "Information" }
-    
-  ];
+  const deskContacts = receptionContacts.filter(contact => contact.type === 'desk');
+  const receptionMembers = receptionContacts.filter(contact => contact.type === 'committee');
+  const socialLinks = (contact: ReceptionContact) => [
+    { label: 'WhatsApp', url: contact.whatsappUrl },
+    { label: 'Instagram', url: contact.instagramUrl },
+    { label: 'Facebook', url: contact.facebookUrl },
+    { label: contact.otherLabel || 'More information', url: contact.otherUrl }
+  ].filter(link => link.url && /^https?:\/\//i.test(link.url));
 
   return (
     <div className="py-12 sm:py-20 bg-stone-50/50 dark:bg-stone-900/30 min-h-screen transition-colors">
@@ -89,36 +78,44 @@ export const ContactView: React.FC = () => {
 
           {/* Dedicated Desks Required by User */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {deskContacts.map((desk, idx) => {
-              const Icon = desk.icon;
+            {deskContacts.map(desk => {
               return (
                 <div
-                  key={idx}
+                  key={desk.id}
                   className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm hover:border-amber-400 hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div>
                     <div className="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-3">
-                      <Icon className="w-5 h-5" />
+                      {desk.image
+                        ? <img src={desk.image} alt="" className="w-full h-full object-cover rounded-xl" />
+                        : <Phone className="w-5 h-5" />}
                     </div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 block mb-1">
-                      {desk.title}
+                      {desk.label || desk.role}
                     </span>
                     <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
                       {desk.role}
                     </h3>
                     <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                      In-Charge: <span className="font-semibold text-stone-800 dark:text-stone-200">{desk.contactPerson}</span>
+                      In-Charge: <span className="font-semibold text-stone-800 dark:text-stone-200">{desk.name}</span>
                     </p>
+                    {desk.information && <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">{desk.information}</p>}
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800">
-                    <a
-                      href={`tel:${desk.number}`}
-                      className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors"
-                    >
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>Contact: {desk.number}</span>
-                    </a>
+                    {desk.phone && (
+                      <a href={`tel:${desk.phone}`} className="w-full inline-flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-sm transition-colors">
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>Contact: {desk.phone}</span>
+                      </a>
+                    )}
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {socialLinks(desk).map(link => (
+                        <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-amber-700 dark:text-amber-400 hover:underline">
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               );
@@ -151,11 +148,12 @@ export const ContactView: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {receptionMembers.map((member, idx) => (
+              {receptionMembers.map(member => (
                 <div
-                  key={idx}
-                  className="p-4 rounded-xl bg-amber-50/40 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 flex items-center justify-between gap-3"
+                  key={member.id}
+                  className="p-4 rounded-xl bg-amber-50/40 dark:bg-stone-800/80 border border-stone-200/80 dark:border-stone-700/80 flex items-start gap-3"
                 >
+                  {member.image && <img src={member.image} alt="" className="w-12 h-12 object-cover rounded-full shrink-0" />}
                   <div>
                     <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 font-serif-cinzel">
                       {member.name}
@@ -163,6 +161,15 @@ export const ContactView: React.FC = () => {
                     <span className="text-[11px] text-amber-700 dark:text-amber-400 font-medium block mt-0.5">
                       {member.role}
                     </span>
+                    {member.information && <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">{member.information}</p>}
+                    {member.phone && <a href={`tel:${member.phone}`} className="text-xs text-stone-600 dark:text-stone-300 hover:underline block mt-1">{member.phone}</a>}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {socialLinks(member).map(link => (
+                        <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-amber-700 dark:text-amber-400 hover:underline">
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}

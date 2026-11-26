@@ -70,8 +70,9 @@ Language preference is persisted locally across sessions.
   - **Vehicle Management:** Allocate designated parking zones (Gates 1, 2, School Field, Yatri Niwas), accept/reject passes, and print vehicle placards.
   - **Multi-Admin Delegation:** Root admins can invite and manage additional Secretariat officers and committee members.
   - **Dual-Mode File Uploader:** Upload event PDFs and DOCX guidelines directly from local device or provide direct links.
-  - **Gallery Manager:** Upload devotional photos and link videos from YouTube, Facebook, X/Twitter, direct media files, or embeddable websites.
+  - **Gallery Manager:** Upload devotional photos and link videos from YouTube, Facebook, X/Twitter, direct media files, or embeddable websites. Gallery categories are General, Past Events, Cultural Programme, Bhandar (Holy Feast), Venue & Grounds, and Publicity and Outreach.
     Newly added media appear first. Older items without a recorded creation date retain their existing relative order.
+  - **Reception Contacts:** Manage Reception Committee and contact desk entries, including uploaded photos, phone numbers, WhatsApp, Instagram, Facebook, and other links or information.
   - **Attendee Feedback:** Review attendee ratings on reception, prasadam, and accommodation.
   - **Refresh Local Data (Root Administrator only):** Clear this browser's cached portal data and reload the dashboard. Close other portal tabs first. Records or changes stored only locally will be permanently lost; Firestore data, the admin session, and preferences are preserved. Other browsers are unaffected, and Firestore data may reappear after reloading.
 

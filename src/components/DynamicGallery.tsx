@@ -10,7 +10,7 @@ import {
   ChevronRight,
   Filter
 } from 'lucide-react';
-import { GalleryItem } from '../types';
+import { GalleryItem, GALLERY_CATEGORIES } from '../types';
 import { fetchDynamicGalleryItems } from '../services/registrationService';
 import { GalleryVideo } from './GalleryVideo';
 
@@ -36,11 +36,22 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
     });
   }, []);
 
-  const categories = ['All', 'Rituals', 'Past Gatherings', 'Prasadam', 'Cultural', 'Venue'];
+  const categories = ['All', ...GALLERY_CATEGORIES];
 
   const filteredItems = activeCategory === 'All'
     ? items
     : items.filter(item => item.category === activeCategory);
+
+  const handleSelectCategory = (category: string) => {
+    setActiveCategory(category);
+    const categoryItems = category === 'All'
+      ? items
+      : items.filter(item => item.category === category);
+    if (!categoryItems.some(item => item.id === selectedItem?.id)) {
+      setSelectedItem(categoryItems[0] || null);
+      setIsPlayingVideo(false);
+    }
+  };
 
   const handleSelectMedia = (item: GalleryItem) => {
     setSelectedItem(item);
@@ -84,7 +95,7 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setActiveCategory(cat)}
+                onClick={() => handleSelectCategory(cat)}
                 className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                   activeCategory === cat
                     ? 'bg-amber-600 text-white shadow-sm'

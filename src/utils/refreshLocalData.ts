@@ -4,6 +4,7 @@ const LOCAL_DATA_KEYS = [
   'pritilagnik_admins',
   'pritilagnik_documents',
   'pritilagnik_gallery',
+  'pritilagnik_reception_contacts',
   'pritilagnik_feedback',
   'pritilagnik_committee',
   'pritilagnik_teams',

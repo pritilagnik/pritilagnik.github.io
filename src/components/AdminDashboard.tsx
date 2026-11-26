@@ -52,6 +52,9 @@ import {
   CommitteeMember,
   OrganisingTeam,
   AccommodationOption,
+  ReceptionContact,
+  GalleryCategory,
+  GALLERY_CATEGORIES,
   NoticeItem,
   NoticeCategory,
   NoticePriority
@@ -73,6 +76,8 @@ import {
   fetchDynamicGalleryItems,
   saveGalleryItem,
   removeGalleryItem,
+  fetchReceptionContacts,
+  saveReceptionContacts,
   fetchAllFeedback,
   fetchCommitteeMembers,
   saveCommitteeMember,
@@ -120,7 +125,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  type TabType = 'delegates' | 'cars' | 'committee' | 'teams' | 'accommodations' | 'notices' | 'multi_admin' | 'documents' | 'gallery' | 'feedback';
+  type TabType = 'delegates' | 'cars' | 'committee' | 'teams' | 'accommodations' | 'notices' | 'multi_admin' | 'documents' | 'gallery' | 'contacts' | 'feedback';
   const [activeTab, setActiveTab] = useState<TabType>('delegates');
 
   // Delegates data
@@ -230,11 +235,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [newGalTitle, setNewGalTitle] = useState('');
   const [newGalType, setNewGalType] = useState<'image' | 'video'>('image');
-  const [newGalCategory, setNewGalCategory] = useState<'Rituals' | 'Past Gatherings' | 'Prasadam' | 'Cultural' | 'Venue'>('Past Gatherings');
+  const [newGalCategory, setNewGalCategory] = useState<GalleryCategory>('General');
   const [newGalUrl, setNewGalUrl] = useState('');
   const [newGalDesc, setNewGalDesc] = useState('');
   const [galImageFile, setGalImageFile] = useState<{ name: string; dataUrl: string } | null>(null);
   const [galSaveSuccess, setGalSaveSuccess] = useState('');
+
+  // Reception Committee and contact data
+  const [receptionContacts, setReceptionContacts] = useState<ReceptionContact[]>([]);
+  const [contactForm, setContactForm] = useState<ReceptionContact>({
+    id: '',
+    type: 'committee',
+    name: '',
+    role: '',
+    label: '',
+    phone: '',
+    whatsappUrl: '',
+    instagramUrl: '',
+    facebookUrl: '',
+    otherUrl: '',
+    otherLabel: '',
+    information: '',
+    image: ''
+  });
+  const [contactSaveSuccess, setContactSaveSuccess] = useState('');
 
   // Feedback data
   const [feedbackList, setFeedbackList] = useState<FeedbackRecord[]>([]);
@@ -285,7 +309,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [regs, cars, admins, docs, gallery, feedback, committee, teams, accs, allNotices] = await Promise.all([
+      const [regs, cars, admins, docs, gallery, feedback, committee, teams, accs, allNotices, contacts] = await Promise.all([
         fetchAllRegistrations(),
         fetchAllCarPasses(),
         fetchAllAdmins(),
@@ -295,7 +319,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         fetchCommitteeMembers(),
         fetchOrganisingTeams(),
         fetchAccommodations(),
-        fetchAllNotices()
+        fetchAllNotices(),
+        fetchReceptionContacts()
       ]);
       setRegistrations(regs);
       setCarPasses(cars);
@@ -307,6 +332,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       setOrganisingTeams(teams);
       setAccommodations(accs);
       setNotices(allNotices);
+      setReceptionContacts(contacts);
     } catch (e) {
       console.error('Error loading dashboard data:', e);
     } finally {
@@ -573,6 +599,117 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     if (confirm('Are you sure you want to remove this event document?')) {
       await removeEventDocument(id);
       setDocuments(prev => prev.filter(d => d.id !== id));
+    }
+  };
+
+  // ================= RECEPTION CONTACT ACTIONS =================
+  const handleContactImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDimension = 1000;
+        const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        const context = canvas.getContext('2d');
+        if (!context) {
+          alert('Could not process this image. Please try another file.');
+          return;
+        }
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        setContactForm(prev => ({ ...prev, image: canvas.toDataURL('image/jpeg', 0.85) }));
+      };
+      image.onerror = () => alert('Could not read this image. Please try another file.');
+      if (typeof event.target?.result === 'string') image.src = event.target.result;
+    };
+    reader.onerror = () => alert('Could not read this image. Please try another file.');
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleSaveReceptionContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactForm.name.trim() || !contactForm.role.trim()) {
+      alert('Please enter the contact name and role.');
+      return;
+    }
+
+    const contact: ReceptionContact = {
+      ...contactForm,
+      id: contactForm.id || `CONTACT-${Date.now()}`,
+      name: contactForm.name.trim(),
+      role: contactForm.role.trim(),
+      label: contactForm.label?.trim() || undefined,
+      phone: contactForm.phone?.trim() || undefined,
+      whatsappUrl: contactForm.whatsappUrl?.trim() || undefined,
+      instagramUrl: contactForm.instagramUrl?.trim() || undefined,
+      facebookUrl: contactForm.facebookUrl?.trim() || undefined,
+      otherUrl: contactForm.otherUrl?.trim() || undefined,
+      otherLabel: contactForm.otherLabel?.trim() || undefined,
+      information: contactForm.information?.trim() || undefined
+    };
+    const updatedContacts = [
+      contact,
+      ...receptionContacts.filter(existing => existing.id !== contact.id)
+    ];
+
+    const synced = await saveReceptionContacts(updatedContacts);
+    setReceptionContacts(updatedContacts);
+    setContactForm({
+      id: '',
+      type: 'committee',
+      name: '',
+      role: '',
+      label: '',
+      phone: '',
+      whatsappUrl: '',
+      instagramUrl: '',
+      facebookUrl: '',
+      otherUrl: '',
+      otherLabel: '',
+      information: '',
+      image: ''
+    });
+    setContactSaveSuccess(synced
+      ? 'Reception contact saved successfully.'
+      : 'Contact saved in this browser, but cloud sync failed. Check your connection and retry.');
+    setTimeout(() => setContactSaveSuccess(''), 4000);
+  };
+
+  const handleDeleteReceptionContact = async (id: string) => {
+    if (!confirm('Are you sure you want to remove this reception contact?')) return;
+    const updatedContacts = receptionContacts.filter(contact => contact.id !== id);
+    const synced = await saveReceptionContacts(updatedContacts);
+    setReceptionContacts(updatedContacts);
+    setContactSaveSuccess(synced
+      ? 'Reception contact removed successfully.'
+      : 'Contact removed in this browser, but cloud sync failed. Save a contact again after reconnecting to retry.');
+    setTimeout(() => setContactSaveSuccess(''), 6000);
+    if (contactForm.id === id) {
+      setContactForm({
+        id: '',
+        type: 'committee',
+        name: '',
+        role: '',
+        label: '',
+        phone: '',
+        whatsappUrl: '',
+        instagramUrl: '',
+        facebookUrl: '',
+        otherUrl: '',
+        otherLabel: '',
+        information: '',
+        image: ''
+      });
     }
   };
 
@@ -1355,6 +1492,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
           >
             <Video className="w-4 h-4" />
             <span>Gallery Media ({galleryItems.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('contacts')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap transition-all ${
+              activeTab === 'contacts'
+                ? 'bg-amber-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-850'
+            }`}
+          >
+            <Phone className="w-4 h-4" />
+            <span>Reception Contacts ({receptionContacts.length})</span>
           </button>
 
           <button
@@ -2221,11 +2370,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       onChange={(e) => setNewGalCategory(e.target.value as any)}
                       className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
-                      <option value="Past Gatherings">Past Gatherings</option>
-                      <option value="Rituals">Rituals & Seva</option>
-                      <option value="Prasadam">Prasadam (Anandabazar)</option>
-                      <option value="Cultural">Cultural Programme</option>
-                      <option value="Venue">Venue & Grounds</option>
+                      {GALLERY_CATEGORIES.map(category => (
+                        <option key={category} value={category}>{category}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -2401,6 +2548,181 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'contacts' && (
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+              <div>
+                <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-amber-600" />
+                  <span>Manage Reception Committee &amp; Contacts</span>
+                </h3>
+                <p className="text-xs text-stone-500 mt-1">
+                  Add contact cards and optional photos, phone numbers, social links, and other information for the Contact page.
+                </p>
+              </div>
+
+              {contactSaveSuccess && (
+                <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>{contactSaveSuccess}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSaveReceptionContact} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Contact Group</label>
+                    <select
+                      value={contactForm.type}
+                      onChange={e => setContactForm(prev => ({ ...prev, type: e.target.value as ReceptionContact['type'] }))}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    >
+                      <option value="committee">Reception Committee</option>
+                      <option value="desk">Contact Desk</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Name *</label>
+                    <input
+                      required
+                      value={contactForm.name}
+                      onChange={e => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Full name"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Role *</label>
+                    <input
+                      required
+                      value={contactForm.role}
+                      onChange={e => setContactForm(prev => ({ ...prev, role: e.target.value }))}
+                      placeholder="e.g. Information Coordinator"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Card Heading (optional)</label>
+                    <input
+                      value={contactForm.label || ''}
+                      onChange={e => setContactForm(prev => ({ ...prev, label: e.target.value }))}
+                      placeholder="e.g. Programme Information"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      value={contactForm.phone || ''}
+                      onChange={e => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
+                      placeholder="+91..."
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {([
+                    ['WhatsApp URL', 'whatsappUrl'],
+                    ['Instagram URL', 'instagramUrl'],
+                    ['Facebook URL', 'facebookUrl'],
+                    ['Other URL', 'otherUrl']
+                  ] as const).map(([label, field]) => (
+                    <div key={field}>
+                      <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">{label}</label>
+                      <input
+                        type="url"
+                        value={contactForm[field] || ''}
+                        onChange={e => setContactForm(prev => ({ ...prev, [field]: e.target.value }))}
+                        placeholder="https://..."
+                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                      />
+                    </div>
+                  ))}
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Other Link Label</label>
+                    <input
+                      value={contactForm.otherLabel || ''}
+                      onChange={e => setContactForm(prev => ({ ...prev, otherLabel: e.target.value }))}
+                      placeholder="Website or other link name"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Additional Information</label>
+                    <textarea
+                      rows={3}
+                      value={contactForm.information || ''}
+                      onChange={e => setContactForm(prev => ({ ...prev, information: e.target.value }))}
+                      placeholder="Additional details to show on the Contact page"
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">Contact Photo</label>
+                    <div className="flex items-center gap-3">
+                      {contactForm.image && (
+                        <img src={contactForm.image} alt="Contact preview" className="w-16 h-16 object-cover rounded-xl" />
+                      )}
+                      <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-stone-400 text-xs font-semibold text-stone-700 dark:text-stone-300">
+                        <Upload className="w-4 h-4 text-amber-600" />
+                        Upload Photo
+                        <input type="file" accept="image/*" onChange={handleContactImageUpload} className="hidden" />
+                      </label>
+                      {contactForm.image && (
+                        <button type="button" onClick={() => setContactForm(prev => ({ ...prev, image: '' }))} className="text-xs text-red-600 hover:underline">
+                          Remove photo
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  {contactForm.id && (
+                    <button
+                      type="button"
+                      onClick={() => setContactForm({ id: '', type: 'committee', name: '', role: '', label: '', phone: '', whatsappUrl: '', instagramUrl: '', facebookUrl: '', otherUrl: '', otherLabel: '', information: '', image: '' })}
+                      className="px-4 py-2.5 rounded-xl border border-stone-300 dark:border-stone-700 text-xs font-semibold"
+                    >
+                      Cancel Edit
+                    </button>
+                  )}
+                  <button type="submit" className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs">
+                    <Plus className="w-4 h-4" />
+                    {contactForm.id ? 'Save Contact Changes' : 'Add Contact'}
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div className="bg-white dark:bg-stone-900 rounded-3xl p-6 sm:p-8 border border-stone-200 dark:border-stone-800 shadow-sm space-y-4">
+              <h4 className="font-bold text-sm text-stone-900 dark:text-stone-100">Published Contacts ({receptionContacts.length})</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {receptionContacts.map(contact => (
+                  <div key={contact.id} className="flex gap-3 p-4 rounded-2xl border border-stone-200 dark:border-stone-800">
+                    {contact.image && <img src={contact.image} alt="" className="w-14 h-14 object-cover rounded-xl shrink-0" />}
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] uppercase font-bold text-amber-600">{contact.type === 'committee' ? 'Reception Committee' : 'Contact Desk'}</span>
+                      <h5 className="font-bold text-sm text-stone-900 dark:text-stone-100 truncate">{contact.name}</h5>
+                      <p className="text-xs text-stone-500">{contact.role}</p>
+                      {contact.phone && <p className="text-xs text-stone-500">{contact.phone}</p>}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <button type="button" onClick={() => setContactForm({ ...contact })} className="text-xs text-amber-700 hover:underline">Edit</button>
+                      <button type="button" onClick={() => handleDeleteReceptionContact(contact.id)} className="text-xs text-red-600 hover:underline">Delete</button>
                     </div>
                   </div>
                 ))}
