@@ -39,7 +39,8 @@ import {
   X,
   Megaphone,
   Pin,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import {
   RegistrationRecord,
@@ -94,6 +95,7 @@ import { recordSessionEmail } from '../services/visitorService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
 import { exportElementAsPdf, exportElementAsImage, exportBulkDelegateCardsPdf, BulkExportProgress } from '../utils/exportCardUtils';
 import { getVideoEmbedUrl, getVideoProviderLabel, getVideoThumbnail, isValidMediaUrl } from '../utils/videoEmbed';
+import { clearLocalData } from '../utils/refreshLocalData';
 import { GalleryVideo } from './GalleryVideo';
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
@@ -357,6 +359,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
     localStorage.removeItem('pritilagnik_admin_session');
     localStorage.removeItem('pritilagnik_admin_email');
     localStorage.removeItem('pritilagnik_admin_name');
+  };
+
+  const handleRefreshLocalData = () => {
+    if (!window.confirm(
+      'Clear cached portal data in this browser and reload? Records or changes stored only in this browser will be permanently lost. Firestore data, your admin session, and preferences will not be deleted. Close other portal tabs first to prevent them from restoring old data.'
+    )) return;
+
+    try {
+      clearLocalData();
+    } catch (error) {
+      console.error('Failed to clear local portal data:', error);
+      window.alert('Could not clear all local data. Some cached data may remain. Please check your browser storage settings and try again.');
+      return;
+    }
+
+    window.location.reload();
   };
 
   // ================= DELEGATE ACTIONS =================
@@ -1204,6 +1222,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
             >
               <Printer className="w-4 h-4" />
               <span>Print Active View</span>
+            </button>
+
+            <button
+              onClick={handleRefreshLocalData}
+              disabled={loading || isBulkExporting}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-50"
+              title="Clear cached portal data in this browser and reload"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Refresh Local Data</span>
             </button>
 
             <button

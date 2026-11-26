@@ -72,6 +72,7 @@ Language preference is persisted locally across sessions.
   - **Dual-Mode File Uploader:** Upload event PDFs and DOCX guidelines directly from local device or provide direct links.
   - **Gallery Manager:** Upload devotional photos and link videos from YouTube, Facebook, X/Twitter, direct media files, or embeddable websites.
   - **Attendee Feedback:** Review attendee ratings on reception, prasadam, and accommodation.
+  - **Refresh Local Data:** Clear this browser's cached portal data and reload the dashboard. Close other portal tabs first. Records or changes stored only locally will be permanently lost; Firestore data, the admin session, and preferences are preserved. Other browsers are unaffected, and Firestore data may reappear after reloading.
 
 ### 6. 📚 Event Documents & Teachings of Joyguru Gallery
 - **Public Downloads:** Instant access to Schedule of Events, Travel and Parking Advisory, and Volunteer Seva Manual.
