@@ -656,6 +656,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
         ? processedUrl
         : getVideoThumbnail(processedUrl, '/src/assets/images/priti_lagnik_logo.webp'),
       description: newGalDesc.trim() || 'Priti-Lagnik Maha Mahotsav Moment',
+      createdAt: new Date().toISOString(),
       year: '2026'
     };
 
@@ -3160,7 +3161,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       type="text"
                       value={accForm.contactName}
                       onChange={(e) => setAccForm({ ...accForm, contactName: e.target.value })}
-                      placeholder="e.g. Sjt. Sanjib Debnath"
+                      placeholder="e.g. Mahanda Brahma"
                       className="w-full px-3 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>

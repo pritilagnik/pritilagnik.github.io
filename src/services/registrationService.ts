@@ -8,6 +8,7 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { sortGalleryItems } from '../utils/sortGalleryItems';
 import {
   RegistrationRecord,
   CarPassRecord,
@@ -575,7 +576,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
       fallbackGallery.forEach(i => {
         if (!mergedMap.has(i.id)) mergedMap.set(i.id, i);
       });
-      const list = Array.from(mergedMap.values());
+      const list = sortGalleryItems(Array.from(mergedMap.values()));
       localStorage.setItem('pritilagnik_gallery', JSON.stringify(list));
       return list;
     }
@@ -585,7 +586,7 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
 
   try {
     const stored = localStorage.getItem('pritilagnik_gallery');
-    return stored ? JSON.parse(stored) : fallbackGallery;
+    return stored ? sortGalleryItems(JSON.parse(stored)) : fallbackGallery;
   } catch (e) {
     return fallbackGallery;
   }

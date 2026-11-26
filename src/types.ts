@@ -54,6 +54,7 @@ export interface GalleryItem {
   url: string;
   thumbnail: string;
   description: string;
+  createdAt?: string;
   year?: string;
   duration?: string;
 }
