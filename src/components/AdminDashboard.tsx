@@ -93,6 +93,8 @@ import { EVENT_DETAILS } from '../data/mahotsavData';
 import { recordSessionEmail } from '../services/visitorService';
 import { generateQrCodeDataUrl } from '../utils/qrGenerator';
 import { exportElementAsPdf, exportElementAsImage, exportBulkDelegateCardsPdf, BulkExportProgress } from '../utils/exportCardUtils';
+import { getVideoEmbedUrl, getVideoProviderLabel, getVideoThumbnail, isValidMediaUrl } from '../utils/videoEmbed';
+import { GalleryVideo } from './GalleryVideo';
 import pritiLogo from '../assets/images/priti_lagnik_logo.webp';
 import scanswiftIcon from '../assets/apps-icons/scanswift.jpeg';
 
@@ -616,17 +618,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       processedUrl = galImageFile ? galImageFile.dataUrl : newGalUrl.trim();
     } else {
       if (!newGalUrl.trim()) {
-        alert('Please provide a YouTube video link.');
+        alert('Please provide a video link from YouTube, Facebook, X/Twitter, or a website.');
         return;
       }
-      processedUrl = newGalUrl.trim();
-      if (processedUrl.includes('youtube.com/watch?v=')) {
-        const vidId = processedUrl.split('v=')[1]?.split('&')[0];
-        if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
-      } else if (processedUrl.includes('youtu.be/')) {
-        const vidId = processedUrl.split('youtu.be/')[1]?.split('?')[0];
-        if (vidId) processedUrl = `https://www.youtube.com/embed/${vidId}`;
+      if (!isValidMediaUrl(newGalUrl.trim())) {
+        alert('Please enter a valid public video URL beginning with http:// or https://.');
+        return;
       }
+      processedUrl = getVideoEmbedUrl(newGalUrl.trim());
     }
 
     const item: GalleryItem = {
@@ -635,7 +634,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       type: newGalType,
       category: newGalCategory,
       url: processedUrl,
-      thumbnail: newGalType === 'image' ? processedUrl : '/src/assets/images/priti_lagnik_logo.webp',
+      thumbnail: newGalType === 'image'
+        ? processedUrl
+        : getVideoThumbnail(processedUrl, '/src/assets/images/priti_lagnik_logo.webp'),
       description: newGalDesc.trim() || 'Priti-Lagnik Maha Mahotsav Moment',
       year: '2026'
     };
@@ -2133,10 +2134,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div>
                 <h3 className="text-lg font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
                   <Video className="w-5 h-5 text-amber-600" />
-                  <span>Add Images & YouTube Video Links to Gallery</span>
+                  <span>Add Images & Video Links to Gallery</span>
                 </h3>
                 <p className="text-xs text-stone-500 mt-1">
-                  Add photos or YouTube videos to appear dynamically in the interactive Gallery page.
+                  Add photos or videos from YouTube, Facebook, X/Twitter, and websites to the interactive Gallery page.
                 </p>
               </div>
 
@@ -2176,7 +2177,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                       className="w-full px-3.5 py-2 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     >
                       <option value="image">Image Photo</option>
-                      <option value="video">YouTube Video</option>
+                      <option value="video">Online Video / Embed</option>
                     </select>
                   </div>
 
@@ -2276,18 +2277,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                 ) : (
                   <div>
                     <label className="block text-xs font-semibold text-stone-700 dark:text-stone-300 mb-1">
-                      YouTube Video Link *
+                      Video or Video Page Link *
                     </label>
                     <input
-                      type="text"
+                      type="url"
                       required
                       value={newGalUrl}
                       onChange={(e) => setNewGalUrl(e.target.value)}
-                      placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                      placeholder="YouTube, Facebook, X/Twitter, MP4, or other video webpage URL"
                       className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                     <span className="text-[10px] text-stone-400 mt-1 block">
-                      Auto-converts watch URLs to standard responsive embeds for the public Gallery.
+                      Supports YouTube, Facebook, X/Twitter posts, direct MP4/WebM files, and embeddable website players.
                     </span>
                   </div>
                 )}
@@ -2332,13 +2333,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
                       {item.type === 'video' ? (
                         <div className="relative w-full h-full">
-                          <iframe
-                            src={item.url}
-                            title={item.title}
+                          <GalleryVideo
+                            url={item.url}
+                            title={`${item.title} preview`}
+                            poster={item.thumbnail}
+                            preview
                             className="w-full h-full pointer-events-none"
                           />
                           <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-red-600 text-white text-[9px] font-bold uppercase">
-                            YouTube Video
+                            {getVideoProviderLabel(item.url)}
                           </div>
                         </div>
                       ) : (
@@ -2995,8 +2998,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
                     tariff: '₹ 1,000 / night',
                     amenities: 'Attached Bathrooms, Wi-Fi, Generator Backup',
                     contactName: 'Front Desk',
-                    phone: '+91 94350 78334',
-                    whatsapp: '+919435078334',
+                    phone: '+91 84720 14223',
+                    whatsapp: '+918472014223',
                     bookingStatus: 'Available'
                   });
                   setIsAddingAcc(prev => !prev);
@@ -3883,7 +3886,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <div className="bg-amber-400 text-black py-3 px-4 rounded-xl border-3 border-black text-center shadow-md">
                 <div className="text-3xl sm:text-4xl font-black font-mono tracking-widest uppercase flex items-center justify-center gap-3 text-black">
                   <Car className="w-8 h-8 stroke-[3]" />
-                  <span>*** CAR PASS ***</span>
+                  <span>CAR/BIKE PASS</span>
                   <Car className="w-8 h-8 stroke-[3]" />
                 </div>
                 <div className="text-[11px] font-black tracking-wider uppercase mt-0.5 text-black">

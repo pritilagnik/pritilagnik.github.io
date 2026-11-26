@@ -70,7 +70,7 @@ Language preference is persisted locally across sessions.
   - **Vehicle Management:** Allocate designated parking zones (Gates 1, 2, School Field, Yatri Niwas), accept/reject passes, and print vehicle placards.
   - **Multi-Admin Delegation:** Root admins can invite and manage additional Secretariat officers and committee members.
   - **Dual-Mode File Uploader:** Upload event PDFs and DOCX guidelines directly from local device or provide direct links.
-  - **Gallery Manager:** Upload devotional photos and link YouTube amritavani discourses with automated embed conversion.
+  - **Gallery Manager:** Upload devotional photos and link videos from YouTube, Facebook, X/Twitter, direct media files, or embeddable websites.
   - **Attendee Feedback:** Review attendee ratings on reception, prasadam, and accommodation.
 
 ### 6. 📚 Event Documents & Teachings of Joyguru Gallery

@@ -201,7 +201,7 @@ export const CarPassForm: React.FC<CarPassFormProps> = ({ onSuccess, onCheckStat
             <div className="bg-amber-500 text-stone-950 font-black tracking-widest text-center py-3 px-4 rounded-xl shadow-inner border-2 border-amber-600">
               <div className="text-2xl sm:text-3xl font-mono tracking-widest uppercase flex items-center justify-center gap-3">
                 <Car className="w-7 h-7 sm:w-8 sm:h-8" />
-                <span>*** CAR PASS ACKNOWLEDGEMENT ***</span>
+                <span>CAR/BIKE PASS ACKNOWLEDGEMENT</span>
                 <Car className="w-7 h-7 sm:w-8 sm:h-8" />
               </div>
               <div className="text-xs tracking-wider font-semibold uppercase mt-0.5 text-stone-900">

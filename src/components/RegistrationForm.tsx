@@ -703,7 +703,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                       className="w-full px-4 py-2 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 text-xs"
                     >
                       <option value="Ashram Dormitory (Dotma Niwas)">
-                        Ashram Dormitory (Dotma Niwas) - Free for Out-of-BTR Participants with Satvik Prasad
+                        Ashram Dormitory (Dotma Niwas) - Free for Out-of-BTC Participants with Satvik Prasad
                       </option>
                       <option value="Eco-Friendly Tent Village (Campus)">
                         Eco-Friendly Tent Village (Campus) - Complimentary for Youth Delegations

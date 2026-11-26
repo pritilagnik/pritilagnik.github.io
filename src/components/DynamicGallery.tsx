@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { GalleryItem } from '../types';
 import { fetchDynamicGalleryItems } from '../services/registrationService';
+import { GalleryVideo } from './GalleryVideo';
 
 interface DynamicGalleryProps {
   title?: string;
@@ -62,18 +63,6 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
     setIsPlayingVideo(filteredItems[prevIdx].type === 'video');
   };
 
-  const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
-
-  const getEmbedUrl = (url: string): string => {
-    if (!url) return '';
-    if (url.includes('youtube.com/embed/')) return url;
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-    if (match && match[1]) {
-      return `https://www.youtube.com/embed/${match[1]}`;
-    }
-    return url;
-  };
-
   return (
     <section id="gallery" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-900/40 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,29 +103,13 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
             <div className="relative rounded-3xl overflow-hidden bg-black shadow-2xl border border-stone-300 dark:border-stone-800 mb-8">
               <div className="relative aspect-video max-h-[580px] w-full flex items-center justify-center">
                 {selectedItem.type === 'video' && isPlayingVideo ? (
-                  isYouTube(selectedItem.url) ? (
-                    <iframe
-                      src={(() => {
-                        const embed = getEmbedUrl(selectedItem.url);
-                        return embed.includes('?') ? `${embed}&autoplay=1` : `${embed}?autoplay=1`;
-                      })()}
-                      title={selectedItem.title}
-                      className="w-full h-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <video
-                      controls
-                      autoPlay
-                      className="w-full h-full object-contain"
-                      poster={selectedItem.thumbnail}
-                      key={selectedItem.id}
-                    >
-                      <source src={selectedItem.url} type="video/mp4" />
-                      Your browser does not support HTML5 video.
-                    </video>
-                  )
+                  <GalleryVideo
+                    key={selectedItem.id}
+                    url={selectedItem.url}
+                    title={selectedItem.title}
+                    poster={selectedItem.thumbnail}
+                    autoPlay
+                  />
                 ) : (
                   <div className="relative w-full h-full flex items-center justify-center overflow-hidden group bg-stone-950">
                     {/* Ambient blurred backdrop so the container feels full and rich */}
@@ -239,12 +212,24 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
                           : 'border-transparent hover:border-amber-300 dark:hover:border-stone-700 opacity-80 hover:opacity-100'
                       }`}
                     >
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
+                      {item.type === 'video' ? (
+                        <div className="w-full h-full pointer-events-none bg-black">
+                          <GalleryVideo
+                            url={item.url}
+                            title={`${item.title} preview`}
+                            poster={item.thumbnail}
+                            preview
+                            className="w-full h-full group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      ) : (
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
                       {/* Icon Badge */}
@@ -284,23 +269,13 @@ export const DynamicGallery: React.FC<DynamicGalleryProps> = ({
 
           <div className="relative max-w-5xl max-h-[85vh] w-full flex flex-col items-center">
             {selectedItem.type === 'video' ? (
-              isYouTube(selectedItem.url) ? (
-                <iframe
-                  src={getEmbedUrl(selectedItem.url)}
-                  title={selectedItem.title}
-                  className="w-full aspect-video rounded-lg"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <video
-                  controls
-                  autoPlay
-                  className="max-h-[75vh] w-full object-contain rounded-lg"
-                >
-                  <source src={selectedItem.url} type="video/mp4" />
-                </video>
-              )
+              <GalleryVideo
+                url={selectedItem.url}
+                title={selectedItem.title}
+                poster={selectedItem.thumbnail}
+                autoPlay
+                className="w-full aspect-video max-h-[75vh] rounded-lg"
+              />
             ) : (
               <img
                 src={selectedItem.url}
