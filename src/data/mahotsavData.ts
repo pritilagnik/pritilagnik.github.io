@@ -17,7 +17,7 @@ export const EVENT_DETAILS = {
   },
   helplinePhone: "+918472014223",
   whatsappNumber: "+918472014223",
-  email: "#",
+  email: "pritilagnik2026@gmail.com",
   mission: "Fostering universal brotherhood, moral elevation, community seva, and spiritual awakening under the divine inspiration of Sree Sree Thakur.",
   theme: "Unconditional Love (Priti), Divine Communion (Lagnik) & Universal Wellbeing (Swastyayani)"
 };

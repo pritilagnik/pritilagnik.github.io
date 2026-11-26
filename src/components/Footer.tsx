@@ -256,13 +256,13 @@ export const Footer: React.FC<FooterProps> = ({ onSelectTab, onSelectAboutSubTab
                   Instagram
                 </a>
                 <a
-                  href="https://x.com"
+                  href="https://www.youtube.com/@priti-lagnikmahamahotsav-2026"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-200 transition-colors"
-                  aria-label="Twitter / X"
+                  aria-label="YouTube"
                 >
-                  X (Twitter)
+                  YouTube
                 </a>
                 <a
                   href={`https://wa.me/${EVENT_DETAILS.whatsappNumber.replace(/[^0-9]/g, '')}`}
