@@ -1225,15 +1225,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
               <span>Print Active View</span>
             </button>
 
-            <button
-              onClick={handleRefreshLocalData}
-              disabled={loading || isBulkExporting}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-50"
-              title="Clear cached portal data in this browser and reload"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Refresh Local Data</span>
-            </button>
+            {currentAdmin.isRoot && (
+              <button
+                onClick={handleRefreshLocalData}
+                disabled={loading || isBulkExporting}
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors disabled:opacity-50"
+                title="Clear cached portal data in this browser and reload"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Refresh Local Data</span>
+              </button>
+            )}
 
             <button
               onClick={handleLogout}
