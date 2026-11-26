@@ -786,8 +786,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onClose }) => {
       tariff: accForm.tariff.trim(),
       amenities: amenitiesList.length > 0 ? amenitiesList : ['Clean Beds', 'Drinking Water', 'Restrooms'],
       contactName: accForm.contactName.trim() || 'Stay In-Charge',
-      phone: accForm.phone.trim() || '+91 94350 78334',
-      whatsapp: accForm.whatsapp.trim() || accForm.phone.trim() || '+919435078334',
+      phone: accForm.phone.trim() || '+918472014223',
+      whatsapp: accForm.whatsapp.trim() || accForm.phone.trim() || '+918472014223',
       bookingStatus: accForm.bookingStatus
     };
 

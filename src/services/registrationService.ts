@@ -560,28 +560,6 @@ export async function fetchDynamicGalleryItems(): Promise<GalleryItem[]> {
       thumbnail: "/src/assets/images/sree_sree_acharya.webp",
       description: "Leading the global spiritual mission of love, eco-harmony, and universal peace.",
       year: "Contemporary"
-    },
-    {
-      id: "gal-5",
-      type: "video",
-      title: "Teachings of Joyguru: Sree Sree Thakur Anukulchandra Divine Amritavani",
-      category: "Rituals",
-      url: "https://www.youtube.com/embed?listType=search&list=Teachings+of+Joyguru+Sree+Sree+Thakur+Anukulchandra",
-      thumbnail: "/src/assets/images/sree_sree_thakur.webp",
-      description: "Sublime spiritual discourses and guiding amritavani of Sree Sree Thakur Anukulchandra (Joyguru) on concentric life, universal love, adherence to the Living Ideal, and human elevation.",
-      duration: "18:40 min",
-      year: "Sacred Teachings"
-    },
-    {
-      id: "gal-6",
-      type: "video",
-      title: "Teachings of Joyguru: Satyanusaran & Life Elevation Principles",
-      category: "Past Gatherings",
-      url: "https://www.youtube.com/embed?listType=search&list=Joyguru+Satyanusaran+Discourses",
-      thumbnail: "/src/assets/images/priti_lagnik_logo.webp",
-      description: "Profound exposition of Satyanusaran teachings by revered exponents during Satsang philosophical sessions.",
-      duration: "24:15 min",
-      year: "Discourses"
     }
   ];
 

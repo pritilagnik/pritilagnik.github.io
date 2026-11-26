@@ -220,7 +220,7 @@ export const StatusCheckView: React.FC = () => {
                     {delegateRecord.status === 'accepted'
                       ? 'Your official Registered Delegate Card is ready for self-printing below.'
                       : delegateRecord.status === 'declined'
-                      ? 'Please contact the Dotma Reception Secretariat (+91 94350 78334) for assistance.'
+                      ? 'Please contact the Dotma Reception Secretariat (+918472014223) for assistance.'
                       : 'The Reception Committee is verifying details. Only accepted participants can print the official card.'}
                   </p>
                 </div>
