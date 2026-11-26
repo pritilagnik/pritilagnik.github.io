@@ -200,7 +200,7 @@ export const NearbyPlacesView: React.FC = () => {
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 text-amber-700 dark:text-amber-400 text-xs font-semibold uppercase tracking-widest">
             <Compass className="w-4 h-4 text-amber-600" />
-            <span>Discover Bodoland Territorial Region (BTR) & Assam</span>
+            <span>Discover Bodoland Territorial Council (BTC) & Assam</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-serif-cinzel font-bold text-stone-900 dark:text-stone-100 tracking-tight text-balance">
             Nearby Places to Visit

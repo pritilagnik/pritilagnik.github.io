@@ -30,7 +30,7 @@ export const FullWidthMap: React.FC = () => {
               Venue Location & Directions
             </h2>
             <p className="mt-1 text-stone-300 text-sm max-w-2xl">
-              West Dangarkuthi, Dotma, Kokrajhar, Bodoland Territorial Region (BTR), Assam, India - PIN 783347
+              West Dangarkuthi, Dotma, Kokrajhar, Bodoland Territorial Council (BTC), Assam, India - PIN 783347
             </p>
           </div>
 

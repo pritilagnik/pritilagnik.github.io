@@ -692,7 +692,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({
                 {formData.needAccommodation && (
                   <div className="p-4 rounded-xl bg-amber-50/70 dark:bg-stone-900 border border-amber-200 dark:border-stone-700 space-y-2.5">
                     <div className="text-[11px] text-amber-900 dark:text-amber-200 bg-amber-100/70 dark:bg-amber-950/60 p-2.5 rounded-lg border border-amber-300/70 dark:border-amber-800 leading-relaxed font-medium">
-                      ℹ️ <strong>Pilgrim Accomodation Policy:</strong> Free Accomodation will be arranged for Guest/Participants from outside BTR (Bodoland Territorial Region) on request. However, the free accomodation facility is limited and early registration is requested.
+                      ℹ️ <strong>Pilgrim Accomodation Policy:</strong> Free Accomodation will be arranged for Guest/Participants from outside BTC (Bodoland Territorial Council) on request. However, the free accomodation facility is limited and early registration is requested.
                     </div>
                     <label className="block text-xs font-semibold text-stone-800 dark:text-stone-200">
                       Select Preferred Accommodation Category:

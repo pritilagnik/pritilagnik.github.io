@@ -502,7 +502,7 @@ Joyguru!
                     <span className="font-serif-cinzel">Yatri Dormitory</span>
                   </div>
                   <p className="text-[11px] text-stone-600 dark:text-stone-300 leading-tight">
-                    Free Lodging for out-of-BTR participants & clean rest quarters
+                    Free Lodging for out-of-BTC participants & clean rest quarters
                   </p>
                 </div>
               </div>
